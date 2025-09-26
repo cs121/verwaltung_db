@@ -37,7 +37,7 @@ from inventar.export.exporters import export_to_csv, export_to_json, export_to_x
 from inventar.ui.item_dialog import ItemDialog
 from inventar.ui.print import TablePrinter
 from inventar.utils.settings import SettingsManager
-from inventar.utils.validators import DATE_FORMAT_DISPLAY, ItemValidator
+from inventar.utils.validators import DATE_FORMAT_DISPLAY, DATE_FORMAT_QT_DISPLAY, ItemValidator
 
 
 HEADERS = [
@@ -244,7 +244,8 @@ class MainWindow(QMainWindow):
 		right_layout = QFormLayout()
 		self.filter_seriennummer = QLineEdit()
 		self.filter_einkaufsdatum = QDateEdit()
-		self.filter_einkaufsdatum.setDisplayFormat(DATE_FORMAT_DISPLAY)
+		# Qt benötigt ein eigenes Anzeigeformat, um die Datumswerte korrekt darzustellen.
+		self.filter_einkaufsdatum.setDisplayFormat(DATE_FORMAT_QT_DISPLAY)
 		self.filter_einkaufsdatum.setCalendarPopup(True)
 		self.filter_einkaufsdatum.setSpecialValueText('')
 		self.filter_einkaufsdatum.setDateRange(QDate(1900, 1, 1), QDate(2100, 12, 31))

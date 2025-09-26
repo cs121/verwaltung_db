@@ -4,6 +4,7 @@ from datetime import datetime
 from typing import Dict, Tuple
 
 DATE_FORMAT_DISPLAY = '%d.%m.%Y'
+DATE_FORMAT_QT_DISPLAY = 'dd.MM.yyyy'
 DATE_FORMAT_STORAGE = '%Y-%m-%d'
 
 
