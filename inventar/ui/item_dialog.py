@@ -18,7 +18,7 @@ from PySide6.QtWidgets import (
 )
 
 from inventar.data.models import Item
-from inventar.utils.validators import DATE_FORMAT_DISPLAY, ItemValidator
+from inventar.utils.validators import DATE_FORMAT_QT_DISPLAY, ItemValidator
 
 
 class ItemDialog(QDialog):
@@ -44,7 +44,9 @@ class ItemDialog(QDialog):
 
 		self.seriennummer_edit = QLineEdit()
 		self.einkaufsdatum_edit = QDateEdit()
-		self.einkaufsdatum_edit.setDisplayFormat(DATE_FORMAT_DISPLAY)
+		# Qt erwartet sein eigenes Datumsformat (dd.MM.yyyy) für die Anzeige.
+		# Dieses unterscheidet sich von den strftime-Formaten, die wir für die Validierung nutzen.
+		self.einkaufsdatum_edit.setDisplayFormat(DATE_FORMAT_QT_DISPLAY)
 		self.einkaufsdatum_edit.setCalendarPopup(True)
 		self.kaufpreis_edit = QLineEdit()
 		self.aktueller_besitzer_combo = QComboBox()
