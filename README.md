@@ -14,7 +14,9 @@ python -m inventar
 ## Funktionen
 
 - Verwaltung von Inventarobjekten inklusive CRUD
+- Pflege eines Objekttyp-Katalogs mit editierbarer Auswahlliste und persistenten eigenen Einträgen
 - Live-Suche und Filter nach mehreren Kriterien
+- Zusätzliche Datumsfelder für Einkauf und Zuweisung mit Validierung
 - Export in Excel (XLSX), CSV und JSON
 - Druckvorschau und PDF-Ausgabe
 - Speicherung der Fenster- und Tabelleneinstellungen via QSettings
