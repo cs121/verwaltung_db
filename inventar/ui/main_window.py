@@ -225,8 +225,14 @@ class MainWindow(QMainWindow):
                 self.filter_objekttyp.setEditable(True)
                 self.filter_objekttyp.setInsertPolicy(QComboBox.NoInsert)
                 self._update_object_type_filter()
-                self.filter_hersteller = QLineEdit()
-                self.filter_modell = QLineEdit()
+                self.filter_hersteller = QComboBox()
+                self.filter_hersteller.setEditable(True)
+                self.filter_hersteller.setInsertPolicy(QComboBox.NoInsert)
+                self._update_manufacturer_filter()
+                self.filter_modell = QComboBox()
+                self.filter_modell.setEditable(True)
+                self.filter_modell.setInsertPolicy(QComboBox.NoInsert)
+                self._update_model_filter()
                 self.filter_seriennummer = QLineEdit()
                 left_layout.addRow('Objekttyp', self.filter_objekttyp)
                 left_layout.addRow('Hersteller', self.filter_hersteller)
@@ -254,6 +260,7 @@ class MainWindow(QMainWindow):
                 self.filter_besitzer = QComboBox()
                 self.filter_besitzer.setEditable(True)
                 self.filter_besitzer.setInsertPolicy(QComboBox.NoInsert)
+                self._update_owner_combo()
                 self.filter_anmerkungen = QLineEdit()
                 self.add_owner_button = QToolButton()
                 self.add_owner_button.setText('+')
@@ -308,8 +315,10 @@ class MainWindow(QMainWindow):
                 self.search_action.triggered.connect(lambda: self.search_field.setFocus())
                 self.print_action.triggered.connect(self.print_preview)
 
-                self.filter_hersteller.returnPressed.connect(self.apply_filters)
-                self.filter_modell.returnPressed.connect(self.apply_filters)
+                if self.filter_hersteller.lineEdit():
+                        self.filter_hersteller.lineEdit().returnPressed.connect(self.apply_filters)
+                if self.filter_modell.lineEdit():
+                        self.filter_modell.lineEdit().returnPressed.connect(self.apply_filters)
                 self.filter_seriennummer.returnPressed.connect(self.apply_filters)
                 self.filter_anmerkungen.returnPressed.connect(self.apply_filters)
                 if self.filter_objekttyp.lineEdit():
@@ -323,18 +332,55 @@ class MainWindow(QMainWindow):
                 self.table_model.set_items(self.items)
                 self._refresh_object_types()
                 self._update_object_type_filter()
+                self._update_manufacturer_filter()
+                self._update_model_filter()
                 self._update_owner_combo()
                 self._update_status()
 
         def _update_owner_combo(self) -> None:
+                if not hasattr(self, 'filter_besitzer'):
+                        return
                 owners = self.repository.distinct_owners()
-                current_text = self.filter_besitzer.currentText()
+                current_text = self.filter_besitzer.currentText().strip() if self.filter_besitzer.count() else ''
                 self.filter_besitzer.blockSignals(True)
                 self.filter_besitzer.clear()
                 self.filter_besitzer.addItem('')
                 self.filter_besitzer.addItems(owners)
-                self.filter_besitzer.setCurrentText(current_text)
+                if current_text:
+                        self.filter_besitzer.setCurrentText(current_text)
+                else:
+                        self.filter_besitzer.setCurrentIndex(0)
                 self.filter_besitzer.blockSignals(False)
+
+        def _update_manufacturer_filter(self) -> None:
+                if not hasattr(self, 'filter_hersteller'):
+                        return
+                manufacturers = self.repository.distinct_manufacturers()
+                current_text = self.filter_hersteller.currentText().strip() if self.filter_hersteller.count() else ''
+                self.filter_hersteller.blockSignals(True)
+                self.filter_hersteller.clear()
+                self.filter_hersteller.addItem('')
+                self.filter_hersteller.addItems(manufacturers)
+                if current_text:
+                        self.filter_hersteller.setCurrentText(current_text)
+                else:
+                        self.filter_hersteller.setCurrentIndex(0)
+                self.filter_hersteller.blockSignals(False)
+
+        def _update_model_filter(self) -> None:
+                if not hasattr(self, 'filter_modell'):
+                        return
+                models = self.repository.distinct_models()
+                current_text = self.filter_modell.currentText().strip() if self.filter_modell.count() else ''
+                self.filter_modell.blockSignals(True)
+                self.filter_modell.clear()
+                self.filter_modell.addItem('')
+                self.filter_modell.addItems(models)
+                if current_text:
+                        self.filter_modell.setCurrentText(current_text)
+                else:
+                        self.filter_modell.setCurrentIndex(0)
+                self.filter_modell.blockSignals(False)
 
         def _refresh_object_types(self) -> None:
                 repo_types = self.repository.distinct_object_types()
@@ -379,13 +425,17 @@ class MainWindow(QMainWindow):
         def reset_filters(self) -> None:
                 self.search_field.clear()
                 self.filter_objekttyp.setCurrentIndex(0)
-                self.filter_hersteller.clear()
-                self.filter_modell.clear()
+                self.filter_hersteller.setCurrentIndex(0)
+                self.filter_modell.setCurrentIndex(0)
                 self.filter_seriennummer.clear()
                 self.filter_anmerkungen.clear()
                 self.filter_besitzer.setCurrentIndex(0)
                 if self.filter_objekttyp.lineEdit():
                         self.filter_objekttyp.lineEdit().clear()
+                if self.filter_hersteller.lineEdit():
+                        self.filter_hersteller.lineEdit().clear()
+                if self.filter_modell.lineEdit():
+                        self.filter_modell.lineEdit().clear()
                 if self.filter_einkaufsdatum.lineEdit():
                         self.filter_einkaufsdatum.lineEdit().setText('')
                 if self.filter_zuweisungsdatum.lineEdit():
