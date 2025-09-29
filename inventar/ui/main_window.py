@@ -221,7 +221,10 @@ class MainWindow(QMainWindow):
                 layout = QHBoxLayout()
 
                 left_layout = QFormLayout()
-                self.filter_objekttyp = QLineEdit()
+                self.filter_objekttyp = QComboBox()
+                self.filter_objekttyp.setEditable(True)
+                self.filter_objekttyp.setInsertPolicy(QComboBox.NoInsert)
+                self._update_object_type_filter()
                 self.filter_hersteller = QLineEdit()
                 self.filter_modell = QLineEdit()
                 self.filter_seriennummer = QLineEdit()
@@ -305,11 +308,12 @@ class MainWindow(QMainWindow):
                 self.search_action.triggered.connect(lambda: self.search_field.setFocus())
                 self.print_action.triggered.connect(self.print_preview)
 
-                self.filter_objekttyp.returnPressed.connect(self.apply_filters)
                 self.filter_hersteller.returnPressed.connect(self.apply_filters)
                 self.filter_modell.returnPressed.connect(self.apply_filters)
                 self.filter_seriennummer.returnPressed.connect(self.apply_filters)
                 self.filter_anmerkungen.returnPressed.connect(self.apply_filters)
+                if self.filter_objekttyp.lineEdit():
+                        self.filter_objekttyp.lineEdit().returnPressed.connect(self.apply_filters)
                 if self.filter_besitzer.lineEdit():
                         self.filter_besitzer.lineEdit().returnPressed.connect(self.apply_filters)
                 self.add_owner_button.clicked.connect(self._add_owner_filter_value)
@@ -318,6 +322,7 @@ class MainWindow(QMainWindow):
                 self.items = self.repository.list()
                 self.table_model.set_items(self.items)
                 self._refresh_object_types()
+                self._update_object_type_filter()
                 self._update_owner_combo()
                 self._update_status()
 
@@ -335,11 +340,26 @@ class MainWindow(QMainWindow):
                 repo_types = self.repository.distinct_object_types()
                 self.object_types = self.settings.sync_object_types(repo_types)
 
+        def _update_object_type_filter(self) -> None:
+                if not hasattr(self, 'filter_objekttyp'):
+                        return
+                current_text = self.filter_objekttyp.currentText().strip() if self.filter_objekttyp.count() else ''
+                self.filter_objekttyp.blockSignals(True)
+                self.filter_objekttyp.clear()
+                self.filter_objekttyp.addItem('')
+                self.filter_objekttyp.addItems(self.object_types)
+                if current_text:
+                        self.filter_objekttyp.setCurrentText(current_text)
+                else:
+                        self.filter_objekttyp.setCurrentIndex(0)
+                self.filter_objekttyp.blockSignals(False)
+
         def _register_object_type(self, objekttyp: str) -> None:
                 value = objekttyp.strip()
                 if not value:
                         return
                 self.object_types = self.settings.add_object_type(value)
+                self._update_object_type_filter()
 
         def _add_owner_filter_value(self) -> None:
                 text, ok = QInputDialog.getText(self, 'Besitzer hinzufügen', 'Neuen Besitzer eingeben:')
@@ -358,12 +378,14 @@ class MainWindow(QMainWindow):
 
         def reset_filters(self) -> None:
                 self.search_field.clear()
-                self.filter_objekttyp.clear()
+                self.filter_objekttyp.setCurrentIndex(0)
                 self.filter_hersteller.clear()
                 self.filter_modell.clear()
                 self.filter_seriennummer.clear()
                 self.filter_anmerkungen.clear()
                 self.filter_besitzer.setCurrentIndex(0)
+                if self.filter_objekttyp.lineEdit():
+                        self.filter_objekttyp.lineEdit().clear()
                 if self.filter_einkaufsdatum.lineEdit():
                         self.filter_einkaufsdatum.lineEdit().setText('')
                 if self.filter_zuweisungsdatum.lineEdit():
@@ -394,20 +416,22 @@ class MainWindow(QMainWindow):
                         else:
                                 filters[selected_key] = search_text
 
+                def _widget_value(widget: QWidget) -> str:
+                        if isinstance(widget, QComboBox):
+                                return widget.currentText().strip()
+                        return widget.text().strip()  # type: ignore[no-any-return]
+
                 for widget, key in [
                         (self.filter_objekttyp, 'objekttyp'),
                         (self.filter_hersteller, 'hersteller'),
                         (self.filter_modell, 'modell'),
                         (self.filter_seriennummer, 'seriennummer'),
+                        (self.filter_besitzer, 'aktueller_besitzer'),
                         (self.filter_anmerkungen, 'anmerkungen'),
                 ]:
-                        value = widget.text().strip()
+                        value = _widget_value(widget)
                         if value:
                                 filters[key] = value
-
-                besitzer = self.filter_besitzer.currentText().strip()
-                if besitzer:
-                        filters['aktueller_besitzer'] = besitzer
 
                 for widget, key in [
                         (self.filter_einkaufsdatum, 'einkaufsdatum'),
