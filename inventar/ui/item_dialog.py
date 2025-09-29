@@ -43,6 +43,10 @@ class ItemDialog(QDialog):
                 self._build_ui()
                 if item:
                         self._populate(item)
+                else:
+                        today = QDate.currentDate()
+                        self.einkaufsdatum_edit.setDate(today)
+                        self.zuweisungsdatum_edit.setDate(today)
 
         def _build_ui(self) -> None:
                 layout = QVBoxLayout(self)
