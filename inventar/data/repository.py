@@ -45,6 +45,14 @@ class AbstractRepository(abc.ABC):
         def distinct_object_types(self) -> List[str]:
                 """Liefert distinct Objekttypen für die ComboBox."""
 
+        @abc.abstractmethod
+        def distinct_manufacturers(self) -> List[str]:
+                """Liefert distinct Hersteller für die ComboBox."""
+
+        @abc.abstractmethod
+        def distinct_models(self) -> List[str]:
+                """Liefert distinct Modelle für die ComboBox."""
+
 
 class RepositoryFactory:
         """Factory zur Auswahl des passenden Backends."""

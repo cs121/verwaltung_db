@@ -470,6 +470,8 @@ class MainWindow(QMainWindow):
                         self,
                         owners=self.repository.distinct_owners(),
                         object_types=self.object_types,
+                        manufacturers=self.repository.distinct_manufacturers(),
+                        models=self.repository.distinct_models(),
                 )
                 if dialog.exec() == ItemDialog.Accepted:
                         item = self._collect_dialog_data(dialog)
@@ -492,6 +494,8 @@ class MainWindow(QMainWindow):
                         item=selected,
                         owners=self.repository.distinct_owners(),
                         object_types=self.object_types,
+                        manufacturers=self.repository.distinct_manufacturers(),
+                        models=self.repository.distinct_models(),
                 )
                 if dialog.exec() != ItemDialog.Accepted:
                         return
