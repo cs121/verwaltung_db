@@ -250,7 +250,8 @@ class MainWindow(QMainWindow):
 		self.filter_einkaufsdatum.setSpecialValueText('')
 		self.filter_einkaufsdatum.setDateRange(QDate(1900, 1, 1), QDate(2100, 12, 31))
 		self.filter_einkaufsdatum.setDate(QDate.currentDate())
-		self.filter_einkaufsdatum.clear()
+		if self.filter_einkaufsdatum.lineEdit():
+			self.filter_einkaufsdatum.lineEdit().setText('')
 		self.filter_kaufpreis = QLineEdit()
 		self.filter_besitzer = QComboBox()
 		self.filter_besitzer.setEditable(True)
@@ -362,11 +363,13 @@ class MainWindow(QMainWindow):
 		self.filter_kaufpreis.clear()
 		self.filter_anmerkungen.clear()
 		self.filter_besitzer.setCurrentIndex(0)
-		self.filter_einkaufsdatum.clear()
+		if self.filter_einkaufsdatum.lineEdit():
+			self.filter_einkaufsdatum.lineEdit().setText('')
 		self._load_items()
 
 	def apply_filters(self) -> None:
 		filters: dict[str, str] = {}
+		status_message: str | None = None
 		criteria_key = {
 			'Nummer': 'nummer',
 			'Seriennummer': 'seriennummer',
@@ -402,12 +405,17 @@ class MainWindow(QMainWindow):
 
 		datums_text = self.filter_einkaufsdatum.text().strip()
 		if datums_text:
-			filters['einkaufsdatum'] = ItemValidator.convert_display_to_iso(datums_text)
+			try:
+				filters['einkaufsdatum'] = ItemValidator.convert_display_to_iso(datums_text)
+			except ValueError:
+				status_message = 'Ungültiges Datum im Filter – Format TT.MM.JJJJ verwenden.'
 
 		self.items = self.repository.list(filters if filters else None)
 		self.table_model.set_items(self.items)
 		self._update_status()
-		self.statusBar().showMessage(f'{len(self.items)} Einträge gefiltert', 5000)
+		if status_message is None:
+			status_message = f'{len(self.items)} Einträge gefiltert'
+		self.statusBar().showMessage(status_message, 5000)
 
 	def _collect_dialog_data(self, dialog: ItemDialog) -> Item:
 		data = dialog.get_item_data()
