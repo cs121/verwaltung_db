@@ -39,6 +39,146 @@ from inventar.utils.settings import SettingsManager
 from inventar.utils.validators import DATE_FORMAT_DISPLAY, DATE_FORMAT_QT_DISPLAY, ItemValidator
 
 
+PALETTE_STYLESHEET = """
+QMainWindow {
+        background-color: #FFFFFF;
+        color: #2C2C2C;
+}
+
+QWidget {
+        background-color: #FFFFFF;
+        color: #2C2C2C;
+}
+
+QLabel,
+QStatusBar QLabel {
+        color: #2C2C2C;
+}
+
+QGroupBox {
+        background-color: #F2F2F2;
+        border: 1px solid #E0E0E0;
+        border-radius: 8px;
+        margin-top: 12px;
+        padding: 12px;
+}
+
+QGroupBox::title {
+        subcontrol-origin: margin;
+        left: 14px;
+        padding: 0 4px;
+        color: #006A8E;
+}
+
+QPushButton,
+QToolButton {
+        background-color: #00AEEF;
+        color: #2C2C2C;
+        border: none;
+        border-radius: 6px;
+        padding: 6px 14px;
+        font-weight: 600;
+}
+
+QPushButton:hover,
+QToolButton:hover {
+        background-color: #1EB8F2;
+}
+
+QPushButton:pressed,
+QToolButton:pressed {
+        background-color: #0095C4;
+}
+
+QPushButton:disabled,
+QToolButton:disabled {
+        background-color: #F2F2F2;
+        color: #9E9E9E;
+}
+
+QLineEdit,
+QComboBox,
+QDateEdit {
+        background-color: #FFFFFF;
+        border: 1px solid #D9D9D9;
+        border-radius: 4px;
+        padding: 4px 6px;
+}
+
+QLineEdit:focus,
+QComboBox:focus,
+QDateEdit:focus {
+        border: 1px solid #00AEEF;
+}
+
+QComboBox QAbstractItemView,
+QDateEdit QAbstractItemView {
+        background-color: #FFFFFF;
+        border: 1px solid #D9D9D9;
+        selection-background-color: #00AEEF;
+        selection-color: #FFFFFF;
+}
+
+QTableView {
+        background-color: #FFFFFF;
+        alternate-background-color: #F2F2F2;
+        gridline-color: #F2F2F2;
+        border: 1px solid #E0E0E0;
+        selection-background-color: #00AEEF;
+        selection-color: #FFFFFF;
+}
+
+QTableView::item:selected {
+        background-color: #00AEEF;
+        color: #FFFFFF;
+}
+
+QHeaderView::section {
+        background-color: #006A8E;
+        color: #FFFFFF;
+        padding: 8px;
+        border: none;
+        border-right: 1px solid #FFFFFF;
+}
+
+QTableCornerButton::section {
+        background-color: #006A8E;
+        border: none;
+}
+
+QStatusBar {
+        background-color: #006A8E;
+        color: #FFFFFF;
+        border-top: 1px solid #F2F2F2;
+}
+
+QStatusBar QLabel {
+        color: #FFFFFF;
+}
+
+QScrollBar:vertical,
+QScrollBar:horizontal {
+        background: #F2F2F2;
+        border: none;
+        border-radius: 4px;
+        margin: 0px;
+}
+
+QScrollBar::handle:vertical,
+QScrollBar::handle:horizontal {
+        background: #00AEEF;
+        border-radius: 4px;
+        min-height: 20px;
+        min-width: 20px;
+}
+
+QScrollBar::add-line,
+QScrollBar::sub-line {
+        background: none;
+}
+"""
+
+
 HEADERS = [
         "Objekttyp",
         "Hersteller",
@@ -126,6 +266,7 @@ class MainWindow(QMainWindow):
                 self.table.doubleClicked.connect(self.edit_selected_item)
                 self.table.setSortingEnabled(True)
                 self.table.horizontalHeader().setSectionResizeMode(QHeaderView.Interactive)
+                self.table.setAlternatingRowColors(True)
 
                 self.printer = TablePrinter(self)
 
@@ -133,6 +274,7 @@ class MainWindow(QMainWindow):
                 self.items: List[Item] = []
 
                 self._build_ui()
+                self._apply_color_palette()
                 self._create_actions()
                 self._connect_signals()
                 self._load_items()
@@ -190,6 +332,10 @@ class MainWindow(QMainWindow):
                 self.setStatusBar(self.status_bar)
 
                 self.setCentralWidget(central)
+
+        def _apply_color_palette(self) -> None:
+                """Apply the corporate color palette to the main window widgets."""
+                self.setStyleSheet(PALETTE_STYLESHEET)
 
         def _build_search_box(self) -> QWidget:
                 box = QGroupBox('Suchen')
