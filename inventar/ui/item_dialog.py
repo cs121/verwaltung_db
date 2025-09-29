@@ -30,12 +30,16 @@ class ItemDialog(QDialog):
                 item: Optional[Item] = None,
                 owners: Optional[list[str]] = None,
                 object_types: Optional[list[str]] = None,
+                manufacturers: Optional[list[str]] = None,
+                models: Optional[list[str]] = None,
         ) -> None:
                 super().__init__(parent)
                 self.setWindowTitle('Neues Objekt einfügen' if item is None else 'Objekt bearbeiten')
                 self.item = item
                 self.owners = owners or []
                 self.object_types = object_types or []
+                self.manufacturers = manufacturers or []
+                self.models = models or []
                 self._build_ui()
                 if item:
                         self._populate(item)
@@ -48,8 +52,14 @@ class ItemDialog(QDialog):
                 self.objekttyp_combo.setEditable(True)
                 if self.object_types:
                         self.objekttyp_combo.addItems(self.object_types)
-                self.hersteller_edit = QLineEdit()
-                self.modell_edit = QLineEdit()
+                self.hersteller_combo = QComboBox()
+                self.hersteller_combo.setEditable(True)
+                if self.manufacturers:
+                        self.hersteller_combo.addItems(sorted(self.manufacturers))
+                self.modell_combo = QComboBox()
+                self.modell_combo.setEditable(True)
+                if self.models:
+                        self.modell_combo.addItems(sorted(self.models))
 
                 self.seriennummer_edit = QLineEdit()
                 self.einkaufsdatum_edit = QDateEdit()
@@ -68,9 +78,9 @@ class ItemDialog(QDialog):
                 form_layout.addWidget(QLabel('Objekttyp'), 0, 0)
                 form_layout.addWidget(self.objekttyp_combo, 0, 1)
                 form_layout.addWidget(QLabel('Hersteller'), 1, 0)
-                form_layout.addWidget(self.hersteller_edit, 1, 1)
+                form_layout.addWidget(self.hersteller_combo, 1, 1)
                 form_layout.addWidget(QLabel('Modell'), 2, 0)
-                form_layout.addWidget(self.modell_edit, 2, 1)
+                form_layout.addWidget(self.modell_combo, 2, 1)
 
                 form_layout.addWidget(QLabel('Seriennummer'), 0, 2)
                 form_layout.addWidget(self.seriennummer_edit, 0, 3)
@@ -102,8 +112,22 @@ class ItemDialog(QDialog):
                                 self.objekttyp_combo.setCurrentIndex(index)
                         else:
                                 self.objekttyp_combo.setEditText(item.objekttyp)
-                self.hersteller_edit.setText(item.hersteller)
-                self.modell_edit.setText(item.modell)
+                if item.hersteller:
+                        index = self.hersteller_combo.findText(item.hersteller)
+                        if index >= 0:
+                                self.hersteller_combo.setCurrentIndex(index)
+                        else:
+                                self.hersteller_combo.setEditText(item.hersteller)
+                else:
+                        self.hersteller_combo.setCurrentText('')
+                if item.modell:
+                        index = self.modell_combo.findText(item.modell)
+                        if index >= 0:
+                                self.modell_combo.setCurrentIndex(index)
+                        else:
+                                self.modell_combo.setEditText(item.modell)
+                else:
+                        self.modell_combo.setCurrentText('')
                 self.seriennummer_edit.setText(item.seriennummer)
                 if item.einkaufsdatum:
                         qdate = QDate.fromString(item.einkaufsdatum, 'yyyy-MM-dd')
@@ -136,8 +160,8 @@ class ItemDialog(QDialog):
 
                 return {
                         'objekttyp': self.objekttyp_combo.currentText().strip(),
-                        'hersteller': self.hersteller_edit.text().strip(),
-                        'modell': self.modell_edit.text().strip(),
+                        'hersteller': self.hersteller_combo.currentText().strip(),
+                        'modell': self.modell_combo.currentText().strip(),
                         'seriennummer': self.seriennummer_edit.text().strip(),
                         'einkaufsdatum': _date_value(self.einkaufsdatum_edit),
                         'zuweisungsdatum': _date_value(self.zuweisungsdatum_edit),

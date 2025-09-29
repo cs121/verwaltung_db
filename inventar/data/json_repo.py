@@ -73,3 +73,9 @@ class JSONRepository(AbstractRepository):
 
         def distinct_object_types(self) -> List[str]:
                 return sorted({item.objekttyp for item in self.items if item.objekttyp})
+
+        def distinct_manufacturers(self) -> List[str]:
+                return sorted({item.hersteller for item in self.items if item.hersteller})
+
+        def distinct_models(self) -> List[str]:
+                return sorted({item.modell for item in self.items if item.modell})
