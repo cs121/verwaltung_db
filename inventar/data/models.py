@@ -10,13 +10,12 @@ class Item:
 	"""Dataclass repräsentiert einen Inventargegenstand."""
 
 	id: Optional[int] = field(default=None)
-	nummer: str = field(default='')
 	objekttyp: str = field(default='')
 	hersteller: str = field(default='')
 	modell: str = field(default='')
 	seriennummer: str = field(default='')
 	einkaufsdatum: str = field(default='')
-	kaufpreis: float = field(default=0.0)
+	zuweisungsdatum: str = field(default='')
 	aktueller_besitzer: str = field(default='')
 	anmerkungen: str = field(default='')
 
@@ -25,13 +24,12 @@ class Item:
 
 		return {
 			'id': self.id,
-			'nummer': self.nummer,
 			'objekttyp': self.objekttyp,
 			'hersteller': self.hersteller,
 			'modell': self.modell,
 			'seriennummer': self.seriennummer,
 			'einkaufsdatum': self.einkaufsdatum,
-			'kaufpreis': self.kaufpreis,
+			'zuweisungsdatum': self.zuweisungsdatum,
 			'aktueller_besitzer': self.aktueller_besitzer,
 			'anmerkungen': self.anmerkungen,
 		}
@@ -41,19 +39,53 @@ class Item:
 		"""Erzeugt ein Item aus einem DB-Row oder Dictionary."""
 
 		if isinstance(row, dict):
-			return cls(**row)
-		return cls(
-			id=row[0],
-			nummer=row[1],
-			objekttyp=row[2],
-			hersteller=row[3],
-			modell=row[4],
-			seriennummer=row[5],
-			einkaufsdatum=row[6],
-			kaufpreis=row[7],
-			aktueller_besitzer=row[8],
-			anmerkungen=row[9],
-		)
+			return cls(**cls._normalize_dict(row))
+		return cls(**cls._normalize_tuple(row))
+
+	@staticmethod
+	def _normalize_dict(data: dict) -> dict:
+		"""Gleicht unterschiedliche Datenformate auf das neue Schema an."""
+
+		return {
+			'id': data.get('id'),
+			'objekttyp': data.get('objekttyp', ''),
+			'hersteller': data.get('hersteller', ''),
+			'modell': data.get('modell', ''),
+			'seriennummer': data.get('seriennummer', ''),
+			'einkaufsdatum': data.get('einkaufsdatum', ''),
+			'zuweisungsdatum': data.get('zuweisungsdatum', data.get('zuweisung', '')),
+			'aktueller_besitzer': data.get('aktueller_besitzer', ''),
+			'anmerkungen': data.get('anmerkungen', ''),
+		}
+
+	@staticmethod
+	def _normalize_tuple(row: tuple) -> dict:
+		"""Konvertiert Tupel aus unterschiedlichen Schemas in das neue Format."""
+
+		if len(row) == 9:
+			return {
+				'id': row[0],
+				'objekttyp': row[1],
+				'hersteller': row[2],
+				'modell': row[3],
+				'seriennummer': row[4],
+				'einkaufsdatum': row[5],
+				'aktueller_besitzer': row[6],
+				'anmerkungen': row[7],
+				'zuweisungsdatum': row[8] if len(row) > 8 else '',
+			}
+		# Altes Schema mit nummer/kaufpreis
+		return {
+			'id': row[0],
+			'objekttyp': row[2],
+			'hersteller': row[3],
+			'modell': row[4],
+			'seriennummer': row[5],
+			'einkaufsdatum': row[6],
+			'aktueller_besitzer': row[8],
+			'anmerkungen': row[9] if len(row) > 9 else '',
+			'zuweisungsdatum': '',
+		}
 
 	def copy(self, **updates: object) -> Item:
 		"""Gibt eine Kopie mit optionalen Updates zurück."""

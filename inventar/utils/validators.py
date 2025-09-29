@@ -19,22 +19,14 @@ class ItemValidator:
 	def validate(data: Dict[str, object]) -> Tuple[bool, dict]:
 		errors: dict[str, str] = {}
 
-		nummer = str(data.get('nummer', '')).strip()
-		if not nummer:
-			errors['nummer'] = 'Nummer ist erforderlich'
+		objekttyp = str(data.get('objekttyp', '')).strip()
+		if not objekttyp:
+			errors['objekttyp'] = 'Objekttyp ist erforderlich'
 
-		einkaufsdatum = str(data.get('einkaufsdatum', '')).strip()
-		if einkaufsdatum:
-			if not ItemValidator._is_valid_date(einkaufsdatum):
-				errors['einkaufsdatum'] = 'Ungültiges Datum'
-
-		kaufpreis = data.get('kaufpreis', 0)
-		try:
-			value = float(kaufpreis) if kaufpreis != '' else 0.0
-			if value < 0:
-				errors['kaufpreis'] = 'Preis muss >= 0 sein'
-		except (TypeError, ValueError):
-			errors['kaufpreis'] = 'Preis muss eine Zahl sein'
+		for field in ('einkaufsdatum', 'zuweisungsdatum'):
+			value = str(data.get(field, '')).strip()
+			if value and not ItemValidator._is_valid_date(value):
+				errors[field] = 'Ungültiges Datum'
 
 		return len(errors) == 0, errors
 

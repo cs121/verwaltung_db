@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import locale
 from datetime import datetime
 from functools import partial
 from pathlib import Path
@@ -41,37 +40,26 @@ from inventar.utils.validators import DATE_FORMAT_DISPLAY, DATE_FORMAT_QT_DISPLA
 
 
 HEADERS = [
-	"Nummer",
 	"Objekttyp",
 	"Hersteller",
 	"Modell",
 	"Seriennummer",
 	"Einkaufsdatum",
-	"Kaufpreis",
+	"Zuweisungsdatum",
 	"Aktueller Besitzer",
 	"Anmerkungen",
 ]
 
 COLUMN_KEYS = [
-	"nummer",
 	"objekttyp",
 	"hersteller",
 	"modell",
 	"seriennummer",
 	"einkaufsdatum",
-	"kaufpreis",
+	"zuweisungsdatum",
 	"aktueller_besitzer",
 	"anmerkungen",
 ]
-
-locale.setlocale(locale.LC_ALL, '')
-
-
-def format_price(value: float) -> str:
-	try:
-		return locale.currency(value, grouping=True)
-	except Exception:
-		return f"{value:,.2f} €"
 
 
 class ItemTableModel(QAbstractTableModel):
@@ -99,10 +87,8 @@ class ItemTableModel(QAbstractTableModel):
 		key = COLUMN_KEYS[index.column()]
 		value = getattr(item, key)
 		if role == Qt.DisplayRole:
-			if key == 'kaufpreis':
-				return format_price(float(value or 0))
-			if key == 'einkaufsdatum' and value:
-				return datetime.strptime(value, '%Y-%m-%d').strftime(DATE_FORMAT_DISPLAY)
+			if key in {'einkaufsdatum', 'zuweisungsdatum'}:
+				return ItemValidator.convert_iso_to_display(str(value)) if value else ''
 			return value
 		if role == Qt.UserRole:
 			return item
@@ -209,12 +195,14 @@ class MainWindow(QMainWindow):
 		layout = QHBoxLayout(box)
 		self.search_criteria = QComboBox()
 		self.search_criteria.addItems([
-			'Nummer',
-			'Seriennummer',
 			'Objekttyp',
+			'Seriennummer',
 			'Hersteller',
 			'Modell',
 			'Aktueller Besitzer',
+			'Anmerkungen',
+			'Einkaufsdatum',
+			'Zuweisungsdatum',
 		])
 		self.search_field = QLineEdit()
 		self.search_field.setPlaceholderText('Suchbegriff eingeben ...')
@@ -232,26 +220,32 @@ class MainWindow(QMainWindow):
 		layout = QHBoxLayout()
 
 		left_layout = QFormLayout()
-		self.filter_nummer = QLineEdit()
-		self.filter_objekttyp = QLineEdit()
+		self.filter_objekttyp = QComboBox()
+		self.filter_objekttyp.setEditable(True)
+		self.filter_objekttyp.setInsertPolicy(QComboBox.NoInsert)
 		self.filter_hersteller = QLineEdit()
 		self.filter_modell = QLineEdit()
-		left_layout.addRow('Nummer', self.filter_nummer)
+		self.filter_seriennummer = QLineEdit()
 		left_layout.addRow('Objekttyp', self.filter_objekttyp)
 		left_layout.addRow('Hersteller', self.filter_hersteller)
 		left_layout.addRow('Modell', self.filter_modell)
+		left_layout.addRow('Seriennummer', self.filter_seriennummer)
 
 		right_layout = QFormLayout()
-		self.filter_seriennummer = QLineEdit()
 		self.filter_einkaufsdatum = QDateEdit()
-		# Qt benötigt ein eigenes Anzeigeformat, um die Datumswerte korrekt darzustellen.
 		self.filter_einkaufsdatum.setDisplayFormat(DATE_FORMAT_QT_DISPLAY)
 		self.filter_einkaufsdatum.setCalendarPopup(True)
 		self.filter_einkaufsdatum.setSpecialValueText('')
 		self.filter_einkaufsdatum.setDateRange(QDate(1900, 1, 1), QDate(2100, 12, 31))
 		self.filter_einkaufsdatum.setDate(QDate.currentDate())
 		self.filter_einkaufsdatum.clear()
-		self.filter_kaufpreis = QLineEdit()
+		self.filter_zuweisungsdatum = QDateEdit()
+		self.filter_zuweisungsdatum.setDisplayFormat(DATE_FORMAT_QT_DISPLAY)
+		self.filter_zuweisungsdatum.setCalendarPopup(True)
+		self.filter_zuweisungsdatum.setSpecialValueText('')
+		self.filter_zuweisungsdatum.setDateRange(QDate(1900, 1, 1), QDate(2100, 12, 31))
+		self.filter_zuweisungsdatum.setDate(QDate.currentDate())
+		self.filter_zuweisungsdatum.clear()
 		self.filter_besitzer = QComboBox()
 		self.filter_besitzer.setEditable(True)
 		self.filter_besitzer.setInsertPolicy(QComboBox.NoInsert)
@@ -263,9 +257,8 @@ class MainWindow(QMainWindow):
 		owner_layout.addWidget(self.add_owner_button)
 		owner_layout.setContentsMargins(0, 0, 0, 0)
 		owner_layout.setSpacing(4)
-		right_layout.addRow('Seriennummer', self.filter_seriennummer)
 		right_layout.addRow('Einkaufsdatum', self.filter_einkaufsdatum)
-		right_layout.addRow('Kaufpreis', self.filter_kaufpreis)
+		right_layout.addRow('Zuweisungsdatum', self.filter_zuweisungsdatum)
 		right_layout.addRow('Aktueller Besitzer', owner_layout)
 		right_layout.addRow('Anmerkungen', self.filter_anmerkungen)
 
@@ -310,13 +303,12 @@ class MainWindow(QMainWindow):
 		self.search_action.triggered.connect(lambda: self.search_field.setFocus())
 		self.print_action.triggered.connect(self.print_preview)
 
-		self.filter_nummer.returnPressed.connect(self.apply_filters)
-		self.filter_objekttyp.returnPressed.connect(self.apply_filters)
 		self.filter_hersteller.returnPressed.connect(self.apply_filters)
 		self.filter_modell.returnPressed.connect(self.apply_filters)
 		self.filter_seriennummer.returnPressed.connect(self.apply_filters)
-		self.filter_kaufpreis.returnPressed.connect(self.apply_filters)
 		self.filter_anmerkungen.returnPressed.connect(self.apply_filters)
+		if self.filter_objekttyp.lineEdit():
+			self.filter_objekttyp.lineEdit().returnPressed.connect(self.apply_filters)
 		if self.filter_besitzer.lineEdit():
 			self.filter_besitzer.lineEdit().returnPressed.connect(self.apply_filters)
 		self.add_owner_button.clicked.connect(self._add_owner_filter_value)
@@ -325,6 +317,7 @@ class MainWindow(QMainWindow):
 		self.items = self.repository.list()
 		self.table_model.set_items(self.items)
 		self._update_owner_combo()
+		self._update_object_type_filter()
 		self._update_status()
 
 	def _update_owner_combo(self) -> None:
@@ -336,6 +329,16 @@ class MainWindow(QMainWindow):
 		self.filter_besitzer.addItems(owners)
 		self.filter_besitzer.setCurrentText(current_text)
 		self.filter_besitzer.blockSignals(False)
+
+	def _update_object_type_filter(self) -> None:
+		types = self.repository.distinct_object_types()
+		current_text = self.filter_objekttyp.currentText()
+		self.filter_objekttyp.blockSignals(True)
+		self.filter_objekttyp.clear()
+		self.filter_objekttyp.addItem('')
+		self.filter_objekttyp.addItems(types)
+		self.filter_objekttyp.setCurrentText(current_text)
+		self.filter_objekttyp.blockSignals(False)
 
 	def _add_owner_filter_value(self) -> None:
 		text, ok = QInputDialog.getText(self, 'Besitzer hinzufügen', 'Neuen Besitzer eingeben:')
@@ -354,55 +357,71 @@ class MainWindow(QMainWindow):
 
 	def reset_filters(self) -> None:
 		self.search_field.clear()
-		self.filter_nummer.clear()
-		self.filter_objekttyp.clear()
+		self.filter_objekttyp.setCurrentIndex(0)
 		self.filter_hersteller.clear()
 		self.filter_modell.clear()
 		self.filter_seriennummer.clear()
-		self.filter_kaufpreis.clear()
 		self.filter_anmerkungen.clear()
 		self.filter_besitzer.setCurrentIndex(0)
 		self.filter_einkaufsdatum.clear()
+		self.filter_zuweisungsdatum.clear()
 		self._load_items()
 
 	def apply_filters(self) -> None:
 		filters: dict[str, str] = {}
 		criteria_key = {
-			'Nummer': 'nummer',
-			'Seriennummer': 'seriennummer',
-			'Objekttyp': 'objekttyp',
-			'Hersteller': 'hersteller',
-			'Modell': 'modell',
-			'Aktueller Besitzer': 'aktueller_besitzer',
+				'Objekttyp': 'objekttyp',
+				'Seriennummer': 'seriennummer',
+				'Hersteller': 'hersteller',
+				'Modell': 'modell',
+				'Aktueller Besitzer': 'aktueller_besitzer',
+				'Anmerkungen': 'anmerkungen',
+				'Einkaufsdatum': 'einkaufsdatum',
+				'Zuweisungsdatum': 'zuweisungsdatum',
 		}
-		selected_key = criteria_key.get(self.search_criteria.currentText(), 'nummer')
+		selected_key = criteria_key.get(self.search_criteria.currentText(), 'objekttyp')
 		search_text = self.search_field.text().strip()
 		if search_text:
-			filters[selected_key] = search_text
+			if selected_key in {'einkaufsdatum', 'zuweisungsdatum'}:
+				try:
+					filters[selected_key] = ItemValidator.convert_display_to_iso(search_text)
+				except ValueError:
+					# Platzhalter wie "__.__.____" ignorieren, sonst greifen leere Felder als Filter.
+					if '_' not in search_text:
+						filters[selected_key] = search_text
+			else:
+				filters[selected_key] = search_text
 
 		for widget, key in [
-			(self.filter_nummer, 'nummer'),
-			(self.filter_objekttyp, 'objekttyp'),
-			(self.filter_hersteller, 'hersteller'),
-			(self.filter_modell, 'modell'),
-			(self.filter_seriennummer, 'seriennummer'),
-			(self.filter_anmerkungen, 'anmerkungen'),
+				(self.filter_hersteller, 'hersteller'),
+				(self.filter_modell, 'modell'),
+				(self.filter_seriennummer, 'seriennummer'),
+				(self.filter_anmerkungen, 'anmerkungen'),
 		]:
 			value = widget.text().strip()
 			if value:
 				filters[key] = value
 
+		objekttyp = self.filter_objekttyp.currentText().strip()
+		if objekttyp:
+			filters['objekttyp'] = objekttyp
+
 		besitzer = self.filter_besitzer.currentText().strip()
 		if besitzer:
 			filters['aktueller_besitzer'] = besitzer
 
-		preis = self.filter_kaufpreis.text().strip()
-		if preis:
-			filters['kaufpreis'] = preis.replace(',', '.').strip()
-
-		datums_text = self.filter_einkaufsdatum.text().strip()
-		if datums_text:
-			filters['einkaufsdatum'] = ItemValidator.convert_display_to_iso(datums_text)
+		for editor, key in [
+				(self.filter_einkaufsdatum, 'einkaufsdatum'),
+				(self.filter_zuweisungsdatum, 'zuweisungsdatum'),
+		]:
+			text_value = editor.text().strip()
+			# QDateEdit zeigt bei leeren Feldern Unterstriche – diese nicht als Filter übernehmen.
+			if not text_value or '_' in text_value:
+				continue
+			try:
+				filters[key] = ItemValidator.convert_display_to_iso(text_value)
+			except ValueError:
+				filters[key] = text_value
 
 		self.items = self.repository.list(filters if filters else None)
 		self.table_model.set_items(self.items)
@@ -412,19 +431,18 @@ class MainWindow(QMainWindow):
 	def _collect_dialog_data(self, dialog: ItemDialog) -> Item:
 		data = dialog.get_item_data()
 		return Item(
-			nummer=data['nummer'],
 			objekttyp=data['objekttyp'],
 			hersteller=data['hersteller'],
 			modell=data['modell'],
 			seriennummer=data['seriennummer'],
 			einkaufsdatum=data['einkaufsdatum'],
-			kaufpreis=float(data['kaufpreis'] or 0),
+			zuweisungsdatum=data['zuweisungsdatum'],
 			aktueller_besitzer=data['aktueller_besitzer'],
 			anmerkungen=data['anmerkungen'],
 		)
 
 	def create_item(self) -> None:
-		dialog = ItemDialog(self, owners=self.repository.distinct_owners())
+		dialog = ItemDialog(self, owners=self.repository.distinct_owners(), object_types=self.repository.distinct_object_types())
 		if dialog.exec() == ItemDialog.Accepted:
 			item = self._collect_dialog_data(dialog)
 			try:
@@ -440,7 +458,7 @@ class MainWindow(QMainWindow):
 		selected = self._current_item()
 		if not selected:
 			return
-		dialog = ItemDialog(self, item=selected, owners=self.repository.distinct_owners())
+		dialog = ItemDialog(self, item=selected, owners=self.repository.distinct_owners(), object_types=self.repository.distinct_object_types())
 		if dialog.exec() != ItemDialog.Accepted:
 			return
 		item_data = self._collect_dialog_data(dialog)

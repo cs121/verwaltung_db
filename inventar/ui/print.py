@@ -9,15 +9,15 @@ from PySide6.QtPrintSupport import QPrintDialog, QPrinter, QPrintPreviewDialog
 from PySide6.QtWidgets import QMessageBox, QWidget
 
 from inventar.data.models import Item
+from inventar.utils.validators import ItemValidator
 
 HEADER = [
-	'Nummer',
 	'Objekttyp',
 	'Hersteller',
 	'Modell',
 	'Seriennummer',
 	'Einkaufsdatum',
-	'Kaufpreis',
+	'Zuweisungsdatum',
 	'Aktueller Besitzer',
 	'Anmerkungen',
 ]
@@ -25,6 +25,12 @@ HEADER = [
 
 class TablePrinter:
 	"""Kapselt Drucklogik für die Tabelle."""
+
+	@staticmethod
+	def _format_date(value: str) -> str:
+		if not value:
+			return ''
+		return ItemValidator.convert_iso_to_display(value)
 
 	def __init__(self, parent: QWidget) -> None:
 		self.parent = parent
@@ -84,13 +90,12 @@ class TablePrinter:
 
 		for item in items:
 			values = [
-				item.nummer,
 				item.objekttyp,
 				item.hersteller,
 				item.modell,
 				item.seriennummer,
-				item.einkaufsdatum,
-				f"{item.kaufpreis:,.2f} €".replace(',', 'X').replace('.', ',').replace('X', '.'),
+				self._format_date(item.einkaufsdatum),
+				self._format_date(item.zuweisungsdatum),
 				item.aktueller_besitzer,
 				item.anmerkungen,
 			]
@@ -102,3 +107,4 @@ class TablePrinter:
 			for index, value in enumerate(values):
 				painter.drawText(x + index * column_width, y, str(value))
 			y += line_height
+

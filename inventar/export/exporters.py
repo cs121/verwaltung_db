@@ -10,13 +10,12 @@ import pandas as pd
 from inventar.data.models import Item
 
 COLUMNS = [
-	'nummer',
 	'objekttyp',
 	'hersteller',
 	'modell',
 	'seriennummer',
 	'einkaufsdatum',
-	'kaufpreis',
+	'zuweisungsdatum',
 	'aktueller_besitzer',
 	'anmerkungen',
 ]

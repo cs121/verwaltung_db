@@ -42,8 +42,12 @@ class AbstractRepository(abc.ABC):
 		"""Liefert distinct Besitzer für die ComboBox."""
 
 	@abc.abstractmethod
-	def ensure_uniqueness(self, nummer: str, ignore_id: Optional[int] = None) -> None:
-		"""Stellt sicher, dass nummer eindeutig ist."""
+	def distinct_object_types(self) -> List[str]:
+		"""Liefert distinct Objekttypen."""
+
+	@abc.abstractmethod
+	def register_object_type(self, objekttyp: str) -> None:
+		"""Speichert einen Objekttyp für zukünftige Auswahlen."""
 
 
 class RepositoryFactory:
