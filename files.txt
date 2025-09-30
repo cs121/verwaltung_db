@@ -1,0 +1,2088 @@
+ Volume in Laufwerk C: hat keine Bezeichnung.
+ Volumeseriennummer: 70DB-6168
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db
+
+29.09.2025  14:08    <DIR>          .
+26.09.2025  11:23    <DIR>          ..
+26.09.2025  11:23             4.895 .gitignore
+26.09.2025  11:23    <DIR>          assets
+29.09.2025  14:08                 0 files.txt
+26.09.2025  11:24    <DIR>          inventar
+26.09.2025  11:27            16.384 inventar.db
+26.09.2025  11:23               700 README.md
+26.09.2025  11:23                42 requirements.txt
+26.09.2025  17:49    <DIR>          venv
+               5 Datei(en),         22.021 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\.git
+
+29.09.2025  14:08    <DIR>          ..
+26.09.2025  11:23                15 COMMIT_EDITMSG
+26.09.2025  11:23               297 config
+26.09.2025  11:23                73 description
+29.09.2025  13:16               391 FETCH_HEAD
+26.09.2025  11:23                21 HEAD
+26.09.2025  11:23    <DIR>          hooks
+26.09.2025  11:23             2.342 index
+26.09.2025  11:23    <DIR>          info
+26.09.2025  11:23    <DIR>          logs
+29.09.2025  13:16    <DIR>          objects
+29.09.2025  13:16                41 ORIG_HEAD
+26.09.2025  11:23               315 packed-refs
+26.09.2025  11:23    <DIR>          refs
+               8 Datei(en),          3.495 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\.git\hooks
+
+26.09.2025  11:23    <DIR>          .
+26.09.2025  11:23               478 applypatch-msg.sample
+26.09.2025  11:23               896 commit-msg.sample
+26.09.2025  11:23             4.726 fsmonitor-watchman.sample
+26.09.2025  11:23               189 post-update.sample
+26.09.2025  11:23               424 pre-applypatch.sample
+26.09.2025  11:23             1.649 pre-commit.sample
+26.09.2025  11:23               416 pre-merge-commit.sample
+26.09.2025  11:23             1.374 pre-push.sample
+26.09.2025  11:23             4.898 pre-rebase.sample
+26.09.2025  11:23               544 pre-receive.sample
+26.09.2025  11:23             1.492 prepare-commit-msg.sample
+26.09.2025  11:23             2.783 push-to-checkout.sample
+26.09.2025  11:23             2.308 sendemail-validate.sample
+26.09.2025  11:23             3.650 update.sample
+              14 Datei(en),         25.827 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\.git\info
+
+26.09.2025  11:23    <DIR>          .
+26.09.2025  11:23               240 exclude
+               1 Datei(en),            240 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\.git\logs
+
+26.09.2025  11:23    <DIR>          .
+26.09.2025  11:23               182 HEAD
+26.09.2025  11:23    <DIR>          refs
+               1 Datei(en),            182 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\.git\logs\refs
+
+26.09.2025  11:23    <DIR>          .
+26.09.2025  11:23    <DIR>          ..
+26.09.2025  11:23    <DIR>          heads
+26.09.2025  11:23    <DIR>          remotes
+               0 Datei(en),              0 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\.git\logs\refs\heads
+
+26.09.2025  11:23    <DIR>          .
+26.09.2025  11:23    <DIR>          ..
+26.09.2025  11:23               182 main
+               1 Datei(en),            182 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\.git\logs\refs\remotes
+
+26.09.2025  11:23    <DIR>          .
+26.09.2025  11:23    <DIR>          ..
+26.09.2025  11:23    <DIR>          origin
+               0 Datei(en),              0 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\.git\logs\refs\remotes\origin
+
+26.09.2025  11:23    <DIR>          .
+26.09.2025  11:23    <DIR>          ..
+26.09.2025  11:23               182 HEAD
+               1 Datei(en),            182 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\.git\objects
+
+29.09.2025  13:16    <DIR>          .
+26.09.2025  11:23    <DIR>          info
+26.09.2025  11:23    <DIR>          pack
+               0 Datei(en),              0 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\.git\objects\info
+
+26.09.2025  11:23    <DIR>          .
+29.09.2025  13:16    <DIR>          ..
+               0 Datei(en),              0 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\.git\objects\pack
+
+26.09.2025  11:23    <DIR>          .
+29.09.2025  13:16    <DIR>          ..
+26.09.2025  11:23             2.192 pack-14b89b8cc4f0e0edb587ef032d56541883f2ad39.idx
+26.09.2025  11:23            20.791 pack-14b89b8cc4f0e0edb587ef032d56541883f2ad39.pack
+26.09.2025  11:23               212 pack-14b89b8cc4f0e0edb587ef032d56541883f2ad39.rev
+               3 Datei(en),         23.195 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\.git\refs
+
+26.09.2025  11:23    <DIR>          .
+26.09.2025  11:23    <DIR>          heads
+26.09.2025  11:23    <DIR>          remotes
+26.09.2025  11:23    <DIR>          tags
+               0 Datei(en),              0 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\.git\refs\heads
+
+26.09.2025  11:23    <DIR>          .
+26.09.2025  11:23    <DIR>          ..
+26.09.2025  11:23                41 main
+               1 Datei(en),             41 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\.git\refs\remotes
+
+26.09.2025  11:23    <DIR>          .
+26.09.2025  11:23    <DIR>          ..
+29.09.2025  13:16    <DIR>          origin
+               0 Datei(en),              0 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\.git\refs\remotes\origin
+
+29.09.2025  13:16    <DIR>          .
+26.09.2025  11:23    <DIR>          ..
+26.09.2025  11:23                30 HEAD
+               1 Datei(en),             30 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\.git\refs\tags
+
+26.09.2025  11:23    <DIR>          .
+26.09.2025  11:23    <DIR>          ..
+               0 Datei(en),              0 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\assets
+
+26.09.2025  11:23    <DIR>          .
+29.09.2025  14:08    <DIR>          ..
+26.09.2025  11:23    <DIR>          icons
+               0 Datei(en),              0 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\assets\icons
+
+26.09.2025  11:23    <DIR>          .
+26.09.2025  11:23    <DIR>          ..
+26.09.2025  11:23               188 plus.svg
+26.09.2025  11:23               340 print.svg
+26.09.2025  11:23               247 search.svg
+               3 Datei(en),            775 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\inventar
+
+26.09.2025  11:24    <DIR>          .
+29.09.2025  14:08    <DIR>          ..
+26.09.2025  11:23               271 app.py
+26.09.2025  11:24    <DIR>          data
+26.09.2025  11:24    <DIR>          export
+26.09.2025  11:24    <DIR>          ui
+26.09.2025  11:24    <DIR>          utils
+26.09.2025  11:23                 0 __init__.py
+26.09.2025  11:23               102 __main__.py
+26.09.2025  11:24    <DIR>          __pycache__
+               3 Datei(en),            373 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\inventar\data
+
+26.09.2025  11:24    <DIR>          .
+26.09.2025  11:24    <DIR>          ..
+26.09.2025  11:23             2.560 json_repo.py
+26.09.2025  11:23             1.832 models.py
+26.09.2025  11:23             2.344 repository.py
+26.09.2025  11:23             4.036 sqlite_repo.py
+26.09.2025  11:23                 0 __init__.py
+26.09.2025  17:47    <DIR>          __pycache__
+               5 Datei(en),         10.772 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\inventar\data\__pycache__
+
+26.09.2025  17:47    <DIR>          .
+26.09.2025  11:24    <DIR>          ..
+26.09.2025  17:47             6.626 json_repo.cpython-313.pyc
+26.09.2025  11:24             3.057 models.cpython-313.pyc
+26.09.2025  11:24             4.849 repository.cpython-313.pyc
+26.09.2025  11:24             7.394 sqlite_repo.cpython-313.pyc
+26.09.2025  11:24               153 __init__.cpython-313.pyc
+               5 Datei(en),         22.079 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\inventar\export
+
+26.09.2025  11:24    <DIR>          .
+26.09.2025  11:24    <DIR>          ..
+26.09.2025  11:23             1.365 exporters.py
+26.09.2025  11:23                 0 __init__.py
+26.09.2025  11:24    <DIR>          __pycache__
+               2 Datei(en),          1.365 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\inventar\export\__pycache__
+
+26.09.2025  11:24    <DIR>          .
+26.09.2025  11:24    <DIR>          ..
+26.09.2025  11:24             2.983 exporters.cpython-313.pyc
+26.09.2025  11:24               155 __init__.cpython-313.pyc
+               2 Datei(en),          3.138 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\inventar\ui
+
+26.09.2025  11:24    <DIR>          .
+26.09.2025  11:24    <DIR>          ..
+26.09.2025  11:23             5.101 item_dialog.py
+26.09.2025  11:23            18.056 main_window.py
+26.09.2025  11:23             3.088 print.py
+26.09.2025  11:23                 0 __init__.py
+26.09.2025  11:24    <DIR>          __pycache__
+               4 Datei(en),         26.245 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\inventar\ui\__pycache__
+
+26.09.2025  11:24    <DIR>          .
+26.09.2025  11:24    <DIR>          ..
+26.09.2025  11:24             9.931 item_dialog.cpython-313.pyc
+26.09.2025  11:24            34.088 main_window.cpython-313.pyc
+26.09.2025  11:24             6.109 print.cpython-313.pyc
+26.09.2025  11:24               151 __init__.cpython-313.pyc
+               4 Datei(en),         50.279 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\inventar\utils
+
+26.09.2025  11:24    <DIR>          .
+26.09.2025  11:24    <DIR>          ..
+26.09.2025  11:23             1.508 settings.py
+26.09.2025  11:23             1.683 validators.py
+26.09.2025  11:23                 0 __init__.py
+26.09.2025  11:24    <DIR>          __pycache__
+               3 Datei(en),          3.191 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\inventar\utils\__pycache__
+
+26.09.2025  11:24    <DIR>          .
+26.09.2025  11:24    <DIR>          ..
+26.09.2025  11:24             3.416 settings.cpython-313.pyc
+26.09.2025  11:24             3.222 validators.cpython-313.pyc
+26.09.2025  11:24               154 __init__.cpython-313.pyc
+               3 Datei(en),          6.792 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\inventar\__pycache__
+
+26.09.2025  11:24    <DIR>          .
+26.09.2025  11:24    <DIR>          ..
+26.09.2025  11:24               689 app.cpython-313.pyc
+26.09.2025  11:24               148 __init__.cpython-313.pyc
+26.09.2025  11:24               303 __main__.cpython-313.pyc
+               3 Datei(en),          1.140 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv
+
+26.09.2025  17:49    <DIR>          .
+29.09.2025  14:08    <DIR>          ..
+26.09.2025  17:49                71 .gitignore
+26.09.2025  17:49    <DIR>          Include
+26.09.2025  17:49    <DIR>          Lib
+26.09.2025  17:49               236 pyvenv.cfg
+26.09.2025  17:49    <DIR>          Scripts
+               2 Datei(en),            307 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Include
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+               0 Datei(en),              0 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49    <DIR>          site-packages
+               0 Datei(en),              0 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49    <DIR>          pip
+26.09.2025  17:49    <DIR>          pip-25.2.dist-info
+               0 Datei(en),              0 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49               286 py.typed
+26.09.2025  17:49    <DIR>          _internal
+26.09.2025  17:49    <DIR>          _vendor
+26.09.2025  17:49               353 __init__.py
+26.09.2025  17:49               854 __main__.py
+26.09.2025  17:49             1.450 __pip-runner__.py
+26.09.2025  17:49    <DIR>          __pycache__
+               4 Datei(en),          2.943 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_internal
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49            11.566 build_env.py
+26.09.2025  17:49            10.364 cache.py
+26.09.2025  17:49    <DIR>          cli
+26.09.2025  17:49    <DIR>          commands
+26.09.2025  17:49            14.587 configuration.py
+26.09.2025  17:49    <DIR>          distributions
+26.09.2025  17:49            28.974 exceptions.py
+26.09.2025  17:49    <DIR>          index
+26.09.2025  17:49    <DIR>          locations
+26.09.2025  17:49               338 main.py
+26.09.2025  17:49    <DIR>          metadata
+26.09.2025  17:49    <DIR>          models
+26.09.2025  17:49    <DIR>          network
+26.09.2025  17:49    <DIR>          operations
+26.09.2025  17:49             7.233 pyproject.py
+26.09.2025  17:49    <DIR>          req
+26.09.2025  17:49    <DIR>          resolution
+26.09.2025  17:49             8.326 self_outdated_check.py
+26.09.2025  17:49    <DIR>          utils
+26.09.2025  17:49    <DIR>          vcs
+26.09.2025  17:49            11.225 wheel_builder.py
+26.09.2025  17:49               511 __init__.py
+26.09.2025  17:49    <DIR>          __pycache__
+               9 Datei(en),         93.124 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_internal\cli
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49             7.193 autocompletion.py
+26.09.2025  17:49             8.716 base_command.py
+26.09.2025  17:49            32.032 cmdoptions.py
+26.09.2025  17:49               817 command_context.py
+26.09.2025  17:49             5.717 index_command.py
+26.09.2025  17:49             2.815 main.py
+26.09.2025  17:49             4.329 main_parser.py
+26.09.2025  17:49            10.928 parser.py
+26.09.2025  17:49             4.668 progress_bars.py
+26.09.2025  17:49            13.081 req_command.py
+26.09.2025  17:49             7.362 spinners.py
+26.09.2025  17:49               116 status_codes.py
+26.09.2025  17:49               131 __init__.py
+26.09.2025  17:49    <DIR>          __pycache__
+              13 Datei(en),         97.905 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_internal\cli\__pycache__
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49             9.505 autocompletion.cpython-313.pyc
+26.09.2025  17:49            10.768 base_command.cpython-313.pyc
+26.09.2025  17:49            30.954 cmdoptions.cpython-313.pyc
+26.09.2025  17:49             1.899 command_context.cpython-313.pyc
+26.09.2025  17:49             7.435 index_command.cpython-313.pyc
+26.09.2025  17:49             2.251 main.cpython-313.pyc
+26.09.2025  17:49             4.925 main_parser.cpython-313.pyc
+26.09.2025  17:49            15.144 parser.cpython-313.pyc
+26.09.2025  17:49             6.064 progress_bars.cpython-313.pyc
+26.09.2025  17:49            13.241 req_command.cpython-313.pyc
+26.09.2025  17:49            11.662 spinners.cpython-313.pyc
+26.09.2025  17:49               365 status_codes.cpython-313.pyc
+26.09.2025  17:49               265 __init__.cpython-313.pyc
+              13 Datei(en),        114.478 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_internal\commands
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49             8.230 cache.py
+26.09.2025  17:49             2.244 check.py
+26.09.2025  17:49             4.530 completion.py
+26.09.2025  17:49            10.105 configuration.py
+26.09.2025  17:49             6.805 debug.py
+26.09.2025  17:49             5.249 download.py
+26.09.2025  17:49             3.099 freeze.py
+26.09.2025  17:49             1.679 hash.py
+26.09.2025  17:49             1.108 help.py
+26.09.2025  17:49             5.243 index.py
+26.09.2025  17:49             3.177 inspect.py
+26.09.2025  17:49            30.080 install.py
+26.09.2025  17:49            13.514 list.py
+26.09.2025  17:49             5.917 lock.py
+26.09.2025  17:49             5.782 search.py
+26.09.2025  17:49             8.066 show.py
+26.09.2025  17:49             3.868 uninstall.py
+26.09.2025  17:49             6.322 wheel.py
+26.09.2025  17:49             4.026 __init__.py
+26.09.2025  17:49    <DIR>          __pycache__
+              19 Datei(en),        129.044 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_internal\commands\__pycache__
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49            10.310 cache.cpython-313.pyc
+26.09.2025  17:49             2.636 check.cpython-313.pyc
+26.09.2025  17:49             5.450 completion.cpython-313.pyc
+26.09.2025  17:49            13.384 configuration.cpython-313.pyc
+26.09.2025  17:49            10.179 debug.cpython-313.pyc
+26.09.2025  17:49             7.504 download.cpython-313.pyc
+26.09.2025  17:49             4.336 freeze.cpython-313.pyc
+26.09.2025  17:49             2.986 hash.cpython-313.pyc
+26.09.2025  17:49             1.700 help.cpython-313.pyc
+26.09.2025  17:49             7.286 index.cpython-313.pyc
+26.09.2025  17:49             3.995 inspect.cpython-313.pyc
+26.09.2025  17:49            30.120 install.cpython-313.pyc
+26.09.2025  17:49            17.320 list.cpython-313.pyc
+26.09.2025  17:49             7.993 lock.cpython-313.pyc
+26.09.2025  17:49             7.736 search.cpython-313.pyc
+26.09.2025  17:49            11.385 show.cpython-313.pyc
+26.09.2025  17:49             4.725 uninstall.cpython-313.pyc
+26.09.2025  17:49             8.838 wheel.cpython-313.pyc
+26.09.2025  17:49             4.103 __init__.cpython-313.pyc
+              19 Datei(en),        161.986 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_internal\distributions
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49             1.830 base.py
+26.09.2025  17:49               929 installed.py
+26.09.2025  17:49             6.952 sdist.py
+26.09.2025  17:49             1.364 wheel.py
+26.09.2025  17:49               858 __init__.py
+26.09.2025  17:49    <DIR>          __pycache__
+               5 Datei(en),         11.933 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_internal\distributions\__pycache__
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49             2.919 base.cpython-313.pyc
+26.09.2025  17:49             1.823 installed.cpython-313.pyc
+26.09.2025  17:49             8.721 sdist.cpython-313.pyc
+26.09.2025  17:49             2.370 wheel.cpython-313.pyc
+26.09.2025  17:49               953 __init__.cpython-313.pyc
+               5 Datei(en),         16.786 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_internal\index
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49            16.185 collector.py
+26.09.2025  17:49            38.827 package_finder.py
+26.09.2025  17:49             8.639 sources.py
+26.09.2025  17:49                29 __init__.py
+26.09.2025  17:49    <DIR>          __pycache__
+               4 Datei(en),         63.680 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_internal\index\__pycache__
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49            21.436 collector.cpython-313.pyc
+26.09.2025  17:49            41.713 package_finder.cpython-313.pyc
+26.09.2025  17:49            12.516 sources.cpython-313.pyc
+26.09.2025  17:49               219 __init__.cpython-313.pyc
+               4 Datei(en),         75.884 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_internal\locations
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49             2.550 base.py
+26.09.2025  17:49             5.975 _distutils.py
+26.09.2025  17:49             7.716 _sysconfig.py
+26.09.2025  17:49            14.185 __init__.py
+26.09.2025  17:49    <DIR>          __pycache__
+               4 Datei(en),         30.426 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_internal\locations\__pycache__
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49             3.693 base.cpython-313.pyc
+26.09.2025  17:49             6.868 _distutils.cpython-313.pyc
+26.09.2025  17:49             8.018 _sysconfig.cpython-313.pyc
+26.09.2025  17:49            15.817 __init__.cpython-313.pyc
+               4 Datei(en),         34.396 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_internal\metadata
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49            25.420 base.py
+26.09.2025  17:49    <DIR>          importlib
+26.09.2025  17:49            10.544 pkg_resources.py
+26.09.2025  17:49             2.711 _json.py
+26.09.2025  17:49             5.714 __init__.py
+26.09.2025  17:49    <DIR>          __pycache__
+               4 Datei(en),         44.389 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_internal\metadata\importlib
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49             2.804 _compat.py
+26.09.2025  17:49             8.259 _dists.py
+26.09.2025  17:49             5.333 _envs.py
+26.09.2025  17:49               135 __init__.py
+26.09.2025  17:49    <DIR>          __pycache__
+               4 Datei(en),         16.531 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_internal\metadata\importlib\__pycache__
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49             4.272 _compat.cpython-313.pyc
+26.09.2025  17:49            12.857 _dists.cpython-313.pyc
+26.09.2025  17:49             8.065 _envs.cpython-313.pyc
+26.09.2025  17:49               348 __init__.cpython-313.pyc
+               4 Datei(en),         25.542 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_internal\metadata\__pycache__
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49            33.815 base.cpython-313.pyc
+26.09.2025  17:49            16.016 pkg_resources.cpython-313.pyc
+26.09.2025  17:49             2.912 _json.cpython-313.pyc
+26.09.2025  17:49             6.580 __init__.cpython-313.pyc
+               4 Datei(en),         59.323 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_internal\models
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49               753 candidate.py
+26.09.2025  17:49             6.555 direct_url.py
+26.09.2025  17:49             2.471 format_control.py
+26.09.2025  17:49             1.030 index.py
+26.09.2025  17:49             2.839 installation_report.py
+26.09.2025  17:49            21.793 link.py
+26.09.2025  17:49             6.211 pylock.py
+26.09.2025  17:49               575 scheme.py
+26.09.2025  17:49             4.507 search_scope.py
+26.09.2025  17:49             2.016 selection_prefs.py
+26.09.2025  17:49             4.243 target_python.py
+26.09.2025  17:49             5.526 wheel.py
+26.09.2025  17:49                62 __init__.py
+26.09.2025  17:49    <DIR>          __pycache__
+              13 Datei(en),         58.581 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_internal\models\__pycache__
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49             1.652 candidate.cpython-313.pyc
+26.09.2025  17:49            10.654 direct_url.cpython-313.pyc
+26.09.2025  17:49             4.149 format_control.cpython-313.pyc
+26.09.2025  17:49             1.755 index.cpython-313.pyc
+26.09.2025  17:49             2.382 installation_report.cpython-313.pyc
+26.09.2025  17:49            26.708 link.cpython-313.pyc
+26.09.2025  17:49             8.141 pylock.cpython-313.pyc
+26.09.2025  17:49             1.057 scheme.cpython-313.pyc
+26.09.2025  17:49             5.066 search_scope.cpython-313.pyc
+26.09.2025  17:49             1.847 selection_prefs.cpython-313.pyc
+26.09.2025  17:49             4.726 target_python.cpython-313.pyc
+26.09.2025  17:49             7.422 wheel.cpython-313.pyc
+26.09.2025  17:49               253 __init__.cpython-313.pyc
+              13 Datei(en),         75.812 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_internal\network
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49            20.681 auth.py
+26.09.2025  17:49             5.302 cache.py
+26.09.2025  17:49            12.682 download.py
+26.09.2025  17:49             7.651 lazy_wheel.py
+26.09.2025  17:49            19.188 session.py
+26.09.2025  17:49             4.091 utils.py
+26.09.2025  17:49             1.830 xmlrpc.py
+26.09.2025  17:49                49 __init__.py
+26.09.2025  17:49    <DIR>          __pycache__
+               8 Datei(en),         71.474 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_internal\network\__pycache__
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49            21.922 auth.cpython-313.pyc
+26.09.2025  17:49             8.568 cache.cpython-313.pyc
+26.09.2025  17:49            16.293 download.cpython-313.pyc
+26.09.2025  17:49            11.434 lazy_wheel.cpython-313.pyc
+26.09.2025  17:49            19.497 session.cpython-313.pyc
+26.09.2025  17:49             2.282 utils.cpython-313.pyc
+26.09.2025  17:49             3.017 xmlrpc.cpython-313.pyc
+26.09.2025  17:49               241 __init__.cpython-313.pyc
+               8 Datei(en),         83.254 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_internal\operations
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49    <DIR>          build
+26.09.2025  17:49             5.894 check.py
+26.09.2025  17:49             9.854 freeze.py
+26.09.2025  17:49    <DIR>          install
+26.09.2025  17:49            28.613 prepare.py
+26.09.2025  17:49                 0 __init__.py
+26.09.2025  17:49    <DIR>          __pycache__
+               4 Datei(en),         44.361 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_internal\operations\build
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49             4.771 build_tracker.py
+26.09.2025  17:49             1.421 metadata.py
+26.09.2025  17:49             1.509 metadata_editable.py
+26.09.2025  17:49             2.189 metadata_legacy.py
+26.09.2025  17:49             1.080 wheel.py
+26.09.2025  17:49             1.422 wheel_editable.py
+26.09.2025  17:49             3.616 wheel_legacy.py
+26.09.2025  17:49                 0 __init__.py
+26.09.2025  17:49    <DIR>          __pycache__
+               8 Datei(en),         16.008 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_internal\operations\build\__pycache__
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49             7.642 build_tracker.cpython-313.pyc
+26.09.2025  17:49             1.846 metadata.cpython-313.pyc
+26.09.2025  17:49             1.898 metadata_editable.cpython-313.pyc
+26.09.2025  17:49             2.981 metadata_legacy.cpython-313.pyc
+26.09.2025  17:49             1.699 wheel.cpython-313.pyc
+26.09.2025  17:49             2.040 wheel_editable.cpython-313.pyc
+26.09.2025  17:49             4.409 wheel_legacy.cpython-313.pyc
+26.09.2025  17:49               193 __init__.cpython-313.pyc
+               8 Datei(en),         22.708 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_internal\operations\install
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49             1.311 editable_legacy.py
+26.09.2025  17:49            27.956 wheel.py
+26.09.2025  17:49                50 __init__.py
+26.09.2025  17:49    <DIR>          __pycache__
+               3 Datei(en),         29.317 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_internal\operations\install\__pycache__
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49             1.849 editable_legacy.cpython-313.pyc
+26.09.2025  17:49            34.721 wheel.cpython-313.pyc
+26.09.2025  17:49               253 __init__.cpython-313.pyc
+               3 Datei(en),         36.823 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_internal\operations\__pycache__
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49             7.267 check.cpython-313.pyc
+26.09.2025  17:49            10.402 freeze.cpython-313.pyc
+26.09.2025  17:49            27.204 prepare.cpython-313.pyc
+26.09.2025  17:49               187 __init__.cpython-313.pyc
+               4 Datei(en),         45.060 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_internal\req
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49            18.320 constructors.py
+26.09.2025  17:49             2.618 req_dependency_group.py
+26.09.2025  17:49            20.161 req_file.py
+26.09.2025  17:49            35.718 req_install.py
+26.09.2025  17:49             2.828 req_set.py
+26.09.2025  17:49            24.099 req_uninstall.py
+26.09.2025  17:49             3.122 __init__.py
+26.09.2025  17:49    <DIR>          __pycache__
+               7 Datei(en),        106.866 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_internal\req\__pycache__
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49            21.350 constructors.cpython-313.pyc
+26.09.2025  17:49             3.998 req_dependency_group.cpython-313.pyc
+26.09.2025  17:49            24.148 req_file.cpython-313.pyc
+26.09.2025  17:49            39.140 req_install.cpython-313.pyc
+26.09.2025  17:49             5.560 req_set.cpython-313.pyc
+26.09.2025  17:49            32.351 req_uninstall.cpython-313.pyc
+26.09.2025  17:49             4.202 __init__.cpython-313.pyc
+               7 Datei(en),        130.749 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_internal\resolution
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49               577 base.py
+26.09.2025  17:49    <DIR>          legacy
+26.09.2025  17:49    <DIR>          resolvelib
+26.09.2025  17:49                 0 __init__.py
+26.09.2025  17:49    <DIR>          __pycache__
+               2 Datei(en),            577 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_internal\resolution\legacy
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49            24.060 resolver.py
+26.09.2025  17:49                 0 __init__.py
+26.09.2025  17:49    <DIR>          __pycache__
+               2 Datei(en),         24.060 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_internal\resolution\legacy\__pycache__
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49            22.806 resolver.cpython-313.pyc
+26.09.2025  17:49               194 __init__.cpython-313.pyc
+               2 Datei(en),         23.000 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_internal\resolution\resolvelib
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49             5.047 base.py
+26.09.2025  17:49            20.208 candidates.py
+26.09.2025  17:49            32.577 factory.py
+26.09.2025  17:49             6.018 found_candidates.py
+26.09.2025  17:49            11.144 provider.py
+26.09.2025  17:49             3.270 reporter.py
+26.09.2025  17:49             8.076 requirements.py
+26.09.2025  17:49            13.617 resolver.py
+26.09.2025  17:49                 0 __init__.py
+26.09.2025  17:49    <DIR>          __pycache__
+               9 Datei(en),         99.957 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_internal\resolution\resolvelib\__pycache__
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49             8.091 base.cpython-313.pyc
+26.09.2025  17:49            29.353 candidates.cpython-313.pyc
+26.09.2025  17:49            33.193 factory.cpython-313.pyc
+26.09.2025  17:49             6.803 found_candidates.cpython-313.pyc
+26.09.2025  17:49            10.978 provider.cpython-313.pyc
+26.09.2025  17:49             5.141 reporter.cpython-313.pyc
+26.09.2025  17:49            15.139 requirements.cpython-313.pyc
+26.09.2025  17:49            12.703 resolver.cpython-313.pyc
+26.09.2025  17:49               198 __init__.cpython-313.pyc
+               9 Datei(en),        121.599 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_internal\resolution\__pycache__
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49             1.220 base.cpython-313.pyc
+26.09.2025  17:49               187 __init__.cpython-313.pyc
+               2 Datei(en),          1.407 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_internal\utils
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49             1.681 appdirs.py
+26.09.2025  17:49             2.514 compat.py
+26.09.2025  17:49             6.630 compatibility_tags.py
+26.09.2025  17:49               241 datetime.py
+26.09.2025  17:49             3.696 deprecation.py
+26.09.2025  17:49             3.200 direct_url_helpers.py
+26.09.2025  17:49             2.459 egg_link.py
+26.09.2025  17:49             3.324 entrypoints.py
+26.09.2025  17:49             4.988 filesystem.py
+26.09.2025  17:49               689 filetypes.py
+26.09.2025  17:49             3.726 glibc.py
+26.09.2025  17:49             4.998 hashes.py
+26.09.2025  17:49            12.108 logging.py
+26.09.2025  17:49            23.374 misc.py
+26.09.2025  17:49             1.601 packaging.py
+26.09.2025  17:49             1.461 retry.py
+26.09.2025  17:49             4.499 setuptools_build.py
+26.09.2025  17:49             8.983 subprocess.py
+26.09.2025  17:49             9.307 temp_dir.py
+26.09.2025  17:49            11.939 unpacking.py
+26.09.2025  17:49             1.601 urls.py
+26.09.2025  17:49             3.455 virtualenv.py
+26.09.2025  17:49             4.468 wheel.py
+26.09.2025  17:49             3.350 _jaraco_text.py
+26.09.2025  17:49             1.015 _log.py
+26.09.2025  17:49                 0 __init__.py
+26.09.2025  17:49    <DIR>          __pycache__
+              26 Datei(en),        125.307 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_internal\utils\__pycache__
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49             2.455 appdirs.cpython-313.pyc
+26.09.2025  17:49             3.037 compat.cpython-313.pyc
+26.09.2025  17:49             6.684 compatibility_tags.cpython-313.pyc
+26.09.2025  17:49               662 datetime.cpython-313.pyc
+26.09.2025  17:49             4.251 deprecation.cpython-313.pyc
+26.09.2025  17:49             3.624 direct_url_helpers.cpython-313.pyc
+26.09.2025  17:49             3.140 egg_link.cpython-313.pyc
+26.09.2025  17:49             4.132 entrypoints.cpython-313.pyc
+26.09.2025  17:49             7.309 filesystem.cpython-313.pyc
+26.09.2025  17:49             1.122 filetypes.cpython-313.pyc
+26.09.2025  17:49             2.368 glibc.cpython-313.pyc
+26.09.2025  17:49             7.548 hashes.cpython-313.pyc
+26.09.2025  17:49            14.174 logging.cpython-313.pyc
+26.09.2025  17:49            32.937 misc.cpython-313.pyc
+26.09.2025  17:49             1.833 packaging.cpython-313.pyc
+26.09.2025  17:49             1.971 retry.cpython-313.pyc
+26.09.2025  17:49             4.705 setuptools_build.cpython-313.pyc
+26.09.2025  17:49             8.727 subprocess.cpython-313.pyc
+26.09.2025  17:49            12.009 temp_dir.cpython-313.pyc
+26.09.2025  17:49            13.606 unpacking.cpython-313.pyc
+26.09.2025  17:49             2.121 urls.cpython-313.pyc
+26.09.2025  17:49             4.371 virtualenv.cpython-313.pyc
+26.09.2025  17:49             5.846 wheel.cpython-313.pyc
+26.09.2025  17:49             4.428 _jaraco_text.cpython-313.pyc
+26.09.2025  17:49             1.901 _log.cpython-313.pyc
+26.09.2025  17:49               182 __init__.cpython-313.pyc
+              26 Datei(en),        155.143 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_internal\vcs
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49             3.734 bazaar.py
+26.09.2025  17:49            19.144 git.py
+26.09.2025  17:49             5.575 mercurial.py
+26.09.2025  17:49            11.787 subversion.py
+26.09.2025  17:49            22.502 versioncontrol.py
+26.09.2025  17:49               596 __init__.py
+26.09.2025  17:49    <DIR>          __pycache__
+               6 Datei(en),         63.338 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_internal\vcs\__pycache__
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49             5.230 bazaar.cpython-313.pyc
+26.09.2025  17:49            19.688 git.cpython-313.pyc
+26.09.2025  17:49             7.748 mercurial.cpython-313.pyc
+26.09.2025  17:49            12.448 subversion.cpython-313.pyc
+26.09.2025  17:49            27.996 versioncontrol.cpython-313.pyc
+26.09.2025  17:49               521 __init__.cpython-313.pyc
+               6 Datei(en),         73.631 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_internal\__pycache__
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49            16.193 build_env.cpython-313.pyc
+26.09.2025  17:49            12.611 cache.cpython-313.pyc
+26.09.2025  17:49            18.461 configuration.cpython-313.pyc
+26.09.2025  17:49            40.309 exceptions.cpython-313.pyc
+26.09.2025  17:49               616 main.cpython-313.pyc
+26.09.2025  17:49             5.139 pyproject.cpython-313.pyc
+26.09.2025  17:49            10.388 self_outdated_check.cpython-313.pyc
+26.09.2025  17:49            13.691 wheel_builder.cpython-313.pyc
+26.09.2025  17:49               731 __init__.cpython-313.pyc
+               9 Datei(en),        118.139 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_vendor
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49    <DIR>          cachecontrol
+26.09.2025  17:49    <DIR>          certifi
+26.09.2025  17:49    <DIR>          dependency_groups
+26.09.2025  17:49    <DIR>          distlib
+26.09.2025  17:49    <DIR>          distro
+26.09.2025  17:49    <DIR>          idna
+26.09.2025  17:49    <DIR>          msgpack
+26.09.2025  17:49    <DIR>          packaging
+26.09.2025  17:49    <DIR>          pkg_resources
+26.09.2025  17:49    <DIR>          platformdirs
+26.09.2025  17:49    <DIR>          pygments
+26.09.2025  17:49    <DIR>          pyproject_hooks
+26.09.2025  17:49    <DIR>          requests
+26.09.2025  17:49    <DIR>          resolvelib
+26.09.2025  17:49    <DIR>          rich
+26.09.2025  17:49    <DIR>          tomli
+26.09.2025  17:49    <DIR>          tomli_w
+26.09.2025  17:49    <DIR>          truststore
+26.09.2025  17:49    <DIR>          urllib3
+26.09.2025  17:49               343 vendor.txt
+26.09.2025  17:49             4.907 __init__.py
+26.09.2025  17:49    <DIR>          __pycache__
+               2 Datei(en),          5.250 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_vendor\cachecontrol
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49             6.599 adapter.py
+26.09.2025  17:49             1.953 cache.py
+26.09.2025  17:49    <DIR>          caches
+26.09.2025  17:49            19.101 controller.py
+26.09.2025  17:49             4.291 filewrapper.py
+26.09.2025  17:49             4.881 heuristics.py
+26.09.2025  17:49                 0 py.typed
+26.09.2025  17:49             5.163 serialize.py
+26.09.2025  17:49             1.417 wrapper.py
+26.09.2025  17:49             1.737 _cmd.py
+26.09.2025  17:49               677 __init__.py
+26.09.2025  17:49    <DIR>          __pycache__
+              10 Datei(en),         45.819 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_vendor\cachecontrol\caches
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49             4.117 file_cache.py
+26.09.2025  17:49             1.386 redis_cache.py
+26.09.2025  17:49               303 __init__.py
+26.09.2025  17:49    <DIR>          __pycache__
+               3 Datei(en),          5.806 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_vendor\cachecontrol\caches\__pycache__
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49             7.154 file_cache.cpython-313.pyc
+26.09.2025  17:49             2.807 redis_cache.cpython-313.pyc
+26.09.2025  17:49               426 __init__.cpython-313.pyc
+               3 Datei(en),         10.387 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_vendor\cachecontrol\__pycache__
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49             6.841 adapter.cpython-313.pyc
+26.09.2025  17:49             3.918 cache.cpython-313.pyc
+26.09.2025  17:49            16.842 controller.cpython-313.pyc
+26.09.2025  17:49             4.424 filewrapper.cpython-313.pyc
+26.09.2025  17:49             6.760 heuristics.cpython-313.pyc
+26.09.2025  17:49             5.357 serialize.cpython-313.pyc
+26.09.2025  17:49             1.685 wrapper.cpython-313.pyc
+26.09.2025  17:49             2.666 _cmd.cpython-313.pyc
+26.09.2025  17:49               888 __init__.cpython-313.pyc
+               9 Datei(en),         49.381 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_vendor\certifi
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49           290.057 cacert.pem
+26.09.2025  17:49             3.442 core.py
+26.09.2025  17:49                 0 py.typed
+26.09.2025  17:49                94 __init__.py
+26.09.2025  17:49               255 __main__.py
+26.09.2025  17:49    <DIR>          __pycache__
+               5 Datei(en),        293.848 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_vendor\certifi\__pycache__
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49             2.081 core.cpython-313.pyc
+26.09.2025  17:49               309 __init__.cpython-313.pyc
+26.09.2025  17:49               638 __main__.cpython-313.pyc
+               3 Datei(en),          3.028 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_vendor\dependency_groups
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49                 0 py.typed
+26.09.2025  17:49             8.041 _implementation.py
+26.09.2025  17:49             1.710 _lint_dependency_groups.py
+26.09.2025  17:49             1.865 _pip_wrapper.py
+26.09.2025  17:49               285 _toml_compat.py
+26.09.2025  17:49               250 __init__.py
+26.09.2025  17:49             1.709 __main__.py
+26.09.2025  17:49    <DIR>          __pycache__
+               7 Datei(en),         13.860 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_vendor\dependency_groups\__pycache__
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49             9.643 _implementation.cpython-313.pyc
+26.09.2025  17:49             2.870 _lint_dependency_groups.cpython-313.pyc
+26.09.2025  17:49             3.443 _pip_wrapper.cpython-313.pyc
+26.09.2025  17:49               476 _toml_compat.cpython-313.pyc
+26.09.2025  17:49               368 __init__.cpython-313.pyc
+26.09.2025  17:49             2.670 __main__.cpython-313.pyc
+               6 Datei(en),         19.470 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_vendor\distlib
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49            41.467 compat.py
+26.09.2025  17:49            10.820 resources.py
+26.09.2025  17:49            18.612 scripts.py
+26.09.2025  17:49            97.792 t32.exe
+26.09.2025  17:49           182.784 t64-arm.exe
+26.09.2025  17:49           108.032 t64.exe
+26.09.2025  17:49            66.682 util.py
+26.09.2025  17:49            91.648 w32.exe
+26.09.2025  17:49           168.448 w64-arm.exe
+26.09.2025  17:49           101.888 w64.exe
+26.09.2025  17:49               625 __init__.py
+26.09.2025  17:49    <DIR>          __pycache__
+              11 Datei(en),        888.798 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_vendor\distlib\__pycache__
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49            45.856 compat.cpython-313.pyc
+26.09.2025  17:49            17.648 resources.cpython-313.pyc
+26.09.2025  17:49            20.228 scripts.cpython-313.pyc
+26.09.2025  17:49            90.106 util.cpython-313.pyc
+26.09.2025  17:49             1.346 __init__.cpython-313.pyc
+               5 Datei(en),        175.184 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_vendor\distro
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49            49.430 distro.py
+26.09.2025  17:49                 0 py.typed
+26.09.2025  17:49               981 __init__.py
+26.09.2025  17:49                64 __main__.py
+26.09.2025  17:49    <DIR>          __pycache__
+               4 Datei(en),         50.475 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_vendor\distro\__pycache__
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49            52.134 distro.cpython-313.pyc
+26.09.2025  17:49               951 __init__.cpython-313.pyc
+26.09.2025  17:49               285 __main__.cpython-313.pyc
+               3 Datei(en),         53.370 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_vendor\idna
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49             3.422 codec.py
+26.09.2025  17:49               316 compat.py
+26.09.2025  17:49            13.239 core.py
+26.09.2025  17:49            78.306 idnadata.py
+26.09.2025  17:49             1.898 intranges.py
+26.09.2025  17:49                21 package_data.py
+26.09.2025  17:49                 0 py.typed
+26.09.2025  17:49           239.289 uts46data.py
+26.09.2025  17:49               868 __init__.py
+26.09.2025  17:49    <DIR>          __pycache__
+               9 Datei(en),        337.359 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_vendor\idna\__pycache__
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49             5.301 codec.cpython-313.pyc
+26.09.2025  17:49               887 compat.cpython-313.pyc
+26.09.2025  17:49            16.923 core.cpython-313.pyc
+26.09.2025  17:49            99.467 idnadata.cpython-313.pyc
+26.09.2025  17:49             2.600 intranges.cpython-313.pyc
+26.09.2025  17:49               208 package_data.cpython-313.pyc
+26.09.2025  17:49           159.001 uts46data.cpython-313.pyc
+26.09.2025  17:49               877 __init__.cpython-313.pyc
+               8 Datei(en),        285.264 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_vendor\msgpack
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49             1.081 exceptions.py
+26.09.2025  17:49             5.726 ext.py
+26.09.2025  17:49            32.390 fallback.py
+26.09.2025  17:49             1.109 __init__.py
+26.09.2025  17:49    <DIR>          __pycache__
+               4 Datei(en),         40.306 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_vendor\msgpack\__pycache__
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49             2.155 exceptions.cpython-313.pyc
+26.09.2025  17:49             8.084 ext.cpython-313.pyc
+26.09.2025  17:49            42.059 fallback.cpython-313.pyc
+26.09.2025  17:49             1.706 __init__.cpython-313.pyc
+               4 Datei(en),         54.004 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_vendor\packaging
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49    <DIR>          licenses
+26.09.2025  17:49            12.049 markers.py
+26.09.2025  17:49            34.739 metadata.py
+26.09.2025  17:49                 0 py.typed
+26.09.2025  17:49             2.947 requirements.py
+26.09.2025  17:49            40.079 specifiers.py
+26.09.2025  17:49            22.745 tags.py
+26.09.2025  17:49             5.050 utils.py
+26.09.2025  17:49            16.688 version.py
+26.09.2025  17:49             3.286 _elffile.py
+26.09.2025  17:49             9.596 _manylinux.py
+26.09.2025  17:49             2.694 _musllinux.py
+26.09.2025  17:49            10.221 _parser.py
+26.09.2025  17:49             1.431 _structures.py
+26.09.2025  17:49             5.310 _tokenizer.py
+26.09.2025  17:49               494 __init__.py
+26.09.2025  17:49    <DIR>          __pycache__
+              15 Datei(en),        167.329 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_vendor\packaging\licenses
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49            48.398 _spdx.py
+26.09.2025  17:49             5.727 __init__.py
+26.09.2025  17:49    <DIR>          __pycache__
+               2 Datei(en),         54.125 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_vendor\packaging\licenses\__pycache__
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49            47.431 _spdx.cpython-313.pyc
+26.09.2025  17:49             4.302 __init__.cpython-313.pyc
+               2 Datei(en),         51.733 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_vendor\packaging\__pycache__
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49            13.091 markers.cpython-313.pyc
+26.09.2025  17:49            27.360 metadata.cpython-313.pyc
+26.09.2025  17:49             4.625 requirements.cpython-313.pyc
+26.09.2025  17:49            37.657 specifiers.cpython-313.pyc
+26.09.2025  17:49            24.965 tags.cpython-313.pyc
+26.09.2025  17:49             6.749 utils.cpython-313.pyc
+26.09.2025  17:49            19.974 version.cpython-313.pyc
+26.09.2025  17:49             5.208 _elffile.cpython-313.pyc
+26.09.2025  17:49             9.995 _manylinux.cpython-313.pyc
+26.09.2025  17:49             4.614 _musllinux.cpython-313.pyc
+26.09.2025  17:49            14.178 _parser.cpython-313.pyc
+26.09.2025  17:49             3.344 _structures.cpython-313.pyc
+26.09.2025  17:49             8.101 _tokenizer.cpython-313.pyc
+26.09.2025  17:49               549 __init__.cpython-313.pyc
+              14 Datei(en),        180.410 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_vendor\pkg_resources
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49           124.451 __init__.py
+26.09.2025  17:49    <DIR>          __pycache__
+               1 Datei(en),        124.451 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_vendor\pkg_resources\__pycache__
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49           161.597 __init__.cpython-313.pyc
+               1 Datei(en),        161.597 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_vendor\platformdirs
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49             9.013 android.py
+26.09.2025  17:49             9.277 api.py
+26.09.2025  17:49             6.154 macos.py
+26.09.2025  17:49                 0 py.typed
+26.09.2025  17:49            10.458 unix.py
+26.09.2025  17:49               511 version.py
+26.09.2025  17:49            10.125 windows.py
+26.09.2025  17:49            22.344 __init__.py
+26.09.2025  17:49             1.505 __main__.py
+26.09.2025  17:49    <DIR>          __pycache__
+               9 Datei(en),         69.387 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_vendor\platformdirs\__pycache__
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49            10.754 android.cpython-313.pyc
+26.09.2025  17:49            13.459 api.cpython-313.pyc
+26.09.2025  17:49             8.819 macos.cpython-313.pyc
+26.09.2025  17:49            14.759 unix.cpython-313.pyc
+26.09.2025  17:49               657 version.cpython-313.pyc
+26.09.2025  17:49            13.775 windows.cpython-313.pyc
+26.09.2025  17:49            19.356 __init__.cpython-313.pyc
+26.09.2025  17:49             1.923 __main__.cpython-313.pyc
+               8 Datei(en),         83.502 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_vendor\pygments
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49             1.718 console.py
+26.09.2025  17:49             1.910 filter.py
+26.09.2025  17:49    <DIR>          filters
+26.09.2025  17:49             4.390 formatter.py
+26.09.2025  17:49    <DIR>          formatters
+26.09.2025  17:49            35.349 lexer.py
+26.09.2025  17:49    <DIR>          lexers
+26.09.2025  17:49             1.005 modeline.py
+26.09.2025  17:49             1.891 plugin.py
+26.09.2025  17:49             3.072 regexopt.py
+26.09.2025  17:49             3.092 scanner.py
+26.09.2025  17:49             7.981 sphinxext.py
+26.09.2025  17:49             6.420 style.py
+26.09.2025  17:49    <DIR>          styles
+26.09.2025  17:49             6.226 token.py
+26.09.2025  17:49            63.208 unistring.py
+26.09.2025  17:49            10.031 util.py
+26.09.2025  17:49             2.983 __init__.py
+26.09.2025  17:49               353 __main__.py
+26.09.2025  17:49    <DIR>          __pycache__
+              15 Datei(en),        149.629 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_vendor\pygments\filters
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49            40.392 __init__.py
+26.09.2025  17:49    <DIR>          __pycache__
+               1 Datei(en),         40.392 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_vendor\pygments\filters\__pycache__
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49            37.961 __init__.cpython-313.pyc
+               1 Datei(en),         37.961 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_vendor\pygments\formatters
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49             4.176 _mapping.py
+26.09.2025  17:49             5.385 __init__.py
+26.09.2025  17:49    <DIR>          __pycache__
+               2 Datei(en),          9.561 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_vendor\pygments\formatters\__pycache__
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49             4.207 _mapping.cpython-313.pyc
+26.09.2025  17:49             6.918 __init__.cpython-313.pyc
+               2 Datei(en),         11.125 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_vendor\pygments\lexers
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49            53.853 python.py
+26.09.2025  17:49            77.602 _mapping.py
+26.09.2025  17:49            12.115 __init__.py
+26.09.2025  17:49    <DIR>          __pycache__
+               3 Datei(en),        143.570 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_vendor\pygments\lexers\__pycache__
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49            43.036 python.cpython-313.pyc
+26.09.2025  17:49            69.836 _mapping.cpython-313.pyc
+26.09.2025  17:49            14.746 __init__.cpython-313.pyc
+               3 Datei(en),        127.618 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_vendor\pygments\styles
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49             3.312 _mapping.py
+26.09.2025  17:49             2.042 __init__.py
+26.09.2025  17:49    <DIR>          __pycache__
+               2 Datei(en),          5.354 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_vendor\pygments\styles\__pycache__
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49             3.640 _mapping.cpython-313.pyc
+26.09.2025  17:49             2.633 __init__.cpython-313.pyc
+               2 Datei(en),          6.273 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_vendor\pygments\__pycache__
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49             2.592 console.cpython-313.pyc
+26.09.2025  17:49             3.218 filter.cpython-313.pyc
+26.09.2025  17:49             4.549 formatter.cpython-313.pyc
+26.09.2025  17:49            38.469 lexer.cpython-313.pyc
+26.09.2025  17:49             1.565 modeline.cpython-313.pyc
+26.09.2025  17:49             2.539 plugin.cpython-313.pyc
+26.09.2025  17:49             4.096 regexopt.cpython-313.pyc
+26.09.2025  17:49             4.675 scanner.cpython-313.pyc
+26.09.2025  17:49            12.232 sphinxext.cpython-313.pyc
+26.09.2025  17:49             6.931 style.cpython-313.pyc
+26.09.2025  17:49             8.235 token.cpython-313.pyc
+26.09.2025  17:49            33.017 unistring.cpython-313.pyc
+26.09.2025  17:49            14.165 util.cpython-313.pyc
+26.09.2025  17:49             3.424 __init__.cpython-313.pyc
+26.09.2025  17:49               704 __main__.cpython-313.pyc
+              15 Datei(en),        140.411 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_vendor\pyproject_hooks
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49                 0 py.typed
+26.09.2025  17:49            14.936 _impl.py
+26.09.2025  17:49    <DIR>          _in_process
+26.09.2025  17:49               691 __init__.py
+26.09.2025  17:49    <DIR>          __pycache__
+               3 Datei(en),         15.627 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_vendor\pyproject_hooks\_in_process
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49            12.216 _in_process.py
+26.09.2025  17:49               557 __init__.py
+26.09.2025  17:49    <DIR>          __pycache__
+               2 Datei(en),         12.773 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_vendor\pyproject_hooks\_in_process\__pycache__
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49            15.501 _in_process.cpython-313.pyc
+26.09.2025  17:49             1.076 __init__.cpython-313.pyc
+               2 Datei(en),         16.577 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_vendor\pyproject_hooks\__pycache__
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49            17.721 _impl.cpython-313.pyc
+26.09.2025  17:49               749 __init__.cpython-313.pyc
+               2 Datei(en),         18.470 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_vendor\requests
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49            27.607 adapters.py
+26.09.2025  17:49             6.449 api.py
+26.09.2025  17:49            10.186 auth.py
+26.09.2025  17:49               441 certs.py
+26.09.2025  17:49             1.822 compat.py
+26.09.2025  17:49            18.590 cookies.py
+26.09.2025  17:49             4.272 exceptions.py
+26.09.2025  17:49             3.813 help.py
+26.09.2025  17:49               733 hooks.py
+26.09.2025  17:49            35.575 models.py
+26.09.2025  17:49             1.057 packages.py
+26.09.2025  17:49            30.495 sessions.py
+26.09.2025  17:49             4.322 status_codes.py
+26.09.2025  17:49             2.912 structures.py
+26.09.2025  17:49            33.225 utils.py
+26.09.2025  17:49             1.495 _internal_utils.py
+26.09.2025  17:49             5.057 __init__.py
+26.09.2025  17:49    <DIR>          __pycache__
+26.09.2025  17:49               435 __version__.py
+              18 Datei(en),        188.486 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_vendor\requests\__pycache__
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49            27.465 adapters.cpython-313.pyc
+26.09.2025  17:49             6.862 api.cpython-313.pyc
+26.09.2025  17:49            14.224 auth.cpython-313.pyc
+26.09.2025  17:49               672 certs.cpython-313.pyc
+26.09.2025  17:49             1.976 compat.cpython-313.pyc
+26.09.2025  17:49            25.019 cookies.cpython-313.pyc
+26.09.2025  17:49             8.015 exceptions.cpython-313.pyc
+26.09.2025  17:49             4.253 help.cpython-313.pyc
+26.09.2025  17:49             1.086 hooks.cpython-313.pyc
+26.09.2025  17:49            35.934 models.cpython-313.pyc
+26.09.2025  17:49             1.306 packages.cpython-313.pyc
+26.09.2025  17:49            27.378 sessions.cpython-313.pyc
+26.09.2025  17:49             6.036 status_codes.cpython-313.pyc
+26.09.2025  17:49             5.639 structures.cpython-313.pyc
+26.09.2025  17:49            36.257 utils.cpython-313.pyc
+26.09.2025  17:49             2.010 _internal_utils.cpython-313.pyc
+26.09.2025  17:49             5.267 __init__.cpython-313.pyc
+26.09.2025  17:49               576 __version__.cpython-313.pyc
+              18 Datei(en),        209.975 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_vendor\resolvelib
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49             8.914 providers.py
+26.09.2025  17:49                 0 py.typed
+26.09.2025  17:49             2.037 reporters.py
+26.09.2025  17:49    <DIR>          resolvers
+26.09.2025  17:49             6.420 structs.py
+26.09.2025  17:49               541 __init__.py
+26.09.2025  17:49    <DIR>          __pycache__
+               5 Datei(en),         17.912 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_vendor\resolvelib\resolvers
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49             1.558 abstract.py
+26.09.2025  17:49             1.768 criterion.py
+26.09.2025  17:49             1.768 exceptions.py
+26.09.2025  17:49            23.994 resolution.py
+26.09.2025  17:49               640 __init__.py
+26.09.2025  17:49    <DIR>          __pycache__
+               5 Datei(en),         29.728 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_vendor\resolvelib\resolvers\__pycache__
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49             2.495 abstract.cpython-313.pyc
+26.09.2025  17:49             3.289 criterion.cpython-313.pyc
+26.09.2025  17:49             4.283 exceptions.cpython-313.pyc
+26.09.2025  17:49            24.990 resolution.cpython-313.pyc
+26.09.2025  17:49               731 __init__.cpython-313.pyc
+               5 Datei(en),         35.788 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_vendor\resolvelib\__pycache__
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49             9.352 providers.cpython-313.pyc
+26.09.2025  17:49             3.261 reporters.cpython-313.pyc
+26.09.2025  17:49            12.751 structs.cpython-313.pyc
+26.09.2025  17:49               626 __init__.cpython-313.pyc
+               4 Datei(en),         25.990 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_vendor\rich
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49               890 abc.py
+26.09.2025  17:49            10.324 align.py
+26.09.2025  17:49             6.921 ansi.py
+26.09.2025  17:49             3.263 bar.py
+26.09.2025  17:49            10.686 box.py
+26.09.2025  17:49             5.130 cells.py
+26.09.2025  17:49            18.211 color.py
+26.09.2025  17:49             1.054 color_triplet.py
+26.09.2025  17:49             7.131 columns.py
+26.09.2025  17:49           100.849 console.py
+26.09.2025  17:49             1.288 constrain.py
+26.09.2025  17:49             5.502 containers.py
+26.09.2025  17:49             6.487 control.py
+26.09.2025  17:49             8.257 default_styles.py
+26.09.2025  17:49             1.025 diagnose.py
+26.09.2025  17:49             2.367 emoji.py
+26.09.2025  17:49               642 errors.py
+26.09.2025  17:49             2.484 filesize.py
+26.09.2025  17:49             1.683 file_proxy.py
+26.09.2025  17:49             9.586 highlighter.py
+26.09.2025  17:49             5.031 json.py
+26.09.2025  17:49             3.252 jupyter.py
+26.09.2025  17:49            14.004 layout.py
+26.09.2025  17:49            15.180 live.py
+26.09.2025  17:49             3.521 live_render.py
+26.09.2025  17:49            12.468 logging.py
+26.09.2025  17:49             8.451 markup.py
+26.09.2025  17:49             5.305 measure.py
+26.09.2025  17:49             4.908 padding.py
+26.09.2025  17:49               828 pager.py
+26.09.2025  17:49             3.396 palette.py
+26.09.2025  17:49            11.157 panel.py
+26.09.2025  17:49            36.391 pretty.py
+26.09.2025  17:49            60.408 progress.py
+26.09.2025  17:49             8.162 progress_bar.py
+26.09.2025  17:49            12.447 prompt.py
+26.09.2025  17:49             1.391 protocol.py
+26.09.2025  17:49                 0 py.typed
+26.09.2025  17:49               166 region.py
+26.09.2025  17:49             4.431 repr.py
+26.09.2025  17:49             4.602 rule.py
+26.09.2025  17:49             2.843 scope.py
+26.09.2025  17:49             1.591 screen.py
+26.09.2025  17:49            24.743 segment.py
+26.09.2025  17:49             4.214 spinner.py
+26.09.2025  17:49             4.424 status.py
+26.09.2025  17:49            27.059 style.py
+26.09.2025  17:49             1.258 styled.py
+26.09.2025  17:49            36.371 syntax.py
+26.09.2025  17:49            40.049 table.py
+26.09.2025  17:49             3.370 terminal_theme.py
+26.09.2025  17:49            47.552 text.py
+26.09.2025  17:49             3.771 theme.py
+26.09.2025  17:49               102 themes.py
+26.09.2025  17:49            35.861 traceback.py
+26.09.2025  17:49             9.451 tree.py
+26.09.2025  17:49            10.209 _cell_widths.py
+26.09.2025  17:49           140.235 _emoji_codes.py
+26.09.2025  17:49             1.064 _emoji_replace.py
+26.09.2025  17:49             2.128 _export_format.py
+26.09.2025  17:49               265 _extension.py
+26.09.2025  17:49               799 _fileno.py
+26.09.2025  17:49             9.656 _inspect.py
+26.09.2025  17:49             3.225 _log_render.py
+26.09.2025  17:49             1.236 _loop.py
+26.09.2025  17:49             1.394 _null_file.py
+26.09.2025  17:49             7.063 _palettes.py
+26.09.2025  17:49               423 _pick.py
+26.09.2025  17:49             5.325 _ratio.py
+26.09.2025  17:49            19.919 _spinners.py
+26.09.2025  17:49               351 _stack.py
+26.09.2025  17:49               417 _timer.py
+26.09.2025  17:49            22.755 _win32_console.py
+26.09.2025  17:49             1.925 _windows.py
+26.09.2025  17:49             2.783 _windows_renderer.py
+26.09.2025  17:49             3.404 _wrap.py
+26.09.2025  17:49             6.090 __init__.py
+26.09.2025  17:49             7.896 __main__.py
+26.09.2025  17:49    <DIR>          __pycache__
+              78 Datei(en),        910.500 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_vendor\rich\__pycache__
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49             1.680 abc.cpython-313.pyc
+26.09.2025  17:49            12.415 align.cpython-313.pyc
+26.09.2025  17:49             9.252 ansi.cpython-313.pyc
+26.09.2025  17:49             4.325 bar.cpython-313.pyc
+26.09.2025  17:49            11.665 box.cpython-313.pyc
+26.09.2025  17:49             5.495 cells.cpython-313.pyc
+26.09.2025  17:49            26.522 color.cpython-313.pyc
+26.09.2025  17:49             1.697 color_triplet.cpython-313.pyc
+26.09.2025  17:49             8.708 columns.cpython-313.pyc
+26.09.2025  17:49           114.215 console.cpython-313.pyc
+26.09.2025  17:49             2.303 constrain.cpython-313.pyc
+26.09.2025  17:49             9.246 containers.cpython-313.pyc
+26.09.2025  17:49            10.758 control.cpython-313.pyc
+26.09.2025  17:49             9.687 default_styles.cpython-313.pyc
+26.09.2025  17:49             1.519 diagnose.cpython-313.pyc
+26.09.2025  17:49             4.109 emoji.cpython-313.pyc
+26.09.2025  17:49             2.039 errors.cpython-313.pyc
+26.09.2025  17:49             2.949 filesize.cpython-313.pyc
+26.09.2025  17:49             3.699 file_proxy.cpython-313.pyc
+26.09.2025  17:49             9.969 highlighter.cpython-313.pyc
+26.09.2025  17:49             5.910 json.cpython-313.pyc
+26.09.2025  17:49             5.382 jupyter.cpython-313.pyc
+26.09.2025  17:49            20.165 layout.cpython-313.pyc
+26.09.2025  17:49            20.692 live.cpython-313.pyc
+26.09.2025  17:49             4.715 live_render.cpython-313.pyc
+26.09.2025  17:49            14.021 logging.cpython-313.pyc
+26.09.2025  17:49             9.713 markup.cpython-313.pyc
+26.09.2025  17:49             6.190 measure.cpython-313.pyc
+26.09.2025  17:49             6.937 padding.cpython-313.pyc
+26.09.2025  17:49             1.877 pager.cpython-313.pyc
+26.09.2025  17:49             5.304 palette.cpython-313.pyc
+26.09.2025  17:49            12.697 panel.cpython-313.pyc
+26.09.2025  17:49            41.276 pretty.cpython-313.pyc
+26.09.2025  17:49            74.680 progress.cpython-313.pyc
+26.09.2025  17:49            10.441 progress_bar.cpython-313.pyc
+26.09.2025  17:49            15.800 prompt.cpython-313.pyc
+26.09.2025  17:49             1.860 protocol.cpython-313.pyc
+26.09.2025  17:49               617 region.cpython-313.pyc
+26.09.2025  17:49             6.737 repr.cpython-313.pyc
+26.09.2025  17:49             6.611 rule.cpython-313.pyc
+26.09.2025  17:49             3.786 scope.cpython-313.pyc
+26.09.2025  17:49             2.542 screen.cpython-313.pyc
+26.09.2025  17:49            28.268 segment.cpython-313.pyc
+26.09.2025  17:49             5.992 spinner.cpython-313.pyc
+26.09.2025  17:49             6.018 status.cpython-313.pyc
+26.09.2025  17:49            34.385 style.cpython-313.pyc
+26.09.2025  17:49             2.179 styled.cpython-313.pyc
+26.09.2025  17:49            40.640 syntax.cpython-313.pyc
+26.09.2025  17:49            44.326 table.cpython-313.pyc
+26.09.2025  17:49             3.398 terminal_theme.cpython-313.pyc
+26.09.2025  17:49            60.277 text.cpython-313.pyc
+26.09.2025  17:49             6.314 theme.cpython-313.pyc
+26.09.2025  17:49               306 themes.cpython-313.pyc
+26.09.2025  17:49            36.555 traceback.cpython-313.pyc
+26.09.2025  17:49            11.911 tree.cpython-313.pyc
+26.09.2025  17:49             7.864 _cell_widths.cpython-313.pyc
+26.09.2025  17:49           205.968 _emoji_codes.cpython-313.pyc
+26.09.2025  17:49             1.736 _emoji_replace.cpython-313.pyc
+26.09.2025  17:49             2.341 _export_format.cpython-313.pyc
+26.09.2025  17:49               531 _extension.cpython-313.pyc
+26.09.2025  17:49               833 _fileno.cpython-313.pyc
+26.09.2025  17:49            12.288 _inspect.cpython-313.pyc
+26.09.2025  17:49             4.317 _log_render.cpython-313.pyc
+26.09.2025  17:49             1.892 _loop.cpython-313.pyc
+26.09.2025  17:49             3.727 _null_file.cpython-313.pyc
+26.09.2025  17:49             5.152 _palettes.cpython-313.pyc
+26.09.2025  17:49               711 _pick.cpython-313.pyc
+26.09.2025  17:49             6.443 _ratio.cpython-313.pyc
+26.09.2025  17:49            13.171 _spinners.cpython-313.pyc
+26.09.2025  17:49             1.019 _stack.cpython-313.pyc
+26.09.2025  17:49               860 _timer.cpython-313.pyc
+26.09.2025  17:49            28.331 _win32_console.cpython-313.pyc
+26.09.2025  17:49             2.558 _windows.cpython-313.pyc
+26.09.2025  17:49             3.605 _windows_renderer.cpython-313.pyc
+26.09.2025  17:49             3.317 _wrap.cpython-313.pyc
+26.09.2025  17:49             6.866 __init__.cpython-313.pyc
+26.09.2025  17:49             9.455 __main__.cpython-313.pyc
+              77 Datei(en),      1.133.759 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_vendor\tomli
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49                26 py.typed
+26.09.2025  17:49            25.591 _parser.py
+26.09.2025  17:49             3.171 _re.py
+26.09.2025  17:49               254 _types.py
+26.09.2025  17:49               314 __init__.py
+26.09.2025  17:49    <DIR>          __pycache__
+               5 Datei(en),         29.356 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_vendor\tomli\__pycache__
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49            29.573 _parser.cpython-313.pyc
+26.09.2025  17:49             4.019 _re.cpython-313.pyc
+26.09.2025  17:49               358 _types.cpython-313.pyc
+26.09.2025  17:49               330 __init__.cpython-313.pyc
+               4 Datei(en),         34.280 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_vendor\tomli_w
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49                26 py.typed
+26.09.2025  17:49             6.961 _writer.py
+26.09.2025  17:49               169 __init__.py
+26.09.2025  17:49    <DIR>          __pycache__
+               3 Datei(en),          7.156 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_vendor\tomli_w\__pycache__
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49            10.776 _writer.cpython-313.pyc
+26.09.2025  17:49               319 __init__.cpython-313.pyc
+               2 Datei(en),         11.095 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_vendor\truststore
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49                 0 py.typed
+26.09.2025  17:49            11.234 _api.py
+26.09.2025  17:49            20.503 _macos.py
+26.09.2025  17:49             2.324 _openssl.py
+26.09.2025  17:49             1.130 _ssl_constants.py
+26.09.2025  17:49            17.993 _windows.py
+26.09.2025  17:49             1.320 __init__.py
+26.09.2025  17:49    <DIR>          __pycache__
+               7 Datei(en),         54.504 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_vendor\truststore\__pycache__
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49            17.144 _api.cpython-313.pyc
+26.09.2025  17:49            19.293 _macos.cpython-313.pyc
+26.09.2025  17:49             2.280 _openssl.cpython-313.pyc
+26.09.2025  17:49             1.091 _ssl_constants.cpython-313.pyc
+26.09.2025  17:49            16.237 _windows.cpython-313.pyc
+26.09.2025  17:49             1.480 __init__.cpython-313.pyc
+               6 Datei(en),         57.525 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_vendor\urllib3
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49            20.314 connection.py
+26.09.2025  17:49            40.408 connectionpool.py
+26.09.2025  17:49    <DIR>          contrib
+26.09.2025  17:49             8.217 exceptions.py
+26.09.2025  17:49             8.579 fields.py
+26.09.2025  17:49             2.440 filepost.py
+26.09.2025  17:49    <DIR>          packages
+26.09.2025  17:49            19.990 poolmanager.py
+26.09.2025  17:49             6.691 request.py
+26.09.2025  17:49            30.641 response.py
+26.09.2025  17:49    <DIR>          util
+26.09.2025  17:49            11.372 _collections.py
+26.09.2025  17:49                64 _version.py
+26.09.2025  17:49             3.333 __init__.py
+26.09.2025  17:49    <DIR>          __pycache__
+              11 Datei(en),        152.049 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_vendor\urllib3\contrib
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49            11.036 appengine.py
+26.09.2025  17:49             4.528 ntlmpool.py
+26.09.2025  17:49            17.081 pyopenssl.py
+26.09.2025  17:49            34.446 securetransport.py
+26.09.2025  17:49             7.097 socks.py
+26.09.2025  17:49               957 _appengine_environ.py
+26.09.2025  17:49    <DIR>          _securetransport
+26.09.2025  17:49                 0 __init__.py
+26.09.2025  17:49    <DIR>          __pycache__
+               7 Datei(en),         75.145 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_vendor\urllib3\contrib\_securetransport
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49            17.632 bindings.py
+26.09.2025  17:49            13.922 low_level.py
+26.09.2025  17:49                 0 __init__.py
+26.09.2025  17:49    <DIR>          __pycache__
+               3 Datei(en),         31.554 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_vendor\urllib3\contrib\_securetransport\__pycache__
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49            17.493 bindings.cpython-313.pyc
+26.09.2025  17:49            14.810 low_level.cpython-313.pyc
+26.09.2025  17:49               207 __init__.cpython-313.pyc
+               3 Datei(en),         32.510 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_vendor\urllib3\contrib\__pycache__
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49            11.760 appengine.cpython-313.pyc
+26.09.2025  17:49             5.728 ntlmpool.cpython-313.pyc
+26.09.2025  17:49            24.777 pyopenssl.cpython-313.pyc
+26.09.2025  17:49            35.972 securetransport.cpython-313.pyc
+26.09.2025  17:49             7.722 socks.cpython-313.pyc
+26.09.2025  17:49             1.868 _appengine_environ.cpython-313.pyc
+26.09.2025  17:49               190 __init__.cpython-313.pyc
+               7 Datei(en),         88.017 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_vendor\urllib3\packages
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49    <DIR>          backports
+26.09.2025  17:49            34.665 six.py
+26.09.2025  17:49                 0 __init__.py
+26.09.2025  17:49    <DIR>          __pycache__
+               2 Datei(en),         34.665 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_vendor\urllib3\packages\backports
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49             1.417 makefile.py
+26.09.2025  17:49             5.343 weakref_finalize.py
+26.09.2025  17:49                 0 __init__.py
+26.09.2025  17:49    <DIR>          __pycache__
+               3 Datei(en),          6.760 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_vendor\urllib3\packages\backports\__pycache__
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49             1.925 makefile.cpython-313.pyc
+26.09.2025  17:49             7.520 weakref_finalize.cpython-313.pyc
+26.09.2025  17:49               201 __init__.cpython-313.pyc
+               3 Datei(en),          9.646 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_vendor\urllib3\packages\__pycache__
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49            42.011 six.cpython-313.pyc
+26.09.2025  17:49               191 __init__.cpython-313.pyc
+               2 Datei(en),         42.202 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_vendor\urllib3\util
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49             4.901 connection.py
+26.09.2025  17:49             1.605 proxy.py
+26.09.2025  17:49               498 queue.py
+26.09.2025  17:49             3.997 request.py
+26.09.2025  17:49             3.510 response.py
+26.09.2025  17:49            22.050 retry.py
+26.09.2025  17:49             6.895 ssltransport.py
+26.09.2025  17:49            17.460 ssl_.py
+26.09.2025  17:49             5.758 ssl_match_hostname.py
+26.09.2025  17:49            10.168 timeout.py
+26.09.2025  17:49            14.296 url.py
+26.09.2025  17:49             5.403 wait.py
+26.09.2025  17:49             1.155 __init__.py
+26.09.2025  17:49    <DIR>          __pycache__
+              13 Datei(en),         97.696 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_vendor\urllib3\util\__pycache__
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49             4.769 connection.cpython-313.pyc
+26.09.2025  17:49             1.567 proxy.cpython-313.pyc
+26.09.2025  17:49             1.416 queue.cpython-313.pyc
+26.09.2025  17:49             4.136 request.cpython-313.pyc
+26.09.2025  17:49             3.035 response.cpython-313.pyc
+26.09.2025  17:49            21.542 retry.cpython-313.pyc
+26.09.2025  17:49            10.925 ssltransport.cpython-313.pyc
+26.09.2025  17:49            15.491 ssl_.cpython-313.pyc
+26.09.2025  17:49             5.210 ssl_match_hostname.cpython-313.pyc
+26.09.2025  17:49            10.670 timeout.cpython-313.pyc
+26.09.2025  17:49            15.927 url.cpython-313.pyc
+26.09.2025  17:49             4.569 wait.cpython-313.pyc
+26.09.2025  17:49             1.138 __init__.cpython-313.pyc
+              13 Datei(en),        100.395 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_vendor\urllib3\__pycache__
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49            20.719 connection.cpython-313.pyc
+26.09.2025  17:49            36.051 connectionpool.cpython-313.pyc
+26.09.2025  17:49            14.171 exceptions.cpython-313.pyc
+26.09.2025  17:49            10.178 fields.cpython-313.pyc
+26.09.2025  17:49             3.987 filepost.cpython-313.pyc
+26.09.2025  17:49            19.977 poolmanager.cpython-313.pyc
+26.09.2025  17:49             6.959 request.cpython-313.pyc
+26.09.2025  17:49            34.267 response.cpython-313.pyc
+26.09.2025  17:49            16.424 _collections.cpython-313.pyc
+26.09.2025  17:49               210 _version.cpython-313.pyc
+26.09.2025  17:49             3.345 __init__.cpython-313.pyc
+              11 Datei(en),        166.288 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\_vendor\__pycache__
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49             4.586 __init__.cpython-313.pyc
+               1 Datei(en),          4.586 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip\__pycache__
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49               635 __init__.cpython-313.pyc
+26.09.2025  17:49               835 __main__.cpython-313.pyc
+26.09.2025  17:49             2.272 __pip-runner__.cpython-313.pyc
+               3 Datei(en),          3.742 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip-25.2.dist-info
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49                87 entry_points.txt
+26.09.2025  17:49                 4 INSTALLER
+26.09.2025  17:49    <DIR>          licenses
+26.09.2025  17:49             4.744 METADATA
+26.09.2025  17:49            67.267 RECORD
+26.09.2025  17:49                 0 REQUESTED
+26.09.2025  17:49                 4 top_level.txt
+26.09.2025  17:49                91 WHEEL
+               7 Datei(en),         72.197 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip-25.2.dist-info\licenses
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49            11.385 AUTHORS.txt
+26.09.2025  17:49             1.093 LICENSE.txt
+26.09.2025  17:49    <DIR>          src
+               2 Datei(en),         12.478 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip-25.2.dist-info\licenses\src
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49    <DIR>          pip
+               0 Datei(en),              0 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip-25.2.dist-info\licenses\src\pip
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49    <DIR>          _vendor
+               0 Datei(en),              0 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip-25.2.dist-info\licenses\src\pip\_vendor
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49    <DIR>          cachecontrol
+26.09.2025  17:49    <DIR>          certifi
+26.09.2025  17:49    <DIR>          dependency_groups
+26.09.2025  17:49    <DIR>          distlib
+26.09.2025  17:49    <DIR>          distro
+26.09.2025  17:49    <DIR>          idna
+26.09.2025  17:49    <DIR>          msgpack
+26.09.2025  17:49    <DIR>          packaging
+26.09.2025  17:49    <DIR>          pkg_resources
+26.09.2025  17:49    <DIR>          platformdirs
+26.09.2025  17:49    <DIR>          pygments
+26.09.2025  17:49    <DIR>          pyproject_hooks
+26.09.2025  17:49    <DIR>          requests
+26.09.2025  17:49    <DIR>          resolvelib
+26.09.2025  17:49    <DIR>          rich
+26.09.2025  17:49    <DIR>          tomli
+26.09.2025  17:49    <DIR>          tomli_w
+26.09.2025  17:49    <DIR>          truststore
+26.09.2025  17:49    <DIR>          urllib3
+               0 Datei(en),              0 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip-25.2.dist-info\licenses\src\pip\_vendor\cachecontrol
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49               558 LICENSE.txt
+               1 Datei(en),            558 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip-25.2.dist-info\licenses\src\pip\_vendor\certifi
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49               989 LICENSE
+               1 Datei(en),            989 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip-25.2.dist-info\licenses\src\pip\_vendor\dependency_groups
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49             1.099 LICENSE.txt
+               1 Datei(en),          1.099 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip-25.2.dist-info\licenses\src\pip\_vendor\distlib
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49            14.531 LICENSE.txt
+               1 Datei(en),         14.531 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip-25.2.dist-info\licenses\src\pip\_vendor\distro
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49            11.325 LICENSE
+               1 Datei(en),         11.325 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip-25.2.dist-info\licenses\src\pip\_vendor\idna
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49             1.541 LICENSE.md
+               1 Datei(en),          1.541 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip-25.2.dist-info\licenses\src\pip\_vendor\msgpack
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49               614 COPYING
+               1 Datei(en),            614 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip-25.2.dist-info\licenses\src\pip\_vendor\packaging
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49               197 LICENSE
+26.09.2025  17:49            10.174 LICENSE.APACHE
+26.09.2025  17:49             1.344 LICENSE.BSD
+               3 Datei(en),         11.715 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip-25.2.dist-info\licenses\src\pip\_vendor\pkg_resources
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49             1.023 LICENSE
+               1 Datei(en),          1.023 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip-25.2.dist-info\licenses\src\pip\_vendor\platformdirs
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49             1.089 LICENSE
+               1 Datei(en),          1.089 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip-25.2.dist-info\licenses\src\pip\_vendor\pygments
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49             1.331 LICENSE
+               1 Datei(en),          1.331 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip-25.2.dist-info\licenses\src\pip\_vendor\pyproject_hooks
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49             1.081 LICENSE
+               1 Datei(en),          1.081 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip-25.2.dist-info\licenses\src\pip\_vendor\requests
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49            10.142 LICENSE
+               1 Datei(en),         10.142 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip-25.2.dist-info\licenses\src\pip\_vendor\resolvelib
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49               751 LICENSE
+               1 Datei(en),            751 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip-25.2.dist-info\licenses\src\pip\_vendor\rich
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49             1.056 LICENSE
+               1 Datei(en),          1.056 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip-25.2.dist-info\licenses\src\pip\_vendor\tomli
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49             1.072 LICENSE
+26.09.2025  17:49               121 LICENSE-HEADER
+               2 Datei(en),          1.193 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip-25.2.dist-info\licenses\src\pip\_vendor\tomli_w
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49             1.072 LICENSE
+               1 Datei(en),          1.072 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip-25.2.dist-info\licenses\src\pip\_vendor\truststore
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49             1.086 LICENSE
+               1 Datei(en),          1.086 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Lib\site-packages\pip-25.2.dist-info\licenses\src\pip\_vendor\urllib3
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49             1.115 LICENSE.txt
+               1 Datei(en),          1.115 Bytes
+
+ Verzeichnis von C:\verwaltung_db\verwaltung_db\venv\Scripts
+
+26.09.2025  17:49    <DIR>          .
+26.09.2025  17:49    <DIR>          ..
+26.09.2025  17:49             2.188 activate
+26.09.2025  17:49             1.011 activate.bat
+26.09.2025  17:49             2.270 activate.fish
+14.08.2025  15:34             9.031 Activate.ps1
+14.08.2025  15:33               393 deactivate.bat
+26.09.2025  17:49           108.384 pip.exe
+26.09.2025  17:49           108.384 pip3.13.exe
+26.09.2025  17:49           108.384 pip3.exe
+14.08.2025  15:33           255.320 python.exe
+14.08.2025  15:33           251.736 pythonw.exe
+              10 Datei(en),        847.101 Bytes
+
+     Anzahl der angezeigten Dateien:
+             942 Datei(en),     11.253.272 Bytes
+             484 Verzeichnis(se), 901.203.312.640 Bytes frei
