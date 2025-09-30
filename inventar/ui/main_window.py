@@ -313,7 +313,6 @@ class MainWindow(QMainWindow):
                 buttons_layout.addWidget(self.edit_button)
                 buttons_layout.addWidget(self.delete_button)
                 buttons_layout.addWidget(self.deactivate_button)
-                buttons_layout.addWidget(self.reset_button)
                 buttons_layout.addStretch()
                 buttons_layout.addWidget(self.export_excel_button)
                 buttons_layout.addWidget(self.export_csv_button)
@@ -332,6 +331,7 @@ class MainWindow(QMainWindow):
                 zoom_layout.addWidget(QLabel('Zoom'))
                 zoom_layout.addWidget(self.zoom_out_button)
                 zoom_layout.addWidget(self.zoom_in_button)
+                zoom_layout.addWidget(self.reset_button)
                 layout.addLayout(zoom_layout)
 
                 self.status_bar = QStatusBar()
@@ -346,26 +346,14 @@ class MainWindow(QMainWindow):
         def _build_search_box(self) -> QWidget:
                 box = QGroupBox('Suchen')
                 layout = QHBoxLayout(box)
-                self.search_criteria = QComboBox()
-                self.search_criteria.addItems([
-                        'Seriennummer',
-                        'Objekttyp',
-                        'Hersteller',
-                        'Modell',
-                        'Einkaufsdatum',
-                        'Zuweisungsdatum',
-                        'Aktueller Besitzer',
-                        'Anmerkungen',
-                ])
                 self.search_field = QLineEdit()
-                self.search_field.setPlaceholderText('Suchbegriff eingeben ...')
+                self.search_field.setPlaceholderText('In allen Feldern suchen ...')
                 self.search_button = QPushButton()
                 self.search_button.setIcon(QIcon.fromTheme('system-search'))
                 self.search_button.setText('Suchen')
 
-                layout.addWidget(QLabel('Kriterium'))
-                layout.addWidget(self.search_criteria)
                 layout.addWidget(self.search_field)
+                layout.addStretch()
                 layout.addWidget(self.search_button)
                 return box
 
@@ -386,10 +374,18 @@ class MainWindow(QMainWindow):
                 self.filter_modell.setInsertPolicy(QComboBox.NoInsert)
                 self._update_model_filter()
                 self.filter_seriennummer = QLineEdit()
+                self.remove_serial_button = QToolButton()
+                self.remove_serial_button.setText('−')
+                self.remove_serial_button.setToolTip('Seriennummer aus allen Einträgen entfernen')
+                serial_layout = QHBoxLayout()
+                serial_layout.addWidget(self.filter_seriennummer)
+                serial_layout.addWidget(self.remove_serial_button)
+                serial_layout.setContentsMargins(0, 0, 0, 0)
+                serial_layout.setSpacing(4)
                 left_layout.addRow('Objekttyp', self.filter_objekttyp)
                 left_layout.addRow('Hersteller', self.filter_hersteller)
                 left_layout.addRow('Modell', self.filter_modell)
-                left_layout.addRow('Seriennummer', self.filter_seriennummer)
+                left_layout.addRow('Seriennummer', serial_layout)
 
                 right_layout = QFormLayout()
                 self.filter_einkaufsdatum = QDateEdit()
@@ -416,9 +412,14 @@ class MainWindow(QMainWindow):
                 self.filter_anmerkungen = QLineEdit()
                 self.add_owner_button = QToolButton()
                 self.add_owner_button.setText('+')
+                self.add_owner_button.setToolTip('Besitzer zur Auswahlliste hinzufügen')
+                self.remove_owner_button = QToolButton()
+                self.remove_owner_button.setText('−')
+                self.remove_owner_button.setToolTip('Ausgewählten Besitzer aus allen Einträgen entfernen')
                 owner_layout = QHBoxLayout()
                 owner_layout.addWidget(self.filter_besitzer)
                 owner_layout.addWidget(self.add_owner_button)
+                owner_layout.addWidget(self.remove_owner_button)
                 owner_layout.setContentsMargins(0, 0, 0, 0)
                 owner_layout.setSpacing(4)
                 right_layout.addRow('Einkaufsdatum', self.filter_einkaufsdatum)
@@ -462,6 +463,8 @@ class MainWindow(QMainWindow):
                 self.search_button.clicked.connect(self.apply_filters)
                 self.search_field.returnPressed.connect(self.apply_filters)
 
+                self.remove_owner_button.clicked.connect(self._remove_owner_filter_value)
+                self.remove_serial_button.clicked.connect(self._remove_serial_value)
                 self.new_action.triggered.connect(self.create_item)
                 self.edit_action.triggered.connect(self.edit_selected_item)
                 self.delete_action.triggered.connect(self.delete_selected_item)
@@ -571,6 +574,93 @@ class MainWindow(QMainWindow):
                         self.filter_besitzer.addItem(value)
                 self.filter_besitzer.setCurrentText(value)
 
+        def _remove_owner_filter_value(self) -> None:
+                value = self.filter_besitzer.currentText().strip()
+                if not value:
+                        QMessageBox.information(self, 'Eintrag entfernen', 'Bitte zuerst einen Besitzer auswählen.')
+                        return
+                if QMessageBox.question(
+                        self,
+                        'Besitzer entfernen',
+                        f"Soll der Besitzer '{value}' aus allen Einträgen entfernt werden?",
+                ) != QMessageBox.Yes:
+                        return
+                try:
+                        removed = self.repository.clear_owner(value)
+                except RepositoryError as exc:
+                        QMessageBox.critical(self, 'Fehler', str(exc))
+                        return
+                self._load_items()
+                if self._has_active_filters():
+                        self.apply_filters()
+                message = (
+                        f'{removed} Einträge ohne Besitzer aktualisiert'
+                        if removed
+                        else 'Keine passenden Einträge gefunden'
+                )
+                self.statusBar().showMessage(message, 5000)
+                self.filter_besitzer.setCurrentIndex(0)
+
+        def _remove_serial_value(self) -> None:
+                value = self.filter_seriennummer.text().strip()
+                if not value:
+                        current = self._current_item()
+                        if current and current.seriennummer:
+                                value = current.seriennummer
+                        else:
+                                QMessageBox.information(
+                                        self,
+                                        'Seriennummer entfernen',
+                                        'Bitte geben Sie eine Seriennummer ein oder wählen Sie einen Eintrag aus.',
+                                )
+                                return
+                if QMessageBox.question(
+                        self,
+                        'Seriennummer entfernen',
+                        f"Soll die Seriennummer '{value}' aus allen Einträgen entfernt werden?",
+                ) != QMessageBox.Yes:
+                        return
+                try:
+                        removed = self.repository.clear_serial_number(value)
+                except RepositoryError as exc:
+                        QMessageBox.critical(self, 'Fehler', str(exc))
+                        return
+                self.filter_seriennummer.clear()
+                self._load_items()
+                if self._has_active_filters():
+                        self.apply_filters()
+                message = (
+                        f'{removed} Seriennummern entfernt'
+                        if removed
+                        else 'Keine Einträge mit dieser Seriennummer gefunden'
+                )
+                self.statusBar().showMessage(message, 5000)
+
+        def _has_active_filters(self) -> bool:
+                if self.search_field.text().strip():
+                        return True
+
+                widgets: list[QWidget] = [
+                        self.filter_objekttyp,
+                        self.filter_hersteller,
+                        self.filter_modell,
+                        self.filter_besitzer,
+                        self.filter_anmerkungen,
+                        self.filter_seriennummer,
+                ]
+                for widget in widgets:
+                        if isinstance(widget, QComboBox):
+                                if widget.currentText().strip():
+                                        return True
+                        elif widget.text().strip():  # type: ignore[union-attr]
+                                return True
+
+                for date_widget in [self.filter_einkaufsdatum, self.filter_zuweisungsdatum]:
+                        if date_widget.text().strip():
+                                return True
+
+                return False
+
         def _update_status(self) -> None:
                 total = len(self.table_model._items)
                 self.statusBar().showMessage(f'Gesamtobjekte: {total}')
@@ -598,26 +688,10 @@ class MainWindow(QMainWindow):
         def apply_filters(self) -> None:
                 filters: dict[str, str] = {}
                 status_message: str | None = None
-                criteria_key = {
-                        'Seriennummer': 'seriennummer',
-                        'Objekttyp': 'objekttyp',
-                        'Hersteller': 'hersteller',
-                        'Modell': 'modell',
-                        'Einkaufsdatum': 'einkaufsdatum',
-                        'Zuweisungsdatum': 'zuweisungsdatum',
-                        'Aktueller Besitzer': 'aktueller_besitzer',
-                        'Anmerkungen': 'anmerkungen',
-                }
-                selected_key = criteria_key.get(self.search_criteria.currentText(), 'objekttyp')
+
                 search_text = self.search_field.text().strip()
                 if search_text:
-                        if selected_key in {'einkaufsdatum', 'zuweisungsdatum'}:
-                                try:
-                                        filters[selected_key] = ItemValidator.convert_display_to_iso(search_text)
-                                except ValueError:
-                                        status_message = 'Ungültiges Datum im Suchfeld – Format TT.MM.JJJJ verwenden.'
-                        else:
-                                filters[selected_key] = search_text
+                        filters['__global__'] = search_text
 
                 def _widget_value(widget: QWidget) -> str:
                         if isinstance(widget, QComboBox):

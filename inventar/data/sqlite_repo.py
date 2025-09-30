@@ -112,7 +112,7 @@ class SQLiteRepository(AbstractRepository):
                 query = "SELECT * FROM items"
                 params: list = []
                 conditions: list[str] = []
-                allowed_keys = {
+                allowed_keys = [
                         'objekttyp',
                         'hersteller',
                         'modell',
@@ -121,28 +121,51 @@ class SQLiteRepository(AbstractRepository):
                         'zuweisungsdatum',
                         'aktueller_besitzer',
                         'anmerkungen',
-                }
+                ]
+                global_search = None
                 if filters:
-                        for key, value in filters.items():
+                        filters_copy = dict(filters)
+                        global_search = filters_copy.pop('__global__', None)
+                        for key, value in filters_copy.items():
                                 if value is None or value == "":
                                         continue
                                 if key not in allowed_keys:
                                         continue
                                 conditions.append(f"{key} LIKE ?")
                                 params.append(f"%{value}%")
+                if global_search:
+                        like_value = f"%{global_search}%"
+                        like_conditions = [f"{key} LIKE ?" for key in allowed_keys]
+                        conditions.append("(" + " OR ".join(like_conditions) + ")")
+                        params.extend([like_value] * len(like_conditions))
                 if conditions:
                         query += " WHERE " + " AND ".join(conditions)
                 query += " ORDER BY objekttyp COLLATE NOCASE, modell COLLATE NOCASE"
                 rows = conn.execute(query, params).fetchall()
-                return [Item.from_row(row) for row in rows]
+                items: list[Item] = []
+                notes_updated = False
+                for row in rows:
+                        item = Item.from_row(row)
+                        updated_item = item.with_stillgelegt_note()
+                        if updated_item.anmerkungen != item.anmerkungen and updated_item.id is not None:
+                                conn.execute(
+                                        "UPDATE items SET anmerkungen = ? WHERE id = ?",
+                                        (updated_item.anmerkungen, updated_item.id),
+                                )
+                                notes_updated = True
+                        items.append(updated_item)
+                if notes_updated:
+                        conn.commit()
+                return items
 
         def get(self, item_id: int) -> Optional[Item]:
                 conn = self._ensure_conn()
                 row = conn.execute("SELECT * FROM items WHERE id = ?", (item_id,)).fetchone()
-                return Item.from_row(row) if row else None
+                return Item.from_row(row).with_stillgelegt_note() if row else None
 
         def create(self, item: Item) -> Item:
                 conn = self._ensure_conn()
+                item = item.with_stillgelegt_note()
                 cursor = conn.execute(
                         """
                         INSERT INTO items (
@@ -167,6 +190,7 @@ class SQLiteRepository(AbstractRepository):
 
         def update(self, item_id: int, item: Item) -> Item:
                 conn = self._ensure_conn()
+                item = item.with_stillgelegt_note()
                 conn.execute(
                         """
                         UPDATE items SET
@@ -197,12 +221,16 @@ class SQLiteRepository(AbstractRepository):
 
         def deactivate(self, item_id: int) -> Item:
                 conn = self._ensure_conn()
-                conn.execute("UPDATE items SET stillgelegt = 1 WHERE id = ?", (item_id,))
-                conn.commit()
                 item = self.get(item_id)
                 if not item:
                         raise RepositoryError('Item nicht gefunden')
-                return item
+                updated = item.copy(stillgelegt=True).with_stillgelegt_note()
+                conn.execute(
+                        "UPDATE items SET stillgelegt = 1, anmerkungen = ? WHERE id = ?",
+                        (updated.anmerkungen, item_id),
+                )
+                conn.commit()
+                return updated
 
         def distinct_owners(self) -> List[str]:
                 conn = self._ensure_conn()
@@ -210,6 +238,24 @@ class SQLiteRepository(AbstractRepository):
                         "SELECT DISTINCT aktueller_besitzer FROM items WHERE aktueller_besitzer <> '' ORDER BY aktueller_besitzer COLLATE NOCASE"
                 ).fetchall()
                 return [row[0] for row in rows if row[0]]
+
+        def clear_owner(self, owner: str) -> int:
+                conn = self._ensure_conn()
+                cursor = conn.execute(
+                        "UPDATE items SET aktueller_besitzer = '' WHERE aktueller_besitzer = ?",
+                        (owner,),
+                )
+                conn.commit()
+                return cursor.rowcount
+
+        def clear_serial_number(self, serial_number: str) -> int:
+                conn = self._ensure_conn()
+                cursor = conn.execute(
+                        "UPDATE items SET seriennummer = '' WHERE seriennummer = ?",
+                        (serial_number,),
+                )
+                conn.commit()
+                return cursor.rowcount
 
         def distinct_object_types(self) -> List[str]:
                 conn = self._ensure_conn()
