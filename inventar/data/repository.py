@@ -38,6 +38,10 @@ class AbstractRepository(abc.ABC):
                 """Löscht ein Item."""
 
         @abc.abstractmethod
+        def deactivate(self, item_id: int) -> Item:
+                """Markiert ein Item als stillgelegt."""
+
+        @abc.abstractmethod
         def distinct_owners(self) -> List[str]:
                 """Liefert distinct Besitzer für die ComboBox."""
 

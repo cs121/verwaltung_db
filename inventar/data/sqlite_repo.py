@@ -17,7 +17,8 @@ CREATE TABLE IF NOT EXISTS items (
         einkaufsdatum TEXT,
         zuweisungsdatum TEXT,
         aktueller_besitzer TEXT,
-        anmerkungen TEXT
+        anmerkungen TEXT,
+        stillgelegt INTEGER DEFAULT 0
 );
 """
 
@@ -53,6 +54,7 @@ class SQLiteRepository(AbstractRepository):
                         'zuweisungsdatum',
                         'aktueller_besitzer',
                         'anmerkungen',
+                        'stillgelegt',
                 ]
                 if not columns or columns == expected:
                         return
@@ -67,15 +69,17 @@ class SQLiteRepository(AbstractRepository):
                                 einkaufsdatum TEXT,
                                 zuweisungsdatum TEXT,
                                 aktueller_besitzer TEXT,
-                                anmerkungen TEXT
+                                anmerkungen TEXT,
+                                stillgelegt INTEGER DEFAULT 0
                         )
                         """
                 )
                 has_assignment = 'zuweisungsdatum' in columns
+                has_deactivation = 'stillgelegt' in columns
                 copy_query = """
                 INSERT INTO items_migrated (
                         id, objekttyp, hersteller, modell, seriennummer,
-                        einkaufsdatum, zuweisungsdatum, aktueller_besitzer, anmerkungen
+                        einkaufsdatum, zuweisungsdatum, aktueller_besitzer, anmerkungen, stillgelegt
                 )
                 SELECT
                         id,
@@ -86,10 +90,12 @@ class SQLiteRepository(AbstractRepository):
                         COALESCE(einkaufsdatum, ''),
                         {zuweisungsdatum},
                         COALESCE(aktueller_besitzer, ''),
-                        COALESCE(anmerkungen, '')
+                        COALESCE(anmerkungen, ''),
+                        {stillgelegt}
                 FROM items
                 """.format(
-                        zuweisungsdatum="COALESCE(zuweisungsdatum, '')" if has_assignment else "''"
+                        zuweisungsdatum="COALESCE(zuweisungsdatum, '')" if has_assignment else "''",
+                        stillgelegt="COALESCE(stillgelegt, 0)" if has_deactivation else "0",
                 )
                 conn.execute(copy_query)
                 conn.execute("DROP TABLE items")
@@ -105,6 +111,7 @@ class SQLiteRepository(AbstractRepository):
                 conn = self._ensure_conn()
                 query = "SELECT * FROM items"
                 params: list = []
+                conditions = ["stillgelegt = 0"]
                 allowed_keys = {
                         'objekttyp',
                         'hersteller',
@@ -116,7 +123,6 @@ class SQLiteRepository(AbstractRepository):
                         'anmerkungen',
                 }
                 if filters:
-                        conditions = []
                         for key, value in filters.items():
                                 if value is None or value == "":
                                         continue
@@ -124,8 +130,8 @@ class SQLiteRepository(AbstractRepository):
                                         continue
                                 conditions.append(f"{key} LIKE ?")
                                 params.append(f"%{value}%")
-                        if conditions:
-                                query += " WHERE " + " AND ".join(conditions)
+                if conditions:
+                        query += " WHERE " + " AND ".join(conditions)
                 query += " ORDER BY objekttyp COLLATE NOCASE, modell COLLATE NOCASE"
                 rows = conn.execute(query, params).fetchall()
                 return [Item.from_row(row) for row in rows]
@@ -141,8 +147,8 @@ class SQLiteRepository(AbstractRepository):
                         """
                         INSERT INTO items (
                                 objekttyp, hersteller, modell, seriennummer,
-                                einkaufsdatum, zuweisungsdatum, aktueller_besitzer, anmerkungen
-                        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                                einkaufsdatum, zuweisungsdatum, aktueller_besitzer, anmerkungen, stillgelegt
+                        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
                         """,
                         (
                                 item.objekttyp,
@@ -153,6 +159,7 @@ class SQLiteRepository(AbstractRepository):
                                 item.zuweisungsdatum,
                                 item.aktueller_besitzer,
                                 item.anmerkungen,
+                                int(item.stillgelegt),
                         ),
                 )
                 conn.commit()
@@ -164,7 +171,7 @@ class SQLiteRepository(AbstractRepository):
                         """
                         UPDATE items SET
                                 objekttyp=?, hersteller=?, modell=?, seriennummer=?,
-                                einkaufsdatum=?, zuweisungsdatum=?, aktueller_besitzer=?, anmerkungen=?
+                                einkaufsdatum=?, zuweisungsdatum=?, aktueller_besitzer=?, anmerkungen=?, stillgelegt=?
                         WHERE id = ?
                         """,
                         (
@@ -176,6 +183,7 @@ class SQLiteRepository(AbstractRepository):
                                 item.zuweisungsdatum,
                                 item.aktueller_besitzer,
                                 item.anmerkungen,
+                                int(item.stillgelegt),
                                 item_id,
                         ),
                 )
@@ -187,30 +195,39 @@ class SQLiteRepository(AbstractRepository):
                 conn.execute("DELETE FROM items WHERE id = ?", (item_id,))
                 conn.commit()
 
+        def deactivate(self, item_id: int) -> Item:
+                conn = self._ensure_conn()
+                conn.execute("UPDATE items SET stillgelegt = 1 WHERE id = ?", (item_id,))
+                conn.commit()
+                item = self.get(item_id)
+                if not item:
+                        raise RepositoryError('Item nicht gefunden')
+                return item
+
         def distinct_owners(self) -> List[str]:
                 conn = self._ensure_conn()
                 rows = conn.execute(
-                        "SELECT DISTINCT aktueller_besitzer FROM items WHERE aktueller_besitzer <> '' ORDER BY aktueller_besitzer COLLATE NOCASE"
+                        "SELECT DISTINCT aktueller_besitzer FROM items WHERE aktueller_besitzer <> '' AND stillgelegt = 0 ORDER BY aktueller_besitzer COLLATE NOCASE"
                 ).fetchall()
                 return [row[0] for row in rows if row[0]]
 
         def distinct_object_types(self) -> List[str]:
                 conn = self._ensure_conn()
                 rows = conn.execute(
-                        "SELECT DISTINCT objekttyp FROM items WHERE objekttyp <> '' ORDER BY objekttyp COLLATE NOCASE"
+                        "SELECT DISTINCT objekttyp FROM items WHERE objekttyp <> '' AND stillgelegt = 0 ORDER BY objekttyp COLLATE NOCASE"
                 ).fetchall()
                 return [row[0] for row in rows if row[0]]
 
         def distinct_manufacturers(self) -> List[str]:
                 conn = self._ensure_conn()
                 rows = conn.execute(
-                        "SELECT DISTINCT hersteller FROM items WHERE hersteller <> '' ORDER BY hersteller COLLATE NOCASE"
+                        "SELECT DISTINCT hersteller FROM items WHERE hersteller <> '' AND stillgelegt = 0 ORDER BY hersteller COLLATE NOCASE"
                 ).fetchall()
                 return [row[0] for row in rows if row[0]]
 
         def distinct_models(self) -> List[str]:
                 conn = self._ensure_conn()
                 rows = conn.execute(
-                        "SELECT DISTINCT modell FROM items WHERE modell <> '' ORDER BY modell COLLATE NOCASE"
+                        "SELECT DISTINCT modell FROM items WHERE modell <> '' AND stillgelegt = 0 ORDER BY modell COLLATE NOCASE"
                 ).fetchall()
                 return [row[0] for row in rows if row[0]]

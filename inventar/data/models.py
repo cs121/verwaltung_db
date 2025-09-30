@@ -18,6 +18,7 @@ class Item:
         zuweisungsdatum: str = field(default='')
         aktueller_besitzer: str = field(default='')
         anmerkungen: str = field(default='')
+        stillgelegt: bool = field(default=False)
 
         def to_dict(self) -> dict:
                 """Konvertiert das Item in ein Dictionary."""
@@ -32,6 +33,7 @@ class Item:
                         'zuweisungsdatum': self.zuweisungsdatum,
                         'aktueller_besitzer': self.aktueller_besitzer,
                         'anmerkungen': self.anmerkungen,
+                        'stillgelegt': self.stillgelegt,
                 }
 
         @classmethod
@@ -49,6 +51,7 @@ class Item:
                                 zuweisungsdatum=row.get('zuweisungsdatum', ''),
                                 aktueller_besitzer=row.get('aktueller_besitzer', ''),
                                 anmerkungen=row.get('anmerkungen', ''),
+                                stillgelegt=bool(row.get('stillgelegt', 0)),
                         )
                 return cls(
                         id=row[0],
@@ -60,6 +63,7 @@ class Item:
                         zuweisungsdatum=row[6],
                         aktueller_besitzer=row[7],
                         anmerkungen=row[8],
+                        stillgelegt=bool(row[9]) if len(row) > 9 else False,
                 )
 
         def copy(self, **updates: object) -> Item:

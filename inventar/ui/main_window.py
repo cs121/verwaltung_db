@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import List, Optional
 
 from PySide6.QtCore import QAbstractTableModel, QModelIndex, Qt, QDate
-from PySide6.QtGui import QAction, QIcon, QKeySequence
+from PySide6.QtGui import QAction, QIcon, QKeySequence, QColor
 from PySide6.QtWidgets import (
         QAbstractItemView,
         QApplication,
@@ -232,6 +232,10 @@ class ItemTableModel(QAbstractTableModel):
                         return value
                 if role == Qt.UserRole:
                         return item
+                if role == Qt.ForegroundRole and getattr(item, 'stillgelegt', False):
+                        return QColor(Qt.red)
+                if role == Qt.BackgroundRole and getattr(item, 'stillgelegt', False):
+                        return QColor(255, 205, 210)
                 return None
 
         def headerData(self, section: int, orientation: Qt.Orientation, role: int = Qt.DisplayRole):  # type: ignore[override]
@@ -296,6 +300,7 @@ class MainWindow(QMainWindow):
                 self.new_button = QPushButton('Neues Objekt')
                 self.edit_button = QPushButton('Bearbeiten')
                 self.delete_button = QPushButton('Löschen')
+                self.deactivate_button = QPushButton('Stilllegen')
                 self.reset_button = QPushButton('Reset')
                 self.export_excel_button = QPushButton('Excel')
                 self.export_csv_button = QPushButton('CSV')
@@ -307,6 +312,7 @@ class MainWindow(QMainWindow):
                 buttons_layout.addWidget(self.new_button)
                 buttons_layout.addWidget(self.edit_button)
                 buttons_layout.addWidget(self.delete_button)
+                buttons_layout.addWidget(self.deactivate_button)
                 buttons_layout.addWidget(self.reset_button)
                 buttons_layout.addStretch()
                 buttons_layout.addWidget(self.export_excel_button)
@@ -443,6 +449,7 @@ class MainWindow(QMainWindow):
                 self.new_button.clicked.connect(self.create_item)
                 self.edit_button.clicked.connect(self.edit_selected_item)
                 self.delete_button.clicked.connect(self.delete_selected_item)
+                self.deactivate_button.clicked.connect(self.deactivate_selected_item)
                 self.reset_button.clicked.connect(self.reset_filters)
                 self.export_excel_button.clicked.connect(partial(self.export_data, 'xlsx'))
                 self.export_csv_button.clicked.connect(partial(self.export_data, 'csv'))
@@ -659,6 +666,7 @@ class MainWindow(QMainWindow):
                         zuweisungsdatum=data['zuweisungsdatum'],
                         aktueller_besitzer=data['aktueller_besitzer'],
                         anmerkungen=data['anmerkungen'],
+                        stillgelegt=dialog.item.stillgelegt if dialog.item else False,
                 )
 
         def create_item(self) -> None:
@@ -719,6 +727,35 @@ class MainWindow(QMainWindow):
                         return
                 self._load_items()
                 self.statusBar().showMessage('Objekt gelöscht', 4000)
+
+        def deactivate_selected_item(self) -> None:
+                selected = self._current_item()
+                if not selected:
+                        return
+                if QMessageBox.question(
+                        self,
+                        'Stilllegen bestätigen',
+                        'Soll das ausgewählte Objekt stillgelegt werden?',
+                ) != QMessageBox.Yes:
+                        return
+                if selected.id is None:
+                        QMessageBox.warning(self, 'Stilllegen', 'Das Objekt besitzt keine gültige ID.')
+                        return
+                try:
+                        # Visuelles Feedback, bevor der Eintrag aus der Tabelle entfernt wird
+                        index_list = self.table.selectionModel().selectedRows()
+                        if index_list:
+                                row = index_list[0].row()
+                                self.table_model._items[row] = selected.copy(stillgelegt=True)
+                                top_left = self.table_model.index(row, 0)
+                                bottom_right = self.table_model.index(row, len(COLUMN_KEYS) - 1)
+                                self.table_model.dataChanged.emit(top_left, bottom_right, [Qt.ForegroundRole, Qt.BackgroundRole])
+                        self.repository.deactivate(selected.id)
+                except RepositoryError as exc:
+                        QMessageBox.critical(self, 'Fehler', str(exc))
+                        return
+                self._load_items()
+                self.statusBar().showMessage('Objekt stillgelegt', 4000)
 
         def _current_item(self) -> Optional[Item]:
                 selection = self.table.selectionModel()
