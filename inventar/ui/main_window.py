@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import datetime
 from functools import partial
 from pathlib import Path
-from typing import List, Optional
+from typing import Iterable, List, Optional
 
 from PySide6.QtCore import QAbstractTableModel, QModelIndex, Qt, QDate
 from PySide6.QtGui import QAction, QIcon, QKeySequence, QColor
@@ -650,6 +650,41 @@ class MainWindow(QMainWindow):
                                 existing.add(key)
                 return merged
 
+        @staticmethod
+        def _sorted_unique(values: Iterable[str]) -> list[str]:
+                unique: dict[str, str] = {}
+                for value in values:
+                        text = str(value).strip()
+                        if not text:
+                                continue
+                        key = text.casefold()
+                        if key not in unique:
+                                unique[key] = text
+                return sorted(unique.values(), key=str.casefold)
+
+        def _available_object_types(self) -> list[str]:
+                return self._sorted_unique(self.object_types)
+
+        def _available_manufacturers(self) -> list[str]:
+                repo_values = self.repository.distinct_manufacturers()
+                merged = self._merge_custom_values(repo_values, self.custom_manufacturers)
+                return self._sorted_unique(merged)
+
+        def _available_models(self) -> list[str]:
+                repo_values = self.repository.distinct_models()
+                merged = self._merge_custom_values(repo_values, self.custom_models)
+                return self._sorted_unique(merged)
+
+        def _available_owners(self) -> list[str]:
+                repo_values = self.repository.distinct_owners()
+                filter_values: list[str] = []
+                if hasattr(self, 'filter_besitzer'):
+                        filter_values = [
+                                self.filter_besitzer.itemText(index)
+                                for index in range(self.filter_besitzer.count())
+                        ]
+                return self._sorted_unique(list(repo_values) + filter_values)
+
         def _refresh_object_types(self) -> None:
                 repo_types = self.repository.distinct_object_types()
                 self.object_types = self.settings.sync_object_types(repo_types)
@@ -1011,10 +1046,10 @@ class MainWindow(QMainWindow):
         def create_item(self) -> None:
                 dialog = ItemDialog(
                         self,
-                        owners=self.repository.distinct_owners(),
-                        object_types=self.object_types,
-                        manufacturers=self.repository.distinct_manufacturers(),
-                        models=self.repository.distinct_models(),
+                        owners=self._available_owners(),
+                        object_types=self._available_object_types(),
+                        manufacturers=self._available_manufacturers(),
+                        models=self._available_models(),
                 )
                 if dialog.exec() == ItemDialog.Accepted:
                         item = self._collect_dialog_data(dialog)
@@ -1035,10 +1070,10 @@ class MainWindow(QMainWindow):
                 dialog = ItemDialog(
                         self,
                         item=selected,
-                        owners=self.repository.distinct_owners(),
-                        object_types=self.object_types,
-                        manufacturers=self.repository.distinct_manufacturers(),
-                        models=self.repository.distinct_models(),
+                        owners=self._available_owners(),
+                        object_types=self._available_object_types(),
+                        manufacturers=self._available_manufacturers(),
+                        models=self._available_models(),
                 )
                 if dialog.exec() != ItemDialog.Accepted:
                         return
