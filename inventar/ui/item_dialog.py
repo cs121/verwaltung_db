@@ -79,23 +79,6 @@ class ItemDialog(QDialog):
                 self.aktueller_besitzer_combo.addItems(sorted(self.owners))
                 self.anmerkungen_edit = QPlainTextEdit()
 
-                def _shrink_widget(widget: QWidget, minimum: int = 16) -> None:
-                        hint = widget.sizeHint()
-                        if hint.isValid():
-                                widget.setFixedHeight(max(minimum, int(hint.height() * 0.5)))
-
-                for field in [
-                        self.objekttyp_combo,
-                        self.hersteller_combo,
-                        self.modell_combo,
-                        self.seriennummer_edit,
-                        self.einkaufsdatum_edit,
-                        self.zuweisungsdatum_edit,
-                        self.aktueller_besitzer_combo,
-                ]:
-                        _shrink_widget(field)
-                _shrink_widget(self.anmerkungen_edit, minimum=40)
-
                 form_layout.addWidget(QLabel('Objekttyp'), 0, 0)
                 form_layout.addWidget(self.objekttyp_combo, 0, 1)
                 form_layout.addWidget(QLabel('Hersteller'), 1, 0)

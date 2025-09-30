@@ -111,7 +111,7 @@ class SQLiteRepository(AbstractRepository):
                 conn = self._ensure_conn()
                 query = "SELECT * FROM items"
                 params: list = []
-                conditions = ["stillgelegt = 0"]
+                conditions: list[str] = []
                 allowed_keys = {
                         'objekttyp',
                         'hersteller',
@@ -207,27 +207,27 @@ class SQLiteRepository(AbstractRepository):
         def distinct_owners(self) -> List[str]:
                 conn = self._ensure_conn()
                 rows = conn.execute(
-                        "SELECT DISTINCT aktueller_besitzer FROM items WHERE aktueller_besitzer <> '' AND stillgelegt = 0 ORDER BY aktueller_besitzer COLLATE NOCASE"
+                        "SELECT DISTINCT aktueller_besitzer FROM items WHERE aktueller_besitzer <> '' ORDER BY aktueller_besitzer COLLATE NOCASE"
                 ).fetchall()
                 return [row[0] for row in rows if row[0]]
 
         def distinct_object_types(self) -> List[str]:
                 conn = self._ensure_conn()
                 rows = conn.execute(
-                        "SELECT DISTINCT objekttyp FROM items WHERE objekttyp <> '' AND stillgelegt = 0 ORDER BY objekttyp COLLATE NOCASE"
+                        "SELECT DISTINCT objekttyp FROM items WHERE objekttyp <> '' ORDER BY objekttyp COLLATE NOCASE"
                 ).fetchall()
                 return [row[0] for row in rows if row[0]]
 
         def distinct_manufacturers(self) -> List[str]:
                 conn = self._ensure_conn()
                 rows = conn.execute(
-                        "SELECT DISTINCT hersteller FROM items WHERE hersteller <> '' AND stillgelegt = 0 ORDER BY hersteller COLLATE NOCASE"
+                        "SELECT DISTINCT hersteller FROM items WHERE hersteller <> '' ORDER BY hersteller COLLATE NOCASE"
                 ).fetchall()
                 return [row[0] for row in rows if row[0]]
 
         def distinct_models(self) -> List[str]:
                 conn = self._ensure_conn()
                 rows = conn.execute(
-                        "SELECT DISTINCT modell FROM items WHERE modell <> '' AND stillgelegt = 0 ORDER BY modell COLLATE NOCASE"
+                        "SELECT DISTINCT modell FROM items WHERE modell <> '' ORDER BY modell COLLATE NOCASE"
                 ).fetchall()
                 return [row[0] for row in rows if row[0]]
