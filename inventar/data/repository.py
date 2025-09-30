@@ -46,6 +46,14 @@ class AbstractRepository(abc.ABC):
                 """Liefert distinct Besitzer für die ComboBox."""
 
         @abc.abstractmethod
+        def clear_owner(self, owner: str) -> int:
+                """Entfernt einen Besitzer aus allen Einträgen und liefert die Anzahl der Aktualisierungen."""
+
+        @abc.abstractmethod
+        def clear_serial_number(self, serial_number: str) -> int:
+                """Entfernt eine Seriennummer aus allen Einträgen und liefert die Anzahl der Aktualisierungen."""
+
+        @abc.abstractmethod
         def distinct_object_types(self) -> List[str]:
                 """Liefert distinct Objekttypen für die ComboBox."""
 

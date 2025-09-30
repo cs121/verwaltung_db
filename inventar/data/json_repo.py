@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import List, Optional
+from typing import Iterable, List, Optional
 
 from .models import Item
 from .repository import AbstractRepository, RepositoryError
@@ -37,39 +37,77 @@ class JSONRepository(AbstractRepository):
                 return max((item.id or 0 for item in self.items), default=0) + 1
 
         def list(self, filters: Optional[dict] = None) -> List[Item]:
+                self._ensure_stillgelegt_notes()
                 items = list(self.items)
                 if filters is None:
-                        return sorted(
-                                items,
-                                key=lambda item: (
-                                        (item.objekttyp or '').lower(),
-                                        (item.modell or '').lower(),
-                                ),
-                        )
+                        return self._sorted_items(item.with_stillgelegt_note() for item in items)
+
+                filters_copy = dict(filters)
+                global_search = filters_copy.pop('__global__', None)
                 filtered = items
-                for key, value in filters.items():
+                for key, value in filters_copy.items():
                         if not value:
                                 continue
                         value_lower = str(value).lower()
                         filtered = [item for item in filtered if value_lower in str(getattr(item, key, '')).lower()]
+
+                if global_search:
+                        allowed_keys = [
+                                'objekttyp',
+                                'hersteller',
+                                'modell',
+                                'seriennummer',
+                                'einkaufsdatum',
+                                'zuweisungsdatum',
+                                'aktueller_besitzer',
+                                'anmerkungen',
+                        ]
+                        search_lower = str(global_search).lower()
+
+                        def matches_any_field(item: Item) -> bool:
+                                return any(
+                                        search_lower in str(getattr(item, key, '')).lower()
+                                        for key in allowed_keys
+                                )
+
+                        filtered = [item for item in filtered if matches_any_field(item)]
+
+                return self._sorted_items(item.with_stillgelegt_note() for item in filtered)
+
+        @staticmethod
+        def _sorted_items(items: Iterable[Item]) -> List[Item]:
+                prepared = [item if isinstance(item, Item) else Item.from_row(item) for item in items]
                 return sorted(
-                        filtered,
+                        prepared,
                         key=lambda item: (
                                 (item.objekttyp or '').lower(),
                                 (item.modell or '').lower(),
                         ),
                 )
 
+        def _ensure_stillgelegt_notes(self) -> None:
+                changed = False
+                for index, item in enumerate(self.items):
+                        updated_item = item.with_stillgelegt_note()
+                        if updated_item.anmerkungen != item.anmerkungen:
+                                self.items[index] = updated_item
+                                changed = True
+                if changed:
+                        self._save()
+
         def get(self, item_id: int) -> Optional[Item]:
-                return next((item for item in self.items if item.id == item_id), None)
+                item = next((item for item in self.items if item.id == item_id), None)
+                return item.with_stillgelegt_note() if item else None
 
         def create(self, item: Item) -> Item:
+                item = item.with_stillgelegt_note()
                 new_item = item.copy(id=self._next_id())
                 self.items.append(new_item)
                 self._save()
                 return new_item
 
         def update(self, item_id: int, item: Item) -> Item:
+                item = item.with_stillgelegt_note()
                 for index, existing in enumerate(self.items):
                         if existing.id == item_id:
                                 self.items[index] = item.copy(id=item_id)
@@ -84,7 +122,7 @@ class JSONRepository(AbstractRepository):
         def deactivate(self, item_id: int) -> Item:
                 for index, existing in enumerate(self.items):
                         if existing.id == item_id:
-                                updated = existing.copy(stillgelegt=True)
+                                updated = existing.copy(stillgelegt=True).with_stillgelegt_note()
                                 self.items[index] = updated
                                 self._save()
                                 return updated
@@ -96,6 +134,32 @@ class JSONRepository(AbstractRepository):
                         for item in self.items
                         if item.aktueller_besitzer
                 })
+
+        def clear_owner(self, owner: str) -> int:
+                owner = owner.strip()
+                if not owner:
+                        return 0
+                updated = 0
+                for index, item in enumerate(self.items):
+                        if item.aktueller_besitzer == owner:
+                                self.items[index] = item.copy(aktueller_besitzer='')
+                                updated += 1
+                if updated:
+                        self._save()
+                return updated
+
+        def clear_serial_number(self, serial_number: str) -> int:
+                serial_number = serial_number.strip()
+                if not serial_number:
+                        return 0
+                updated = 0
+                for index, item in enumerate(self.items):
+                        if item.seriennummer == serial_number:
+                                self.items[index] = item.copy(seriennummer='')
+                                updated += 1
+                if updated:
+                        self._save()
+                return updated
 
         def distinct_object_types(self) -> List[str]:
                 return sorted({

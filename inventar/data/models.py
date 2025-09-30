@@ -73,6 +73,25 @@ class Item:
                 data.update(updates)
                 return Item(**data)
 
+        def with_stillgelegt_note(self) -> Item:
+                """Stellt sicher, dass stillgelegte Einträge eine Notiz tragen."""
+
+                if not self.stillgelegt:
+                        return self
+
+                note = self.anmerkungen or ""
+                if "stillgelegt" in note.lower():
+                        # Gleiche Zeichenkette zurückgeben, um unnötige Kopien zu vermeiden.
+                        return self if note == self.anmerkungen else self.copy(anmerkungen=note)
+
+                note_stripped = note.strip()
+                if note_stripped:
+                        separator = "\n" if not note.endswith("\n") else ""
+                        updated_note = f"{note}{separator}Stillgelegt"
+                else:
+                        updated_note = "Stillgelegt"
+                return self.copy(anmerkungen=updated_note)
+
 
 def iso_date_or_today(value: str | None) -> str:
         """Hilfsfunktion um sicher ISO-Daten zu liefern."""
