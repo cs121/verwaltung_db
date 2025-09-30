@@ -37,16 +37,28 @@ class JSONRepository(AbstractRepository):
                 return max((item.id or 0 for item in self.items), default=0) + 1
 
         def list(self, filters: Optional[dict] = None) -> List[Item]:
-                active_items = [item for item in self.items if not item.stillgelegt]
-                if not filters:
-                        return list(active_items)
-                filtered = active_items
+                items = list(self.items)
+                if filters is None:
+                        return sorted(
+                                items,
+                                key=lambda item: (
+                                        (item.objekttyp or '').lower(),
+                                        (item.modell or '').lower(),
+                                ),
+                        )
+                filtered = items
                 for key, value in filters.items():
                         if not value:
                                 continue
                         value_lower = str(value).lower()
                         filtered = [item for item in filtered if value_lower in str(getattr(item, key, '')).lower()]
-                return filtered
+                return sorted(
+                        filtered,
+                        key=lambda item: (
+                                (item.objekttyp or '').lower(),
+                                (item.modell or '').lower(),
+                        ),
+                )
 
         def get(self, item_id: int) -> Optional[Item]:
                 return next((item for item in self.items if item.id == item_id), None)
@@ -82,26 +94,26 @@ class JSONRepository(AbstractRepository):
                 return sorted({
                         item.aktueller_besitzer
                         for item in self.items
-                        if item.aktueller_besitzer and not item.stillgelegt
+                        if item.aktueller_besitzer
                 })
 
         def distinct_object_types(self) -> List[str]:
                 return sorted({
                         item.objekttyp
                         for item in self.items
-                        if item.objekttyp and not item.stillgelegt
+                        if item.objekttyp
                 })
 
         def distinct_manufacturers(self) -> List[str]:
                 return sorted({
                         item.hersteller
                         for item in self.items
-                        if item.hersteller and not item.stillgelegt
+                        if item.hersteller
                 })
 
         def distinct_models(self) -> List[str]:
                 return sorted({
                         item.modell
                         for item in self.items
-                        if item.modell and not item.stillgelegt
+                        if item.modell
                 })
