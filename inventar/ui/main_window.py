@@ -294,7 +294,7 @@ class MainWindow(QMainWindow):
                 layout = QVBoxLayout(central)
 
                 layout.addWidget(self._build_search_box())
-                layout.addLayout(self._build_form_filters())
+                layout.addWidget(self._build_form_filters())
 
                 buttons_layout = QHBoxLayout()
                 self.new_button = QPushButton('Neues Objekt')
@@ -348,17 +348,13 @@ class MainWindow(QMainWindow):
                 layout = QHBoxLayout(box)
                 self.search_field = QLineEdit()
                 self.search_field.setPlaceholderText('In allen Feldern suchen ...')
-                self.search_button = QPushButton()
-                self.search_button.setIcon(QIcon.fromTheme('system-search'))
-                self.search_button.setText('Suchen')
 
                 layout.addWidget(self.search_field)
-                layout.addStretch()
-                layout.addWidget(self.search_button)
                 return box
 
-        def _build_form_filters(self) -> QHBoxLayout:
-                layout = QHBoxLayout()
+        def _build_form_filters(self) -> QWidget:
+                box = QGroupBox('Filter')
+                layout = QHBoxLayout(box)
 
                 left_layout = QFormLayout()
                 self.filter_objekttyp = QComboBox()
@@ -429,7 +425,7 @@ class MainWindow(QMainWindow):
 
                 layout.addLayout(left_layout)
                 layout.addLayout(right_layout)
-                return layout
+                return box
 
         def _create_actions(self) -> None:
                 self.new_action = QAction('Neu', self)
@@ -460,7 +456,6 @@ class MainWindow(QMainWindow):
                 self.zoom_in_button.clicked.connect(lambda: self._adjust_font_size(1))
                 self.zoom_out_button.clicked.connect(lambda: self._adjust_font_size(-1))
 
-                self.search_button.clicked.connect(self.apply_filters)
                 self.search_field.returnPressed.connect(self.apply_filters)
 
                 self.remove_owner_button.clicked.connect(self._remove_owner_filter_value)
