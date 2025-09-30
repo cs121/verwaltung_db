@@ -535,7 +535,7 @@ class MainWindow(QMainWindow):
                 self.zoom_in_button.clicked.connect(lambda: self._adjust_font_size(1))
                 self.zoom_out_button.clicked.connect(lambda: self._adjust_font_size(-1))
 
-                self.search_field.returnPressed.connect(self.apply_filters)
+                self.search_field.returnPressed.connect(self._handle_search_submit)
 
                 self.add_object_type_button.clicked.connect(self._add_object_type_filter_value)
                 self.remove_object_type_button.clicked.connect(self._remove_object_type_filter_value)
@@ -921,6 +921,16 @@ class MainWindow(QMainWindow):
 
         def reset_filters(self) -> None:
                 self.search_field.clear()
+                self._clear_filter_inputs()
+                self._load_items()
+
+        def _handle_search_submit(self) -> None:
+                """Reset the filter widgets before applying a global search."""
+                self._clear_filter_inputs()
+                self.apply_filters()
+
+        def _clear_filter_inputs(self) -> None:
+                """Clear all filter widgets without touching the search field."""
                 self.filter_objekttyp.setCurrentIndex(0)
                 self.filter_hersteller.setCurrentIndex(0)
                 self.filter_modell.setCurrentIndex(0)
@@ -939,7 +949,6 @@ class MainWindow(QMainWindow):
                         self.filter_einkaufsdatum.lineEdit().setText('')
                 if self.filter_zuweisungsdatum.lineEdit():
                         self.filter_zuweisungsdatum.lineEdit().setText('')
-                self._load_items()
 
         def apply_filters(self) -> None:
                 filters: dict[str, str] = {}
