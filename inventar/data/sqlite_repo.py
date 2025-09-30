@@ -257,6 +257,33 @@ class SQLiteRepository(AbstractRepository):
                 conn.commit()
                 return cursor.rowcount
 
+        def clear_object_type(self, object_type: str) -> int:
+                conn = self._ensure_conn()
+                cursor = conn.execute(
+                        "UPDATE items SET objekttyp = '' WHERE objekttyp = ?",
+                        (object_type,),
+                )
+                conn.commit()
+                return cursor.rowcount
+
+        def clear_manufacturer(self, manufacturer: str) -> int:
+                conn = self._ensure_conn()
+                cursor = conn.execute(
+                        "UPDATE items SET hersteller = '' WHERE hersteller = ?",
+                        (manufacturer,),
+                )
+                conn.commit()
+                return cursor.rowcount
+
+        def clear_model(self, model: str) -> int:
+                conn = self._ensure_conn()
+                cursor = conn.execute(
+                        "UPDATE items SET modell = '' WHERE modell = ?",
+                        (model,),
+                )
+                conn.commit()
+                return cursor.rowcount
+
         def distinct_object_types(self) -> List[str]:
                 conn = self._ensure_conn()
                 rows = conn.execute(
@@ -275,5 +302,12 @@ class SQLiteRepository(AbstractRepository):
                 conn = self._ensure_conn()
                 rows = conn.execute(
                         "SELECT DISTINCT modell FROM items WHERE modell <> '' ORDER BY modell COLLATE NOCASE"
+                ).fetchall()
+                return [row[0] for row in rows if row[0]]
+
+        def distinct_serial_numbers(self) -> List[str]:
+                conn = self._ensure_conn()
+                rows = conn.execute(
+                        "SELECT DISTINCT seriennummer FROM items WHERE seriennummer <> '' ORDER BY seriennummer COLLATE NOCASE"
                 ).fetchall()
                 return [row[0] for row in rows if row[0]]

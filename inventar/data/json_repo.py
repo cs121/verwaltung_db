@@ -161,6 +161,45 @@ class JSONRepository(AbstractRepository):
                         self._save()
                 return updated
 
+        def clear_object_type(self, object_type: str) -> int:
+                object_type = object_type.strip()
+                if not object_type:
+                        return 0
+                updated = 0
+                for index, item in enumerate(self.items):
+                        if item.objekttyp == object_type:
+                                self.items[index] = item.copy(objekttyp='')
+                                updated += 1
+                if updated:
+                        self._save()
+                return updated
+
+        def clear_manufacturer(self, manufacturer: str) -> int:
+                manufacturer = manufacturer.strip()
+                if not manufacturer:
+                        return 0
+                updated = 0
+                for index, item in enumerate(self.items):
+                        if item.hersteller == manufacturer:
+                                self.items[index] = item.copy(hersteller='')
+                                updated += 1
+                if updated:
+                        self._save()
+                return updated
+
+        def clear_model(self, model: str) -> int:
+                model = model.strip()
+                if not model:
+                        return 0
+                updated = 0
+                for index, item in enumerate(self.items):
+                        if item.modell == model:
+                                self.items[index] = item.copy(modell='')
+                                updated += 1
+                if updated:
+                        self._save()
+                return updated
+
         def distinct_object_types(self) -> List[str]:
                 return sorted({
                         item.objekttyp
@@ -180,4 +219,11 @@ class JSONRepository(AbstractRepository):
                         item.modell
                         for item in self.items
                         if item.modell
+                })
+
+        def distinct_serial_numbers(self) -> List[str]:
+                return sorted({
+                        item.seriennummer
+                        for item in self.items
+                        if item.seriennummer
                 })
