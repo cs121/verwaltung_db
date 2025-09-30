@@ -202,6 +202,11 @@ COLUMN_KEYS = [
         "anmerkungen",
 ]
 
+CUSTOM_CATEGORY_MANUFACTURER = "manufacturer"
+CUSTOM_CATEGORY_MODEL = "model"
+CUSTOM_CATEGORY_SERIAL = "serial_number"
+CUSTOM_CATEGORY_OWNER = "owner"
+
 
 class ItemTableModel(QAbstractTableModel):
         """TableModel für Inventaritems."""
@@ -261,8 +266,14 @@ class MainWindow(QMainWindow):
                 self.resize(1280, 720)
 
                 self.settings = SettingsManager()
-                self.object_types: List[str] = self.settings.load_object_types()
                 self.repository, self.using_json_fallback = create_repository(Path.cwd())
+                self.object_types: List[str] = self.settings.load_object_types()
+                self.custom_manufacturers: list[str] = self.repository.list_custom_values(
+                        CUSTOM_CATEGORY_MANUFACTURER
+                )
+                self.custom_models: list[str] = self.repository.list_custom_values(CUSTOM_CATEGORY_MODEL)
+                self.custom_serial_numbers: list[str] = self.repository.list_custom_values(CUSTOM_CATEGORY_SERIAL)
+                self.custom_owners: list[str] = self.repository.list_custom_values(CUSTOM_CATEGORY_OWNER)
                 self.table_model = ItemTableModel()
                 self.table = QTableView()
                 self.table.setModel(self.table_model)
@@ -277,9 +288,6 @@ class MainWindow(QMainWindow):
 
                 self._font_size = 10
                 self.items: List[Item] = []
-                self.custom_manufacturers: list[str] = []
-                self.custom_models: list[str] = []
-                self.custom_serial_numbers: list[str] = []
 
                 self._build_ui()
                 self._apply_color_palette()
@@ -567,6 +575,10 @@ class MainWindow(QMainWindow):
 
         def _load_items(self) -> None:
                 self.items = self.repository.list()
+                self.custom_manufacturers = self.repository.list_custom_values(CUSTOM_CATEGORY_MANUFACTURER)
+                self.custom_models = self.repository.list_custom_values(CUSTOM_CATEGORY_MODEL)
+                self.custom_serial_numbers = self.repository.list_custom_values(CUSTOM_CATEGORY_SERIAL)
+                self.custom_owners = self.repository.list_custom_values(CUSTOM_CATEGORY_OWNER)
                 self.table_model.set_items(self.items)
                 self._refresh_object_types()
                 self._update_object_type_filter()
@@ -580,6 +592,7 @@ class MainWindow(QMainWindow):
                 if not hasattr(self, 'filter_besitzer'):
                         return
                 owners = self.repository.distinct_owners()
+                owners = self._merge_custom_values(owners, self.custom_owners)
                 current_text = self.filter_besitzer.currentText().strip() if self.filter_besitzer.count() else ''
                 self.filter_besitzer.blockSignals(True)
                 self.filter_besitzer.clear()
@@ -677,13 +690,14 @@ class MainWindow(QMainWindow):
 
         def _available_owners(self) -> list[str]:
                 repo_values = self.repository.distinct_owners()
+                merged = self._merge_custom_values(repo_values, self.custom_owners)
                 filter_values: list[str] = []
                 if hasattr(self, 'filter_besitzer'):
                         filter_values = [
                                 self.filter_besitzer.itemText(index)
                                 for index in range(self.filter_besitzer.count())
                         ]
-                return self._sorted_unique(list(repo_values) + filter_values)
+                return self._sorted_unique(list(merged) + filter_values)
 
         def _refresh_object_types(self) -> None:
                 repo_types = self.repository.distinct_object_types()
@@ -757,10 +771,12 @@ class MainWindow(QMainWindow):
                 value = text.strip()
                 if not value:
                         return
-                if value.lower() not in {entry.lower() for entry in self.custom_manufacturers}:
-                        self.custom_manufacturers.append(value)
-                if self.filter_hersteller.findText(value, Qt.MatchFixedString) == -1:
-                        self.filter_hersteller.addItem(value)
+                try:
+                        self.repository.add_custom_value(CUSTOM_CATEGORY_MANUFACTURER, value)
+                except RepositoryError as exc:
+                        QMessageBox.critical(self, 'Fehler', str(exc))
+                        return
+                self.custom_manufacturers = self.repository.list_custom_values(CUSTOM_CATEGORY_MANUFACTURER)
                 self._update_manufacturer_filter()
                 self.filter_hersteller.setCurrentText(value)
 
@@ -780,7 +796,12 @@ class MainWindow(QMainWindow):
                 except RepositoryError as exc:
                         QMessageBox.critical(self, 'Fehler', str(exc))
                         return
-                self.custom_manufacturers = [entry for entry in self.custom_manufacturers if entry.lower() != value.lower()]
+                try:
+                        self.repository.remove_custom_value(CUSTOM_CATEGORY_MANUFACTURER, value)
+                except RepositoryError as exc:
+                        QMessageBox.critical(self, 'Fehler', str(exc))
+                        return
+                self.custom_manufacturers = self.repository.list_custom_values(CUSTOM_CATEGORY_MANUFACTURER)
                 self._load_items()
                 if self._has_active_filters():
                         self.apply_filters()
@@ -799,10 +820,12 @@ class MainWindow(QMainWindow):
                 value = text.strip()
                 if not value:
                         return
-                if value.lower() not in {entry.lower() for entry in self.custom_models}:
-                        self.custom_models.append(value)
-                if self.filter_modell.findText(value, Qt.MatchFixedString) == -1:
-                        self.filter_modell.addItem(value)
+                try:
+                        self.repository.add_custom_value(CUSTOM_CATEGORY_MODEL, value)
+                except RepositoryError as exc:
+                        QMessageBox.critical(self, 'Fehler', str(exc))
+                        return
+                self.custom_models = self.repository.list_custom_values(CUSTOM_CATEGORY_MODEL)
                 self._update_model_filter()
                 self.filter_modell.setCurrentText(value)
 
@@ -822,7 +845,12 @@ class MainWindow(QMainWindow):
                 except RepositoryError as exc:
                         QMessageBox.critical(self, 'Fehler', str(exc))
                         return
-                self.custom_models = [entry for entry in self.custom_models if entry.lower() != value.lower()]
+                try:
+                        self.repository.remove_custom_value(CUSTOM_CATEGORY_MODEL, value)
+                except RepositoryError as exc:
+                        QMessageBox.critical(self, 'Fehler', str(exc))
+                        return
+                self.custom_models = self.repository.list_custom_values(CUSTOM_CATEGORY_MODEL)
                 self._load_items()
                 if self._has_active_filters():
                         self.apply_filters()
@@ -841,10 +869,12 @@ class MainWindow(QMainWindow):
                 value = text.strip()
                 if not value:
                         return
-                if value.lower() not in {entry.lower() for entry in self.custom_serial_numbers}:
-                        self.custom_serial_numbers.append(value)
-                if self.filter_seriennummer.findText(value, Qt.MatchFixedString) == -1:
-                        self.filter_seriennummer.addItem(value)
+                try:
+                        self.repository.add_custom_value(CUSTOM_CATEGORY_SERIAL, value)
+                except RepositoryError as exc:
+                        QMessageBox.critical(self, 'Fehler', str(exc))
+                        return
+                self.custom_serial_numbers = self.repository.list_custom_values(CUSTOM_CATEGORY_SERIAL)
                 self._update_serial_filter()
                 self.filter_seriennummer.setCurrentText(value)
 
@@ -855,8 +885,13 @@ class MainWindow(QMainWindow):
                 value = text.strip()
                 if not value:
                         return
-                if self.filter_besitzer.findText(value) == -1:
-                        self.filter_besitzer.addItem(value)
+                try:
+                        self.repository.add_custom_value(CUSTOM_CATEGORY_OWNER, value)
+                except RepositoryError as exc:
+                        QMessageBox.critical(self, 'Fehler', str(exc))
+                        return
+                self.custom_owners = self.repository.list_custom_values(CUSTOM_CATEGORY_OWNER)
+                self._update_owner_combo()
                 self.filter_besitzer.setCurrentText(value)
 
         def _remove_owner_filter_value(self) -> None:
@@ -875,6 +910,12 @@ class MainWindow(QMainWindow):
                 except RepositoryError as exc:
                         QMessageBox.critical(self, 'Fehler', str(exc))
                         return
+                try:
+                        self.repository.remove_custom_value(CUSTOM_CATEGORY_OWNER, value)
+                except RepositoryError as exc:
+                        QMessageBox.critical(self, 'Fehler', str(exc))
+                        return
+                self.custom_owners = self.repository.list_custom_values(CUSTOM_CATEGORY_OWNER)
                 self._load_items()
                 if self._has_active_filters():
                         self.apply_filters()
@@ -910,7 +951,12 @@ class MainWindow(QMainWindow):
                 except RepositoryError as exc:
                         QMessageBox.critical(self, 'Fehler', str(exc))
                         return
-                self.custom_serial_numbers = [entry for entry in self.custom_serial_numbers if entry.lower() != value.lower()]
+                try:
+                        self.repository.remove_custom_value(CUSTOM_CATEGORY_SERIAL, value)
+                except RepositoryError as exc:
+                        QMessageBox.critical(self, 'Fehler', str(exc))
+                        return
+                self.custom_serial_numbers = self.repository.list_custom_values(CUSTOM_CATEGORY_SERIAL)
                 self._update_serial_filter()
                 self.filter_seriennummer.setCurrentIndex(0)
                 if self.filter_seriennummer.lineEdit():
