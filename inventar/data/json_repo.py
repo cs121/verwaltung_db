@@ -14,23 +14,39 @@ class JSONRepository(AbstractRepository):
         def __init__(self, json_path: Path) -> None:
                 self.json_path = Path(json_path)
                 self.items: list[Item] = []
+                self.custom_values: dict[str, list[str]] = {}
 
         def initialize(self) -> None:
                 if self.json_path.exists():
                         self._load()
                 else:
                         self.items = []
+                        self.custom_values = {}
                         self._save()
 
         def _load(self) -> None:
                 with self.json_path.open('r', encoding='utf-8') as fh:
                         data = json.load(fh)
-                self.items = [Item.from_row(entry) for entry in data]
+                if isinstance(data, list):
+                        self.items = [Item.from_row(entry) for entry in data]
+                        self.custom_values = {}
+                        return
+                items_data = data.get('items', []) if isinstance(data, dict) else []
+                custom_data = data.get('custom_values', {}) if isinstance(data, dict) else {}
+                self.items = [Item.from_row(entry) for entry in items_data]
+                self.custom_values = {
+                        str(category): self._normalize_values(values)
+                        for category, values in custom_data.items()
+                }
 
         def _save(self) -> None:
                 tmp_path = self.json_path.with_suffix('.tmp')
                 with tmp_path.open('w', encoding='utf-8') as fh:
-                        json.dump([item.to_dict() for item in self.items], fh, ensure_ascii=False, indent=2)
+                        payload = {
+                                'items': [item.to_dict() for item in self.items],
+                                'custom_values': self.custom_values,
+                        }
+                        json.dump(payload, fh, ensure_ascii=False, indent=2)
                 tmp_path.replace(self.json_path)
 
         def _next_id(self) -> int:
@@ -227,3 +243,35 @@ class JSONRepository(AbstractRepository):
                         for item in self.items
                         if item.seriennummer
                 })
+
+        @staticmethod
+        def _normalize_values(values: Iterable[str]) -> list[str]:
+                seen: set[str] = set()
+                normalized: list[str] = []
+                for value in values:
+                        text = str(value).strip()
+                        if not text:
+                                continue
+                        key = text.lower()
+                        if key in seen:
+                                continue
+                        seen.add(key)
+                        normalized.append(text)
+                normalized.sort(key=str.casefold)
+                return normalized
+
+        def list_custom_values(self, category: str) -> List[str]:
+                return list(self.custom_values.get(category, []))
+
+        def add_custom_value(self, category: str, value: str) -> None:
+                normalized = self._normalize_values(self.custom_values.get(category, []) + [value])
+                self.custom_values[category] = normalized
+                self._save()
+
+        def remove_custom_value(self, category: str, value: str) -> None:
+                values = [entry for entry in self.custom_values.get(category, []) if entry.lower() != value.lower()]
+                if values:
+                        self.custom_values[category] = self._normalize_values(values)
+                elif category in self.custom_values:
+                        del self.custom_values[category]
+                self._save()

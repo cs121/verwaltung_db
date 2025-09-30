@@ -20,6 +20,13 @@ CREATE TABLE IF NOT EXISTS items (
         anmerkungen TEXT,
         stillgelegt INTEGER DEFAULT 0
 );
+
+CREATE TABLE IF NOT EXISTS custom_values (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        category TEXT NOT NULL,
+        value TEXT NOT NULL,
+        UNIQUE(category, value COLLATE NOCASE)
+);
 """
 
 
@@ -35,9 +42,9 @@ class SQLiteRepository(AbstractRepository):
                 self.connection = sqlite3.connect(self.db_path)
                 self.connection.row_factory = sqlite3.Row
                 self.connection.execute("PRAGMA foreign_keys = ON")
-                self.connection.execute(SCHEMA)
+                self.connection.executescript(SCHEMA)
                 self._migrate_schema()
-                self.connection.execute(SCHEMA)
+                self.connection.executescript(SCHEMA)
                 self.connection.commit()
 
         def _migrate_schema(self) -> None:
@@ -311,3 +318,33 @@ class SQLiteRepository(AbstractRepository):
                         "SELECT DISTINCT seriennummer FROM items WHERE seriennummer <> '' ORDER BY seriennummer COLLATE NOCASE"
                 ).fetchall()
                 return [row[0] for row in rows if row[0]]
+
+        def list_custom_values(self, category: str) -> List[str]:
+                conn = self._ensure_conn()
+                rows = conn.execute(
+                        "SELECT value FROM custom_values WHERE category = ? ORDER BY value COLLATE NOCASE",
+                        (category,),
+                ).fetchall()
+                return [row[0] for row in rows if row[0]]
+
+        def add_custom_value(self, category: str, value: str) -> None:
+                conn = self._ensure_conn()
+                cleaned = value.strip()
+                if not cleaned:
+                        return
+                conn.execute(
+                        "INSERT OR IGNORE INTO custom_values (category, value) VALUES (?, ?)",
+                        (category, cleaned),
+                )
+                conn.commit()
+
+        def remove_custom_value(self, category: str, value: str) -> None:
+                conn = self._ensure_conn()
+                cleaned = value.strip()
+                if not cleaned:
+                        return
+                conn.execute(
+                        "DELETE FROM custom_values WHERE category = ? AND value = ?",
+                        (category, cleaned),
+                )
+                conn.commit()

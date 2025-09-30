@@ -81,6 +81,18 @@ class AbstractRepository(abc.ABC):
         def distinct_serial_numbers(self) -> List[str]:
                 """Liefert distinct Seriennummern für die ComboBox."""
 
+        @abc.abstractmethod
+        def list_custom_values(self, category: str) -> List[str]:
+                """Liefert gespeicherte Zusatzwerte für Auswahlfelder."""
+
+        @abc.abstractmethod
+        def add_custom_value(self, category: str, value: str) -> None:
+                """Speichert einen neuen Zusatzwert für Auswahlfelder."""
+
+        @abc.abstractmethod
+        def remove_custom_value(self, category: str, value: str) -> None:
+                """Entfernt einen gespeicherten Zusatzwert."""
+
 
 class RepositoryFactory:
         """Factory zur Auswahl des passenden Backends."""
