@@ -54,6 +54,18 @@ class AbstractRepository(abc.ABC):
                 """Entfernt eine Seriennummer aus allen Einträgen und liefert die Anzahl der Aktualisierungen."""
 
         @abc.abstractmethod
+        def clear_object_type(self, object_type: str) -> int:
+                """Entfernt einen Objekttyp aus allen Einträgen und liefert die Anzahl der Aktualisierungen."""
+
+        @abc.abstractmethod
+        def clear_manufacturer(self, manufacturer: str) -> int:
+                """Entfernt einen Hersteller aus allen Einträgen und liefert die Anzahl der Aktualisierungen."""
+
+        @abc.abstractmethod
+        def clear_model(self, model: str) -> int:
+                """Entfernt ein Modell aus allen Einträgen und liefert die Anzahl der Aktualisierungen."""
+
+        @abc.abstractmethod
         def distinct_object_types(self) -> List[str]:
                 """Liefert distinct Objekttypen für die ComboBox."""
 
@@ -64,6 +76,10 @@ class AbstractRepository(abc.ABC):
         @abc.abstractmethod
         def distinct_models(self) -> List[str]:
                 """Liefert distinct Modelle für die ComboBox."""
+
+        @abc.abstractmethod
+        def distinct_serial_numbers(self) -> List[str]:
+                """Liefert distinct Seriennummern für die ComboBox."""
 
 
 class RepositoryFactory:

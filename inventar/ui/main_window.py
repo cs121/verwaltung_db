@@ -276,6 +276,9 @@ class MainWindow(QMainWindow):
 
                 self._font_size = 10
                 self.items: List[Item] = []
+                self.custom_manufacturers: list[str] = []
+                self.custom_models: list[str] = []
+                self.custom_serial_numbers: list[str] = []
 
                 self._build_ui()
                 self._apply_color_palette()
@@ -324,13 +327,13 @@ class MainWindow(QMainWindow):
 
                 zoom_layout = QHBoxLayout()
                 zoom_layout.addStretch()
-                self.zoom_out_button = QToolButton()
-                self.zoom_out_button.setText('−')
                 self.zoom_in_button = QToolButton()
                 self.zoom_in_button.setText('+')
+                self.zoom_out_button = QToolButton()
+                self.zoom_out_button.setText('−')
                 zoom_layout.addWidget(QLabel('Zoom'))
-                zoom_layout.addWidget(self.zoom_out_button)
                 zoom_layout.addWidget(self.zoom_in_button)
+                zoom_layout.addWidget(self.zoom_out_button)
                 zoom_layout.addWidget(self.reset_button)
                 layout.addLayout(zoom_layout)
 
@@ -360,27 +363,78 @@ class MainWindow(QMainWindow):
                 self.filter_objekttyp = QComboBox()
                 self.filter_objekttyp.setEditable(True)
                 self.filter_objekttyp.setInsertPolicy(QComboBox.NoInsert)
+                self.add_object_type_button = QToolButton()
+                self.add_object_type_button.setText('+')
+                self.add_object_type_button.setToolTip('Objekttyp zur Auswahlliste hinzufügen')
+                self.remove_object_type_button = QToolButton()
+                self.remove_object_type_button.setText('−')
+                self.remove_object_type_button.setToolTip(
+                        'Ausgewählten Objekttyp aus allen Einträgen entfernen'
+                )
+                object_type_layout = QHBoxLayout()
+                object_type_layout.addWidget(self.filter_objekttyp)
+                object_type_layout.addWidget(self.add_object_type_button)
+                object_type_layout.addWidget(self.remove_object_type_button)
+                object_type_layout.setContentsMargins(0, 0, 0, 0)
+                object_type_layout.setSpacing(4)
                 self._update_object_type_filter()
+
                 self.filter_hersteller = QComboBox()
                 self.filter_hersteller.setEditable(True)
                 self.filter_hersteller.setInsertPolicy(QComboBox.NoInsert)
+                self.add_manufacturer_button = QToolButton()
+                self.add_manufacturer_button.setText('+')
+                self.add_manufacturer_button.setToolTip('Hersteller zur Auswahlliste hinzufügen')
+                self.remove_manufacturer_button = QToolButton()
+                self.remove_manufacturer_button.setText('−')
+                self.remove_manufacturer_button.setToolTip(
+                        'Ausgewählten Hersteller aus allen Einträgen entfernen'
+                )
+                manufacturer_layout = QHBoxLayout()
+                manufacturer_layout.addWidget(self.filter_hersteller)
+                manufacturer_layout.addWidget(self.add_manufacturer_button)
+                manufacturer_layout.addWidget(self.remove_manufacturer_button)
+                manufacturer_layout.setContentsMargins(0, 0, 0, 0)
+                manufacturer_layout.setSpacing(4)
                 self._update_manufacturer_filter()
+
                 self.filter_modell = QComboBox()
                 self.filter_modell.setEditable(True)
                 self.filter_modell.setInsertPolicy(QComboBox.NoInsert)
+                self.add_model_button = QToolButton()
+                self.add_model_button.setText('+')
+                self.add_model_button.setToolTip('Modell zur Auswahlliste hinzufügen')
+                self.remove_model_button = QToolButton()
+                self.remove_model_button.setText('−')
+                self.remove_model_button.setToolTip('Ausgewähltes Modell aus allen Einträgen entfernen')
+                model_layout = QHBoxLayout()
+                model_layout.addWidget(self.filter_modell)
+                model_layout.addWidget(self.add_model_button)
+                model_layout.addWidget(self.remove_model_button)
+                model_layout.setContentsMargins(0, 0, 0, 0)
+                model_layout.setSpacing(4)
                 self._update_model_filter()
-                self.filter_seriennummer = QLineEdit()
+
+                self.filter_seriennummer = QComboBox()
+                self.filter_seriennummer.setEditable(True)
+                self.filter_seriennummer.setInsertPolicy(QComboBox.NoInsert)
+                self.add_serial_button = QToolButton()
+                self.add_serial_button.setText('+')
+                self.add_serial_button.setToolTip('Seriennummer zur Auswahlliste hinzufügen')
                 self.remove_serial_button = QToolButton()
                 self.remove_serial_button.setText('−')
                 self.remove_serial_button.setToolTip('Seriennummer aus allen Einträgen entfernen')
                 serial_layout = QHBoxLayout()
                 serial_layout.addWidget(self.filter_seriennummer)
+                serial_layout.addWidget(self.add_serial_button)
                 serial_layout.addWidget(self.remove_serial_button)
                 serial_layout.setContentsMargins(0, 0, 0, 0)
                 serial_layout.setSpacing(4)
-                left_layout.addRow('Objekttyp', self.filter_objekttyp)
-                left_layout.addRow('Hersteller', self.filter_hersteller)
-                left_layout.addRow('Modell', self.filter_modell)
+                self._update_serial_filter()
+
+                left_layout.addRow('Objekttyp', object_type_layout)
+                left_layout.addRow('Hersteller', manufacturer_layout)
+                left_layout.addRow('Modell', model_layout)
                 left_layout.addRow('Seriennummer', serial_layout)
 
                 right_layout = QFormLayout()
@@ -458,8 +512,15 @@ class MainWindow(QMainWindow):
 
                 self.search_field.returnPressed.connect(self.apply_filters)
 
-                self.remove_owner_button.clicked.connect(self._remove_owner_filter_value)
+                self.add_object_type_button.clicked.connect(self._add_object_type_filter_value)
+                self.remove_object_type_button.clicked.connect(self._remove_object_type_filter_value)
+                self.add_manufacturer_button.clicked.connect(self._add_manufacturer_filter_value)
+                self.remove_manufacturer_button.clicked.connect(self._remove_manufacturer_filter_value)
+                self.add_model_button.clicked.connect(self._add_model_filter_value)
+                self.remove_model_button.clicked.connect(self._remove_model_filter_value)
+                self.add_serial_button.clicked.connect(self._add_serial_filter_value)
                 self.remove_serial_button.clicked.connect(self._remove_serial_value)
+                self.remove_owner_button.clicked.connect(self._remove_owner_filter_value)
                 self.new_action.triggered.connect(self.create_item)
                 self.edit_action.triggered.connect(self.edit_selected_item)
                 self.delete_action.triggered.connect(self.delete_selected_item)
@@ -470,7 +531,8 @@ class MainWindow(QMainWindow):
                         self.filter_hersteller.lineEdit().returnPressed.connect(self.apply_filters)
                 if self.filter_modell.lineEdit():
                         self.filter_modell.lineEdit().returnPressed.connect(self.apply_filters)
-                self.filter_seriennummer.returnPressed.connect(self.apply_filters)
+                if self.filter_seriennummer.lineEdit():
+                        self.filter_seriennummer.lineEdit().returnPressed.connect(self.apply_filters)
                 self.filter_anmerkungen.returnPressed.connect(self.apply_filters)
                 if self.filter_objekttyp.lineEdit():
                         self.filter_objekttyp.lineEdit().returnPressed.connect(self.apply_filters)
@@ -485,6 +547,7 @@ class MainWindow(QMainWindow):
                 self._update_object_type_filter()
                 self._update_manufacturer_filter()
                 self._update_model_filter()
+                self._update_serial_filter()
                 self._update_owner_combo()
                 self._update_status()
 
@@ -507,6 +570,7 @@ class MainWindow(QMainWindow):
                 if not hasattr(self, 'filter_hersteller'):
                         return
                 manufacturers = self.repository.distinct_manufacturers()
+                manufacturers = self._merge_custom_values(manufacturers, self.custom_manufacturers)
                 current_text = self.filter_hersteller.currentText().strip() if self.filter_hersteller.count() else ''
                 self.filter_hersteller.blockSignals(True)
                 self.filter_hersteller.clear()
@@ -522,6 +586,7 @@ class MainWindow(QMainWindow):
                 if not hasattr(self, 'filter_modell'):
                         return
                 models = self.repository.distinct_models()
+                models = self._merge_custom_values(models, self.custom_models)
                 current_text = self.filter_modell.currentText().strip() if self.filter_modell.count() else ''
                 self.filter_modell.blockSignals(True)
                 self.filter_modell.clear()
@@ -532,6 +597,33 @@ class MainWindow(QMainWindow):
                 else:
                         self.filter_modell.setCurrentIndex(0)
                 self.filter_modell.blockSignals(False)
+
+        def _update_serial_filter(self) -> None:
+                if not hasattr(self, 'filter_seriennummer'):
+                        return
+                serials = self.repository.distinct_serial_numbers()
+                serials = self._merge_custom_values(serials, self.custom_serial_numbers)
+                current_text = self.filter_seriennummer.currentText().strip() if self.filter_seriennummer.count() else ''
+                self.filter_seriennummer.blockSignals(True)
+                self.filter_seriennummer.clear()
+                self.filter_seriennummer.addItem('')
+                self.filter_seriennummer.addItems(serials)
+                if current_text:
+                        self.filter_seriennummer.setCurrentText(current_text)
+                else:
+                        self.filter_seriennummer.setCurrentIndex(0)
+                self.filter_seriennummer.blockSignals(False)
+
+        @staticmethod
+        def _merge_custom_values(values: list[str], custom_values: list[str]) -> list[str]:
+                merged = list(values)
+                existing = {value.lower() for value in merged}
+                for custom in custom_values:
+                        key = custom.lower()
+                        if key not in existing:
+                                merged.append(custom)
+                                existing.add(key)
+                return merged
 
         def _refresh_object_types(self) -> None:
                 repo_types = self.repository.distinct_object_types()
@@ -557,6 +649,144 @@ class MainWindow(QMainWindow):
                         return
                 self.object_types = self.settings.add_object_type(value)
                 self._update_object_type_filter()
+
+        def _add_object_type_filter_value(self) -> None:
+                text, ok = QInputDialog.getText(self, 'Objekttyp hinzufügen', 'Neuen Objekttyp eingeben:')
+                if not ok:
+                        return
+                value = text.strip()
+                if not value:
+                        return
+                self.object_types = self.settings.add_object_type(value)
+                self._update_object_type_filter()
+                self.filter_objekttyp.setCurrentText(value)
+
+        def _remove_object_type_filter_value(self) -> None:
+                value = self.filter_objekttyp.currentText().strip()
+                if not value:
+                        QMessageBox.information(self, 'Eintrag entfernen', 'Bitte zuerst einen Objekttyp auswählen.')
+                        return
+                if QMessageBox.question(
+                        self,
+                        'Objekttyp entfernen',
+                        f"Soll der Objekttyp '{value}' aus allen Einträgen entfernt werden?",
+                ) != QMessageBox.Yes:
+                        return
+                try:
+                        removed = self.repository.clear_object_type(value)
+                except RepositoryError as exc:
+                        QMessageBox.critical(self, 'Fehler', str(exc))
+                        return
+                remaining = [entry for entry in self.object_types if entry.lower() != value.lower()]
+                self.object_types = self.settings.save_object_types(remaining)
+                self._load_items()
+                if self._has_active_filters():
+                        self.apply_filters()
+                message = (
+                        f"{removed} Einträge ohne Objekttyp aktualisiert"
+                        if removed
+                        else 'Keine passenden Einträge gefunden'
+                )
+                self.statusBar().showMessage(message, 5000)
+                self.filter_objekttyp.setCurrentIndex(0)
+
+        def _add_manufacturer_filter_value(self) -> None:
+                text, ok = QInputDialog.getText(self, 'Hersteller hinzufügen', 'Neuen Hersteller eingeben:')
+                if not ok:
+                        return
+                value = text.strip()
+                if not value:
+                        return
+                if value.lower() not in {entry.lower() for entry in self.custom_manufacturers}:
+                        self.custom_manufacturers.append(value)
+                if self.filter_hersteller.findText(value, Qt.MatchFixedString) == -1:
+                        self.filter_hersteller.addItem(value)
+                self._update_manufacturer_filter()
+                self.filter_hersteller.setCurrentText(value)
+
+        def _remove_manufacturer_filter_value(self) -> None:
+                value = self.filter_hersteller.currentText().strip()
+                if not value:
+                        QMessageBox.information(self, 'Eintrag entfernen', 'Bitte zuerst einen Hersteller auswählen.')
+                        return
+                if QMessageBox.question(
+                        self,
+                        'Hersteller entfernen',
+                        f"Soll der Hersteller '{value}' aus allen Einträgen entfernt werden?",
+                ) != QMessageBox.Yes:
+                        return
+                try:
+                        removed = self.repository.clear_manufacturer(value)
+                except RepositoryError as exc:
+                        QMessageBox.critical(self, 'Fehler', str(exc))
+                        return
+                self.custom_manufacturers = [entry for entry in self.custom_manufacturers if entry.lower() != value.lower()]
+                self._load_items()
+                if self._has_active_filters():
+                        self.apply_filters()
+                message = (
+                        f"{removed} Einträge ohne Hersteller aktualisiert"
+                        if removed
+                        else 'Keine passenden Einträge gefunden'
+                )
+                self.statusBar().showMessage(message, 5000)
+                self.filter_hersteller.setCurrentIndex(0)
+
+        def _add_model_filter_value(self) -> None:
+                text, ok = QInputDialog.getText(self, 'Modell hinzufügen', 'Neues Modell eingeben:')
+                if not ok:
+                        return
+                value = text.strip()
+                if not value:
+                        return
+                if value.lower() not in {entry.lower() for entry in self.custom_models}:
+                        self.custom_models.append(value)
+                if self.filter_modell.findText(value, Qt.MatchFixedString) == -1:
+                        self.filter_modell.addItem(value)
+                self._update_model_filter()
+                self.filter_modell.setCurrentText(value)
+
+        def _remove_model_filter_value(self) -> None:
+                value = self.filter_modell.currentText().strip()
+                if not value:
+                        QMessageBox.information(self, 'Eintrag entfernen', 'Bitte zuerst ein Modell auswählen.')
+                        return
+                if QMessageBox.question(
+                        self,
+                        'Modell entfernen',
+                        f"Soll das Modell '{value}' aus allen Einträgen entfernt werden?",
+                ) != QMessageBox.Yes:
+                        return
+                try:
+                        removed = self.repository.clear_model(value)
+                except RepositoryError as exc:
+                        QMessageBox.critical(self, 'Fehler', str(exc))
+                        return
+                self.custom_models = [entry for entry in self.custom_models if entry.lower() != value.lower()]
+                self._load_items()
+                if self._has_active_filters():
+                        self.apply_filters()
+                message = (
+                        f"{removed} Einträge ohne Modell aktualisiert"
+                        if removed
+                        else 'Keine passenden Einträge gefunden'
+                )
+                self.statusBar().showMessage(message, 5000)
+                self.filter_modell.setCurrentIndex(0)
+
+        def _add_serial_filter_value(self) -> None:
+                text, ok = QInputDialog.getText(self, 'Seriennummer hinzufügen', 'Seriennummer eingeben:')
+                if not ok:
+                        return
+                value = text.strip()
+                if not value:
+                        return
+                if value.lower() not in {entry.lower() for entry in self.custom_serial_numbers}:
+                        self.custom_serial_numbers.append(value)
+                if self.filter_seriennummer.findText(value, Qt.MatchFixedString) == -1:
+                        self.filter_seriennummer.addItem(value)
+                self._update_serial_filter()
+                self.filter_seriennummer.setCurrentText(value)
 
         def _add_owner_filter_value(self) -> None:
                 text, ok = QInputDialog.getText(self, 'Besitzer hinzufügen', 'Neuen Besitzer eingeben:')
@@ -597,7 +827,7 @@ class MainWindow(QMainWindow):
                 self.filter_besitzer.setCurrentIndex(0)
 
         def _remove_serial_value(self) -> None:
-                value = self.filter_seriennummer.text().strip()
+                value = self.filter_seriennummer.currentText().strip()
                 if not value:
                         current = self._current_item()
                         if current and current.seriennummer:
@@ -620,7 +850,11 @@ class MainWindow(QMainWindow):
                 except RepositoryError as exc:
                         QMessageBox.critical(self, 'Fehler', str(exc))
                         return
-                self.filter_seriennummer.clear()
+                self.custom_serial_numbers = [entry for entry in self.custom_serial_numbers if entry.lower() != value.lower()]
+                self._update_serial_filter()
+                self.filter_seriennummer.setCurrentIndex(0)
+                if self.filter_seriennummer.lineEdit():
+                        self.filter_seriennummer.lineEdit().clear()
                 self._load_items()
                 if self._has_active_filters():
                         self.apply_filters()
@@ -665,7 +899,7 @@ class MainWindow(QMainWindow):
                 self.filter_objekttyp.setCurrentIndex(0)
                 self.filter_hersteller.setCurrentIndex(0)
                 self.filter_modell.setCurrentIndex(0)
-                self.filter_seriennummer.clear()
+                self.filter_seriennummer.setCurrentIndex(0)
                 self.filter_anmerkungen.clear()
                 self.filter_besitzer.setCurrentIndex(0)
                 if self.filter_objekttyp.lineEdit():
@@ -674,6 +908,8 @@ class MainWindow(QMainWindow):
                         self.filter_hersteller.lineEdit().clear()
                 if self.filter_modell.lineEdit():
                         self.filter_modell.lineEdit().clear()
+                if self.filter_seriennummer.lineEdit():
+                        self.filter_seriennummer.lineEdit().clear()
                 if self.filter_einkaufsdatum.lineEdit():
                         self.filter_einkaufsdatum.lineEdit().setText('')
                 if self.filter_zuweisungsdatum.lineEdit():
