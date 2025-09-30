@@ -23,6 +23,7 @@ from PySide6.QtWidgets import (
         QMainWindow,
         QMessageBox,
         QPushButton,
+        QSizePolicy,
         QStatusBar,
         QTableView,
         QToolButton,
@@ -299,7 +300,7 @@ class MainWindow(QMainWindow):
                 layout.addWidget(self._build_search_box())
                 layout.addWidget(self._build_form_filters())
 
-                buttons_layout = QHBoxLayout()
+                actions_layout = QHBoxLayout()
                 self.new_button = QPushButton('Neues Objekt')
                 self.edit_button = QPushButton('Bearbeiten')
                 self.delete_button = QPushButton('Löschen')
@@ -312,21 +313,15 @@ class MainWindow(QMainWindow):
                 self.print_button.setIcon(QIcon.fromTheme('document-print'))
                 self.print_button.setToolTip('Drucken (Ctrl+P)')
 
-                buttons_layout.addWidget(self.new_button)
-                buttons_layout.addWidget(self.edit_button)
-                buttons_layout.addWidget(self.delete_button)
-                buttons_layout.addWidget(self.deactivate_button)
-                buttons_layout.addStretch()
-                buttons_layout.addWidget(self.export_excel_button)
-                buttons_layout.addWidget(self.export_csv_button)
-                buttons_layout.addWidget(self.export_json_button)
-                buttons_layout.addWidget(self.print_button)
+                actions_layout.addWidget(self.new_button)
+                actions_layout.addWidget(self.edit_button)
+                actions_layout.addWidget(self.delete_button)
+                actions_layout.addWidget(self.deactivate_button)
 
-                layout.addLayout(buttons_layout)
+                layout.addLayout(actions_layout)
                 layout.addWidget(self.table)
 
                 zoom_layout = QHBoxLayout()
-                zoom_layout.addStretch()
                 self.zoom_in_button = QToolButton()
                 self.zoom_in_button.setText('+')
                 self.zoom_out_button = QToolButton()
@@ -335,7 +330,18 @@ class MainWindow(QMainWindow):
                 zoom_layout.addWidget(self.zoom_in_button)
                 zoom_layout.addWidget(self.zoom_out_button)
                 zoom_layout.addWidget(self.reset_button)
-                layout.addLayout(zoom_layout)
+
+                bottom_layout = QHBoxLayout()
+                export_layout = QHBoxLayout()
+                export_layout.addWidget(self.export_excel_button)
+                export_layout.addWidget(self.export_csv_button)
+                export_layout.addWidget(self.export_json_button)
+                export_layout.addWidget(self.print_button)
+
+                bottom_layout.addLayout(export_layout)
+                bottom_layout.addStretch()
+                bottom_layout.addLayout(zoom_layout)
+                layout.addLayout(bottom_layout)
 
                 self.status_bar = QStatusBar()
                 self.setStatusBar(self.status_bar)
@@ -432,9 +438,14 @@ class MainWindow(QMainWindow):
                 serial_layout.setSpacing(4)
                 self._update_serial_filter()
 
+                object_type_layout.setStretch(0, 1)
+
                 left_layout.addRow('Objekttyp', object_type_layout)
+                manufacturer_layout.setStretch(0, 1)
                 left_layout.addRow('Hersteller', manufacturer_layout)
+                model_layout.setStretch(0, 1)
                 left_layout.addRow('Modell', model_layout)
+                serial_layout.setStretch(0, 1)
                 left_layout.addRow('Seriennummer', serial_layout)
 
                 right_layout = QFormLayout()
@@ -474,8 +485,22 @@ class MainWindow(QMainWindow):
                 owner_layout.setSpacing(4)
                 right_layout.addRow('Einkaufsdatum', self.filter_einkaufsdatum)
                 right_layout.addRow('Zuweisungsdatum', self.filter_zuweisungsdatum)
+                owner_layout.setStretch(0, 1)
                 right_layout.addRow('Aktueller Besitzer', owner_layout)
                 right_layout.addRow('Anmerkungen', self.filter_anmerkungen)
+
+                combo_boxes = [
+                        self.filter_objekttyp,
+                        self.filter_hersteller,
+                        self.filter_modell,
+                        self.filter_seriennummer,
+                        self.filter_besitzer,
+                ]
+
+                max_width = max(combo.sizeHint().width() for combo in combo_boxes)
+                for combo in combo_boxes:
+                        combo.setMinimumWidth(max_width)
+                        combo.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
 
                 layout.addLayout(left_layout)
                 layout.addLayout(right_layout)
