@@ -326,6 +326,9 @@ class MainWindow(QMainWindow):
                 actions_layout.addWidget(self.delete_button)
                 actions_layout.addWidget(self.deactivate_button)
 
+                self.edit_button.hide()
+                self.delete_button.hide()
+
                 layout.addLayout(actions_layout)
                 layout.addWidget(self.table)
 
@@ -573,6 +576,12 @@ class MainWindow(QMainWindow):
                         self.filter_besitzer.lineEdit().returnPressed.connect(self.apply_filters)
                 self.add_owner_button.clicked.connect(self._add_owner_filter_value)
 
+                selection_model = self.table.selectionModel()
+                if selection_model:
+                        selection_model.selectionChanged.connect(self._update_item_action_visibility)
+
+                self._update_item_action_visibility()
+
         def _load_items(self) -> None:
                 self.items = self.repository.list()
                 self.custom_manufacturers = self.repository.list_custom_values(CUSTOM_CATEGORY_MANUFACTURER)
@@ -587,6 +596,18 @@ class MainWindow(QMainWindow):
                 self._update_serial_filter()
                 self._update_owner_combo()
                 self._update_status()
+                self._update_item_action_visibility()
+
+        def _update_item_action_visibility(self) -> None:
+                selection_model = self.table.selectionModel()
+                has_selection = False
+                if selection_model:
+                        has_selection = bool(selection_model.selectedRows())
+
+                self.edit_button.setVisible(has_selection)
+                self.delete_button.setVisible(has_selection)
+                self.edit_action.setEnabled(has_selection)
+                self.delete_action.setEnabled(has_selection)
 
         def _update_owner_combo(self) -> None:
                 if not hasattr(self, 'filter_besitzer'):
