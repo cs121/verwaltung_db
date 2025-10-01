@@ -283,6 +283,7 @@ class MainWindow(QMainWindow):
                 self.table.setSortingEnabled(True)
                 self.table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
                 self.table.setAlternatingRowColors(True)
+                self.table.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 
                 self.printer = TablePrinter(self)
 
@@ -330,7 +331,7 @@ class MainWindow(QMainWindow):
                 self.delete_button.hide()
 
                 layout.addLayout(actions_layout)
-                layout.addWidget(self.table)
+                layout.addWidget(self.table, stretch=1)
 
                 zoom_layout = QHBoxLayout()
                 self.zoom_in_button = QToolButton()
