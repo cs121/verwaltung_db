@@ -863,9 +863,6 @@ class MainWindow(QMainWindow):
                 if dialog.result_action == ItemDialog.ACTION_DELETE:
                         self._delete_item(item)
                         return
-                if dialog.result_action == ItemDialog.ACTION_DEACTIVATE:
-                        self._deactivate_item(item)
-                        return
                 if result and dialog.result_action == ItemDialog.ACTION_SAVE:
                         updated = dialog.get_item()
                         item_id = item.id or updated.id

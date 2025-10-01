@@ -13,6 +13,7 @@ from PySide6.QtWidgets import (
         QLabel,
         QLineEdit,
         QPlainTextEdit,
+        QPushButton,
         QSizePolicy,
         QVBoxLayout,
         QWidget,
@@ -28,7 +29,6 @@ class ItemDialog(QDialog):
         ACTION_SAVE = 'save'
         ACTION_CANCEL = 'cancel'
         ACTION_DELETE = 'delete'
-        ACTION_DEACTIVATE = 'deactivate'
 
         def __init__(
                 self,
@@ -47,6 +47,8 @@ class ItemDialog(QDialog):
                 self.manufacturers = manufacturers or []
                 self.models = models or []
                 self._result_action = ItemDialog.ACTION_CANCEL
+                self._stillgelegt_value = bool(item.stillgelegt) if item else False
+                self._deactivate_button: QPushButton | None = None
                 self._build_ui()
                 if item:
                         self._populate(item)
@@ -121,12 +123,13 @@ class ItemDialog(QDialog):
                 self.button_box.accepted.connect(self._handle_save_clicked)
                 self.button_box.rejected.connect(self._handle_cancel_clicked)
                 if self.item is not None:
-                        edit_button = self.button_box.addButton('Bearbeiten', QDialogButtonBox.ActionRole)
-                        deactivate_button = self.button_box.addButton('Stilllegen', QDialogButtonBox.DestructiveRole)
-                        deactivate_button.setStyleSheet('background-color: #c62828; color: white;')
+                        deactivate_button = self.button_box.addButton('Stilllegen', QDialogButtonBox.ActionRole)
+                        deactivate_button.setCheckable(True)
+                        deactivate_button.setChecked(self._stillgelegt_value)
+                        self._deactivate_button = deactivate_button
+                        self._update_deactivate_button()
+                        deactivate_button.toggled.connect(self._handle_deactivate_toggled)
                         delete_button = self.button_box.addButton('Löschen', QDialogButtonBox.DestructiveRole)
-                        edit_button.clicked.connect(self._handle_edit_clicked)
-                        deactivate_button.clicked.connect(self._handle_deactivate_clicked)
                         delete_button.clicked.connect(self._handle_delete_clicked)
                 layout.addWidget(self.button_box)
 
@@ -195,6 +198,7 @@ class ItemDialog(QDialog):
                         'zuweisungsdatum': _date_value(self.zuweisungsdatum_edit),
                         'aktueller_besitzer': self.aktueller_besitzer_combo.currentText().strip(),
                         'anmerkungen': self.anmerkungen_edit.toPlainText().strip(),
+                        'stillgelegt': self._stillgelegt_value,
                 }
 
         def _show_errors(self, errors: dict) -> None:
@@ -220,17 +224,13 @@ class ItemDialog(QDialog):
                 self._result_action = ItemDialog.ACTION_SAVE
                 self.accept()
 
-        def _handle_edit_clicked(self) -> None:
-                self._result_action = ItemDialog.ACTION_SAVE
-                self.accept()
-
         def _handle_delete_clicked(self) -> None:
                 self._result_action = ItemDialog.ACTION_DELETE
                 self.done(QDialog.Accepted)
 
-        def _handle_deactivate_clicked(self) -> None:
-                self._result_action = ItemDialog.ACTION_DEACTIVATE
-                self.done(QDialog.Accepted)
+        def _handle_deactivate_toggled(self, checked: bool) -> None:
+                self._stillgelegt_value = checked
+                self._update_deactivate_button()
 
         def _handle_cancel_clicked(self) -> None:
                 self._result_action = ItemDialog.ACTION_CANCEL
@@ -239,3 +239,13 @@ class ItemDialog(QDialog):
         def reject(self) -> None:  # type: ignore[override]
                 self._result_action = ItemDialog.ACTION_CANCEL
                 super().reject()
+
+        def _update_deactivate_button(self) -> None:
+                if not self._deactivate_button:
+                        return
+                if self._stillgelegt_value:
+                        self._deactivate_button.setText('Stilllegen: AN')
+                        self._deactivate_button.setStyleSheet('background-color: #c62828; color: white;')
+                else:
+                        self._deactivate_button.setText('Stilllegen: AUS')
+                        self._deactivate_button.setStyleSheet('')
