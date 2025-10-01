@@ -281,7 +281,7 @@ class MainWindow(QMainWindow):
                 self.table.setSelectionMode(QAbstractItemView.SingleSelection)
                 self.table.doubleClicked.connect(self.edit_selected_item)
                 self.table.setSortingEnabled(True)
-                self.table.horizontalHeader().setSectionResizeMode(QHeaderView.Interactive)
+                self.table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
                 self.table.setAlternatingRowColors(True)
 
                 self.printer = TablePrinter(self)
