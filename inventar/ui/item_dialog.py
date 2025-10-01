@@ -13,6 +13,7 @@ from PySide6.QtWidgets import (
         QLabel,
         QLineEdit,
         QPlainTextEdit,
+        QSizePolicy,
         QVBoxLayout,
         QWidget,
 )
@@ -27,6 +28,7 @@ class ItemDialog(QDialog):
         ACTION_SAVE = 'save'
         ACTION_CANCEL = 'cancel'
         ACTION_DELETE = 'delete'
+        ACTION_DEACTIVATE = 'deactivate'
 
         def __init__(
                 self,
@@ -70,6 +72,9 @@ class ItemDialog(QDialog):
                 if self.models:
                         self.modell_combo.addItems(sorted(self.models))
 
+                for combo in (self.objekttyp_combo, self.hersteller_combo, self.modell_combo):
+                        combo.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+
                 self.seriennummer_edit = QLineEdit()
                 self.einkaufsdatum_edit = QDateEdit()
                 # Qt erwartet sein eigenes Datumsformat (dd.MM.yyyy) für die Anzeige.
@@ -82,7 +87,9 @@ class ItemDialog(QDialog):
                 self.aktueller_besitzer_combo = QComboBox()
                 self.aktueller_besitzer_combo.setEditable(True)
                 self.aktueller_besitzer_combo.addItems(sorted(self.owners))
+                self.aktueller_besitzer_combo.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
                 self.anmerkungen_edit = QPlainTextEdit()
+                self.anmerkungen_edit.setStyleSheet('background-color: white;')
 
                 form_layout.addWidget(QLabel('Objekttyp'), 0, 0)
                 form_layout.addWidget(self.objekttyp_combo, 0, 1)
@@ -115,8 +122,11 @@ class ItemDialog(QDialog):
                 self.button_box.rejected.connect(self._handle_cancel_clicked)
                 if self.item is not None:
                         edit_button = self.button_box.addButton('Bearbeiten', QDialogButtonBox.ActionRole)
+                        deactivate_button = self.button_box.addButton('Stilllegen', QDialogButtonBox.DestructiveRole)
+                        deactivate_button.setStyleSheet('background-color: #c62828; color: white;')
                         delete_button = self.button_box.addButton('Löschen', QDialogButtonBox.DestructiveRole)
                         edit_button.clicked.connect(self._handle_edit_clicked)
+                        deactivate_button.clicked.connect(self._handle_deactivate_clicked)
                         delete_button.clicked.connect(self._handle_delete_clicked)
                 layout.addWidget(self.button_box)
 
@@ -216,6 +226,10 @@ class ItemDialog(QDialog):
 
         def _handle_delete_clicked(self) -> None:
                 self._result_action = ItemDialog.ACTION_DELETE
+                self.done(QDialog.Accepted)
+
+        def _handle_deactivate_clicked(self) -> None:
+                self._result_action = ItemDialog.ACTION_DEACTIVATE
                 self.done(QDialog.Accepted)
 
         def _handle_cancel_clicked(self) -> None:

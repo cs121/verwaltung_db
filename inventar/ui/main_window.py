@@ -323,7 +323,6 @@ class MainWindow(QMainWindow):
 
                 actions_layout = QHBoxLayout()
                 self.new_button = QPushButton('Neues Objekt')
-                self.deactivate_button = QPushButton('Stilllegen')
                 self.reset_button = QPushButton('Reset')
                 self.export_excel_button = QPushButton('Excel')
                 self.export_csv_button = QPushButton('CSV')
@@ -333,7 +332,7 @@ class MainWindow(QMainWindow):
                 self.print_button.setToolTip('Drucken (Ctrl+P)')
 
                 actions_layout.addWidget(self.new_button)
-                actions_layout.addWidget(self.deactivate_button)
+                actions_layout.addStretch()
 
                 layout.addLayout(actions_layout)
 
@@ -553,7 +552,6 @@ class MainWindow(QMainWindow):
 
         def _connect_signals(self) -> None:
                 self.new_button.clicked.connect(self.create_item)
-                self.deactivate_button.clicked.connect(self.deactivate_selected_item)
                 self.reset_button.clicked.connect(self.reset_filters)
                 self.export_excel_button.clicked.connect(partial(self.export_data, 'xlsx'))
                 self.export_csv_button.clicked.connect(partial(self.export_data, 'csv'))
@@ -862,6 +860,9 @@ class MainWindow(QMainWindow):
                 if dialog.result_action == ItemDialog.ACTION_DELETE:
                         self._delete_item(item)
                         return
+                if dialog.result_action == ItemDialog.ACTION_DEACTIVATE:
+                        self._deactivate_item(item)
+                        return
                 if result and dialog.result_action == ItemDialog.ACTION_SAVE:
                         updated = dialog.get_item()
                         try:
@@ -889,15 +890,11 @@ class MainWindow(QMainWindow):
                 self._load_items()
                 self.apply_filters()
 
-        def deactivate_selected_item(self) -> None:
-                item = self._selected_item()
-                if not item:
-                        return
+        def _deactivate_item(self, item: Item) -> None:
                 try:
                         if hasattr(self.repository, 'deactivate'):
                                 self.repository.deactivate(item)
                         else:
-                                # Fallback: markiere Flag und speichere
                                 setattr(item, 'stillgelegt', True)
                                 self.repository.update(item)
                 except RepositoryError as e:
@@ -905,6 +902,12 @@ class MainWindow(QMainWindow):
                         return
                 self._load_items()
                 self.apply_filters()
+
+        def deactivate_selected_item(self) -> None:
+                item = self._selected_item()
+                if not item:
+                        return
+                self._deactivate_item(item)
 
         # ---------- Export / Drucken ----------
         def _pick_export_path(self, suffix: str, filter_str: str) -> Optional[Path]:
