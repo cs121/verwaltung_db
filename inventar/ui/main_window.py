@@ -323,8 +323,6 @@ class MainWindow(QMainWindow):
 
                 actions_layout = QHBoxLayout()
                 self.new_button = QPushButton('Neues Objekt')
-                self.edit_button = QPushButton('Bearbeiten')
-                self.delete_button = QPushButton('Löschen')
                 self.deactivate_button = QPushButton('Stilllegen')
                 self.reset_button = QPushButton('Reset')
                 self.export_excel_button = QPushButton('Excel')
@@ -335,12 +333,7 @@ class MainWindow(QMainWindow):
                 self.print_button.setToolTip('Drucken (Ctrl+P)')
 
                 actions_layout.addWidget(self.new_button)
-                actions_layout.addWidget(self.edit_button)
-                actions_layout.addWidget(self.delete_button)
                 actions_layout.addWidget(self.deactivate_button)
-
-                self.edit_button.hide()
-                self.delete_button.hide()
 
                 layout.addLayout(actions_layout)
 
@@ -560,8 +553,6 @@ class MainWindow(QMainWindow):
 
         def _connect_signals(self) -> None:
                 self.new_button.clicked.connect(self.create_item)
-                self.edit_button.clicked.connect(self.edit_selected_item)
-                self.delete_button.clicked.connect(self.delete_selected_item)
                 self.deactivate_button.clicked.connect(self.deactivate_selected_item)
                 self.reset_button.clicked.connect(self.reset_filters)
                 self.export_excel_button.clicked.connect(partial(self.export_data, 'xlsx'))
@@ -637,8 +628,6 @@ class MainWindow(QMainWindow):
                 if selection_model:
                         has_selection = bool(selection_model.selectedRows())
 
-                self.edit_button.setVisible(has_selection)
-                self.delete_button.setVisible(has_selection)
                 self.edit_action.setEnabled(has_selection)
                 self.delete_action.setEnabled(has_selection)
 
@@ -853,7 +842,8 @@ class MainWindow(QMainWindow):
 
         def create_item(self) -> None:
                 dialog = ItemDialog(self)
-                if dialog.exec():
+                result = dialog.exec()
+                if result and dialog.result_action == ItemDialog.ACTION_SAVE:
                         new_item = dialog.get_item()
                         try:
                                 self.repository.add(new_item)
@@ -868,7 +858,11 @@ class MainWindow(QMainWindow):
                 if not item:
                         return
                 dialog = ItemDialog(self, item)
-                if dialog.exec():
+                result = dialog.exec()
+                if dialog.result_action == ItemDialog.ACTION_DELETE:
+                        self._delete_item(item)
+                        return
+                if result and dialog.result_action == ItemDialog.ACTION_SAVE:
                         updated = dialog.get_item()
                         try:
                                 self.repository.update(updated)
@@ -882,6 +876,9 @@ class MainWindow(QMainWindow):
                 item = self._selected_item()
                 if not item:
                         return
+                self._delete_item(item)
+
+        def _delete_item(self, item: Item) -> None:
                 if QMessageBox.question(self, 'Löschen', 'Diesen Eintrag wirklich löschen?') != QMessageBox.Yes:
                         return
                 try:

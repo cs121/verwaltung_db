@@ -24,6 +24,10 @@ from inventar.utils.validators import DATE_FORMAT_QT_DISPLAY, ItemValidator
 class ItemDialog(QDialog):
         """Dialog zum Erstellen/Bearbeiten von Items."""
 
+        ACTION_SAVE = 'save'
+        ACTION_CANCEL = 'cancel'
+        ACTION_DELETE = 'delete'
+
         def __init__(
                 self,
                 parent: QWidget | None = None,
@@ -40,6 +44,7 @@ class ItemDialog(QDialog):
                 self.object_types = object_types or []
                 self.manufacturers = manufacturers or []
                 self.models = models or []
+                self._result_action = ItemDialog.ACTION_CANCEL
                 self._build_ui()
                 if item:
                         self._populate(item)
@@ -99,12 +104,21 @@ class ItemDialog(QDialog):
                 layout.addWidget(QLabel('Anmerkungen'))
                 layout.addWidget(self.anmerkungen_edit)
 
-                buttons = QDialogButtonBox(QDialogButtonBox.Save | QDialogButtonBox.Cancel)
-                buttons.button(QDialogButtonBox.Save).setText('Speichern')
-                buttons.button(QDialogButtonBox.Cancel).setText('Beenden')
-                buttons.accepted.connect(self.accept)
-                buttons.rejected.connect(self.reject)
-                layout.addWidget(buttons)
+                self.button_box = QDialogButtonBox(QDialogButtonBox.Save | QDialogButtonBox.Cancel)
+                save_button = self.button_box.button(QDialogButtonBox.Save)
+                cancel_button = self.button_box.button(QDialogButtonBox.Cancel)
+                if save_button:
+                        save_button.setText('Speichern')
+                if cancel_button:
+                        cancel_button.setText('Beenden')
+                self.button_box.accepted.connect(self._handle_save_clicked)
+                self.button_box.rejected.connect(self._handle_cancel_clicked)
+                if self.item is not None:
+                        edit_button = self.button_box.addButton('Bearbeiten', QDialogButtonBox.ActionRole)
+                        delete_button = self.button_box.addButton('Löschen', QDialogButtonBox.DestructiveRole)
+                        edit_button.clicked.connect(self._handle_edit_clicked)
+                        delete_button.clicked.connect(self._handle_delete_clicked)
+                layout.addWidget(self.button_box)
 
                 self.shortcut_save = QKeySequence(Qt.CTRL | Qt.Key_S)
                 self.grabShortcut(self.shortcut_save)
@@ -181,3 +195,33 @@ class ItemDialog(QDialog):
 
         def get_item_data(self) -> dict:
                 return self._collect_data()
+
+        def get_item(self) -> Item:
+                data = self._collect_data()
+                if self.item:
+                        return self.item.copy(**data)
+                return Item(**data)
+
+        @property
+        def result_action(self) -> str:
+                return self._result_action
+
+        def _handle_save_clicked(self) -> None:
+                self._result_action = ItemDialog.ACTION_SAVE
+                self.accept()
+
+        def _handle_edit_clicked(self) -> None:
+                self._result_action = ItemDialog.ACTION_SAVE
+                self.accept()
+
+        def _handle_delete_clicked(self) -> None:
+                self._result_action = ItemDialog.ACTION_DELETE
+                self.done(QDialog.Accepted)
+
+        def _handle_cancel_clicked(self) -> None:
+                self._result_action = ItemDialog.ACTION_CANCEL
+                self.reject()
+
+        def reject(self) -> None:  # type: ignore[override]
+                self._result_action = ItemDialog.ACTION_CANCEL
+                super().reject()
