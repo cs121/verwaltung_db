@@ -230,6 +230,8 @@ class ItemDialog(QDialog):
 
         def _handle_deactivate_toggled(self, checked: bool) -> None:
                 self._stillgelegt_value = checked
+                if not checked:
+                        self._remove_stillgelegt_note()
                 self._update_deactivate_button()
 
         def _handle_cancel_clicked(self) -> None:
@@ -249,3 +251,12 @@ class ItemDialog(QDialog):
                 else:
                         self._deactivate_button.setText('Stilllegen: AUS')
                         self._deactivate_button.setStyleSheet('')
+
+        def _remove_stillgelegt_note(self) -> None:
+                text = self.anmerkungen_edit.toPlainText()
+                if not text:
+                        return
+                lines = text.splitlines()
+                filtered_lines = [line for line in lines if line.strip().lower() != 'stillgelegt']
+                new_text = '\n'.join(filtered_lines).rstrip()
+                self.anmerkungen_edit.setPlainText(new_text)
