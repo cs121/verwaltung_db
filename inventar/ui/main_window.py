@@ -6,29 +6,29 @@ from pathlib import Path
 from typing import Iterable, List, Optional
 
 from PySide6.QtCore import QAbstractTableModel, QModelIndex, Qt, QDate
-from PySide6.QtGui import QAction, QIcon, QKeySequence, QColor
+from PySide6.QtGui import QAction, QIcon, QKeySequence, QColor, QFont
 from PySide6.QtWidgets import (
-        QAbstractItemView,
-        QApplication,
-        QComboBox,
-        QDateEdit,
-        QFileDialog,
-        QFormLayout,
-        QGroupBox,
-        QHBoxLayout,
-        QHeaderView,
-        QInputDialog,
-        QLabel,
-        QLineEdit,
-        QMainWindow,
-        QMessageBox,
-        QPushButton,
-        QSizePolicy,
-        QStatusBar,
-        QTableView,
-        QToolButton,
-        QVBoxLayout,
-        QWidget,
+    QAbstractItemView,
+    QApplication,
+    QComboBox,
+    QDateEdit,
+    QFileDialog,
+    QFormLayout,
+    QGroupBox,
+    QHBoxLayout,
+    QHeaderView,
+    QInputDialog,
+    QLabel,
+    QLineEdit,
+    QMainWindow,
+    QMessageBox,
+    QPushButton,
+    QSizePolicy,
+    QStatusBar,
+    QTableView,
+    QToolButton,
+    QVBoxLayout,
+    QWidget,
 )
 
 from inventar.data.models import Item
@@ -281,14 +281,20 @@ class MainWindow(QMainWindow):
                 self.table.setSelectionMode(QAbstractItemView.SingleSelection)
                 self.table.doubleClicked.connect(self.edit_selected_item)
                 self.table.setSortingEnabled(True)
+
+                # RESPONSIVE DESIGN: Tabelle passt sich der Breite an
                 self.table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+                self.table.horizontalHeader().setStretchLastSection(True)
+
                 self.table.setAlternatingRowColors(True)
                 self.table.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+                self.table.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
 
                 self.printer = TablePrinter(self)
 
                 self._font_size = 10
                 self.items: List[Item] = []
+                self.filtered_items: List[Item] = []
 
                 self._build_ui()
                 self._apply_color_palette()
@@ -296,15 +302,21 @@ class MainWindow(QMainWindow):
                 self._connect_signals()
                 self._load_items()
                 self.settings.restore_geometry(self)
-                self._font_size = self.settings.restore_table(self.table)
+                try:
+                        self._font_size = self.settings.restore_table(self.table)
+                except Exception:
+                        pass
                 self._update_status()
 
                 if self.using_json_fallback:
                         self.statusBar().showMessage('JSON-Fallback aktiv – SQLite nicht verfügbar', 10000)
 
+        # ---------- UI Aufbau ----------
         def _build_ui(self) -> None:
                 central = QWidget(self)
+                central.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
                 layout = QVBoxLayout(central)
+                layout.setContentsMargins(10, 10, 10, 10)
 
                 layout.addWidget(self._build_search_box())
                 layout.addWidget(self._build_form_filters())
@@ -331,6 +343,8 @@ class MainWindow(QMainWindow):
                 self.delete_button.hide()
 
                 layout.addLayout(actions_layout)
+
+                # RESPONSIVE: Tabelle mit maximaler Ausdehnung
                 layout.addWidget(self.table, stretch=1)
 
                 zoom_layout = QHBoxLayout()
@@ -366,21 +380,25 @@ class MainWindow(QMainWindow):
 
         def _build_search_box(self) -> QWidget:
                 box = QGroupBox('Suchen')
+                box.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
                 layout = QHBoxLayout(box)
                 self.search_field = QLineEdit()
                 self.search_field.setPlaceholderText('In allen Feldern suchen ...')
+                self.search_field.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
 
                 layout.addWidget(self.search_field)
                 return box
 
         def _build_form_filters(self) -> QWidget:
                 box = QGroupBox('Filter')
+                box.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
                 layout = QHBoxLayout(box)
 
                 left_layout = QFormLayout()
                 self.filter_objekttyp = QComboBox()
                 self.filter_objekttyp.setEditable(True)
                 self.filter_objekttyp.setInsertPolicy(QComboBox.NoInsert)
+                self.filter_objekttyp.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
                 self.add_object_type_button = QToolButton()
                 self.add_object_type_button.setText('+')
                 self.add_object_type_button.setToolTip('Objekttyp zur Auswahlliste hinzufügen')
@@ -400,6 +418,7 @@ class MainWindow(QMainWindow):
                 self.filter_hersteller = QComboBox()
                 self.filter_hersteller.setEditable(True)
                 self.filter_hersteller.setInsertPolicy(QComboBox.NoInsert)
+                self.filter_hersteller.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
                 self.add_manufacturer_button = QToolButton()
                 self.add_manufacturer_button.setText('+')
                 self.add_manufacturer_button.setToolTip('Hersteller zur Auswahlliste hinzufügen')
@@ -419,6 +438,7 @@ class MainWindow(QMainWindow):
                 self.filter_modell = QComboBox()
                 self.filter_modell.setEditable(True)
                 self.filter_modell.setInsertPolicy(QComboBox.NoInsert)
+                self.filter_modell.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
                 self.add_model_button = QToolButton()
                 self.add_model_button.setText('+')
                 self.add_model_button.setToolTip('Modell zur Auswahlliste hinzufügen')
@@ -436,6 +456,7 @@ class MainWindow(QMainWindow):
                 self.filter_seriennummer = QComboBox()
                 self.filter_seriennummer.setEditable(True)
                 self.filter_seriennummer.setInsertPolicy(QComboBox.NoInsert)
+                self.filter_seriennummer.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
                 self.add_serial_button = QToolButton()
                 self.add_serial_button.setText('+')
                 self.add_serial_button.setToolTip('Seriennummer zur Auswahlliste hinzufügen')
@@ -462,12 +483,12 @@ class MainWindow(QMainWindow):
 
                 right_layout = QFormLayout()
                 self.filter_einkaufsdatum = QDateEdit()
-                # Qt benötigt ein eigenes Anzeigeformat, um die Datumswerte korrekt darzustellen.
                 self.filter_einkaufsdatum.setDisplayFormat(DATE_FORMAT_QT_DISPLAY)
                 self.filter_einkaufsdatum.setCalendarPopup(True)
                 self.filter_einkaufsdatum.setSpecialValueText('')
                 self.filter_einkaufsdatum.setDateRange(QDate(1900, 1, 1), QDate(2100, 12, 31))
                 self.filter_einkaufsdatum.setDate(QDate.currentDate())
+                self.filter_einkaufsdatum.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
                 if self.filter_einkaufsdatum.lineEdit():
                         self.filter_einkaufsdatum.lineEdit().setText('')
                 self.filter_zuweisungsdatum = QDateEdit()
@@ -476,13 +497,16 @@ class MainWindow(QMainWindow):
                 self.filter_zuweisungsdatum.setSpecialValueText('')
                 self.filter_zuweisungsdatum.setDateRange(QDate(1900, 1, 1), QDate(2100, 12, 31))
                 self.filter_zuweisungsdatum.setDate(QDate.currentDate())
+                self.filter_zuweisungsdatum.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
                 if self.filter_zuweisungsdatum.lineEdit():
                         self.filter_zuweisungsdatum.lineEdit().setText('')
                 self.filter_besitzer = QComboBox()
                 self.filter_besitzer.setEditable(True)
                 self.filter_besitzer.setInsertPolicy(QComboBox.NoInsert)
+                self.filter_besitzer.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
                 self._update_owner_combo()
                 self.filter_anmerkungen = QLineEdit()
+                self.filter_anmerkungen.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
                 self.add_owner_button = QToolButton()
                 self.add_owner_button.setText('+')
                 self.add_owner_button.setToolTip('Besitzer zur Auswahlliste hinzufügen')
@@ -518,6 +542,7 @@ class MainWindow(QMainWindow):
                 layout.addLayout(right_layout)
                 return box
 
+        # ---------- Aktionen & Signale ----------
         def _create_actions(self) -> None:
                 self.new_action = QAction('Neu', self)
                 self.new_action.setShortcut(QKeySequence.New)
@@ -583,13 +608,15 @@ class MainWindow(QMainWindow):
 
                 self._update_item_action_visibility()
 
+        # ---------- Daten laden & Status ----------
         def _load_items(self) -> None:
                 self.items = self.repository.list()
                 self.custom_manufacturers = self.repository.list_custom_values(CUSTOM_CATEGORY_MANUFACTURER)
                 self.custom_models = self.repository.list_custom_values(CUSTOM_CATEGORY_MODEL)
                 self.custom_serial_numbers = self.repository.list_custom_values(CUSTOM_CATEGORY_SERIAL)
                 self.custom_owners = self.repository.list_custom_values(CUSTOM_CATEGORY_OWNER)
-                self.table_model.set_items(self.items)
+                self.filtered_items = list(self.items)
+                self.table_model.set_items(self.filtered_items)
                 self._refresh_object_types()
                 self._update_object_type_filter()
                 self._update_manufacturer_filter()
@@ -598,6 +625,11 @@ class MainWindow(QMainWindow):
                 self._update_owner_combo()
                 self._update_status()
                 self._update_item_action_visibility()
+
+        def _update_status(self) -> None:
+                total = len(self.items)
+                shown = len(self.filtered_items)
+                self.statusBar().showMessage(f"Einträge: {shown} / {total}")
 
         def _update_item_action_visibility(self) -> None:
                 selection_model = self.table.selectionModel()
@@ -610,10 +642,20 @@ class MainWindow(QMainWindow):
                 self.edit_action.setEnabled(has_selection)
                 self.delete_action.setEnabled(has_selection)
 
+        # ---------- Hilfen für Combos ----------
+        def _merge_custom_values(self, base: Iterable[str], custom: Iterable[str]) -> List[str]:
+                merged = {v.strip() for v in base if v and str(v).strip()}
+                merged.update({v.strip() for v in custom if v and str(v).strip()})
+                merged.discard('')
+                return sorted(merged, key=str.casefold)
+
+        def _refresh_object_types(self) -> None:
+                self.object_types = self.settings.load_object_types()
+
         def _update_owner_combo(self) -> None:
                 if not hasattr(self, 'filter_besitzer'):
                         return
-                owners = self.repository.distinct_owners()
+                owners = self.repository.distinct_owners() if hasattr(self.repository, 'distinct_owners') else []
                 owners = self._merge_custom_values(owners, self.custom_owners)
                 current_text = self.filter_besitzer.currentText().strip() if self.filter_besitzer.count() else ''
                 self.filter_besitzer.blockSignals(True)
@@ -629,7 +671,7 @@ class MainWindow(QMainWindow):
         def _update_manufacturer_filter(self) -> None:
                 if not hasattr(self, 'filter_hersteller'):
                         return
-                manufacturers = self.repository.distinct_manufacturers()
+                manufacturers = self.repository.distinct_manufacturers() if hasattr(self.repository, 'distinct_manufacturers') else []
                 manufacturers = self._merge_custom_values(manufacturers, self.custom_manufacturers)
                 current_text = self.filter_hersteller.currentText().strip() if self.filter_hersteller.count() else ''
                 self.filter_hersteller.blockSignals(True)
@@ -645,7 +687,7 @@ class MainWindow(QMainWindow):
         def _update_model_filter(self) -> None:
                 if not hasattr(self, 'filter_modell'):
                         return
-                models = self.repository.distinct_models()
+                models = self.repository.distinct_models() if hasattr(self.repository, 'distinct_models') else []
                 models = self._merge_custom_values(models, self.custom_models)
                 current_text = self.filter_modell.currentText().strip() if self.filter_modell.count() else ''
                 self.filter_modell.blockSignals(True)
@@ -661,7 +703,7 @@ class MainWindow(QMainWindow):
         def _update_serial_filter(self) -> None:
                 if not hasattr(self, 'filter_seriennummer'):
                         return
-                serials = self.repository.distinct_serial_numbers()
+                serials = self.repository.distinct_serial_numbers() if hasattr(self.repository, 'distinct_serial_numbers') else []
                 serials = self._merge_custom_values(serials, self.custom_serial_numbers)
                 current_text = self.filter_seriennummer.currentText().strip() if self.filter_seriennummer.count() else ''
                 self.filter_seriennummer.blockSignals(True)
@@ -674,587 +716,377 @@ class MainWindow(QMainWindow):
                         self.filter_seriennummer.setCurrentIndex(0)
                 self.filter_seriennummer.blockSignals(False)
 
-        @staticmethod
-        def _merge_custom_values(values: list[str], custom_values: list[str]) -> list[str]:
-                merged = list(values)
-                existing = {value.lower() for value in merged}
-                for custom in custom_values:
-                        key = custom.lower()
-                        if key not in existing:
-                                merged.append(custom)
-                                existing.add(key)
-                return merged
-
-        @staticmethod
-        def _sorted_unique(values: Iterable[str]) -> list[str]:
-                unique: dict[str, str] = {}
-                for value in values:
-                        text = str(value).strip()
-                        if not text:
-                                continue
-                        key = text.casefold()
-                        if key not in unique:
-                                unique[key] = text
-                return sorted(unique.values(), key=str.casefold)
-
-        def _available_object_types(self) -> list[str]:
-                return self._sorted_unique(self.object_types)
-
-        def _available_manufacturers(self) -> list[str]:
-                repo_values = self.repository.distinct_manufacturers()
-                merged = self._merge_custom_values(repo_values, self.custom_manufacturers)
-                return self._sorted_unique(merged)
-
-        def _available_models(self) -> list[str]:
-                repo_values = self.repository.distinct_models()
-                merged = self._merge_custom_values(repo_values, self.custom_models)
-                return self._sorted_unique(merged)
-
-        def _available_owners(self) -> list[str]:
-                repo_values = self.repository.distinct_owners()
-                merged = self._merge_custom_values(repo_values, self.custom_owners)
-                filter_values: list[str] = []
-                if hasattr(self, 'filter_besitzer'):
-                        filter_values = [
-                                self.filter_besitzer.itemText(index)
-                                for index in range(self.filter_besitzer.count())
-                        ]
-                return self._sorted_unique(list(merged) + filter_values)
-
-        def _refresh_object_types(self) -> None:
-                repo_types = self.repository.distinct_object_types()
-                self.object_types = self.settings.sync_object_types(repo_types)
-
         def _update_object_type_filter(self) -> None:
                 if not hasattr(self, 'filter_objekttyp'):
                         return
+                self._refresh_object_types()
+                types_list = [t for t in self.object_types if t and str(t).strip()]
                 current_text = self.filter_objekttyp.currentText().strip() if self.filter_objekttyp.count() else ''
                 self.filter_objekttyp.blockSignals(True)
                 self.filter_objekttyp.clear()
                 self.filter_objekttyp.addItem('')
-                self.filter_objekttyp.addItems(self.object_types)
+                self.filter_objekttyp.addItems(sorted(types_list, key=str.casefold))
                 if current_text:
                         self.filter_objekttyp.setCurrentText(current_text)
                 else:
                         self.filter_objekttyp.setCurrentIndex(0)
                 self.filter_objekttyp.blockSignals(False)
 
-        def _register_object_type(self, objekttyp: str) -> None:
-                value = objekttyp.strip()
-                if not value:
-                        return
-                self.object_types = self.settings.add_object_type(value)
-                self._update_object_type_filter()
+        # ---------- Filter/ Suche ----------
+        def _handle_search_submit(self) -> None:
+                self.apply_filters()
 
-        def _add_object_type_filter_value(self) -> None:
-                text, ok = QInputDialog.getText(self, 'Objekttyp hinzufügen', 'Neuen Objekttyp eingeben:')
-                if not ok:
-                        return
-                value = text.strip()
-                if not value:
-                        return
-                self.object_types = self.settings.add_object_type(value)
-                self._update_object_type_filter()
-                self.filter_objekttyp.setCurrentText(value)
+        def _date_text_or_empty(self, date_edit: QDateEdit) -> str:
+                # get the plain text from the line edit; if empty, treat as no filter
+                if date_edit and date_edit.lineEdit():
+                        t = date_edit.lineEdit().text().strip()
+                        return t
+                return ''
 
-        def _remove_object_type_filter_value(self) -> None:
-                value = self.filter_objekttyp.currentText().strip()
-                if not value:
-                        QMessageBox.information(self, 'Eintrag entfernen', 'Bitte zuerst einen Objekttyp auswählen.')
-                        return
-                if QMessageBox.question(
-                        self,
-                        'Objekttyp entfernen',
-                        f"Soll der Objekttyp '{value}' aus allen Einträgen entfernt werden?",
-                ) != QMessageBox.Yes:
-                        return
+        def _normalize_date(self, text: str) -> Optional[str]:
+                if not text:
+                        return None
+                # Accept display format and convert to ISO yyyy-mm-dd
                 try:
-                        removed = self.repository.clear_object_type(value)
-                except RepositoryError as exc:
-                        QMessageBox.critical(self, 'Fehler', str(exc))
-                        return
-                remaining = [entry for entry in self.object_types if entry.lower() != value.lower()]
-                self.object_types = self.settings.save_object_types(remaining)
-                self._load_items()
-                if self._has_active_filters():
-                        self.apply_filters()
-                message = (
-                        f"{removed} Einträge ohne Objekttyp aktualisiert"
-                        if removed
-                        else 'Keine passenden Einträge gefunden'
-                )
-                self.statusBar().showMessage(message, 5000)
-                self.filter_objekttyp.setCurrentIndex(0)
+                        dt = datetime.strptime(text, DATE_FORMAT_DISPLAY)
+                        return dt.strftime('%Y-%m-%d')
+                except Exception:
+                        try:
+                                dt = datetime.strptime(text, DATE_FORMAT_QT_DISPLAY)
+                                return dt.strftime('%Y-%m-%d')
+                        except Exception:
+                                return None
 
-        def _add_manufacturer_filter_value(self) -> None:
-                text, ok = QInputDialog.getText(self, 'Hersteller hinzufügen', 'Neuen Hersteller eingeben:')
-                if not ok:
-                        return
-                value = text.strip()
-                if not value:
-                        return
-                try:
-                        self.repository.add_custom_value(CUSTOM_CATEGORY_MANUFACTURER, value)
-                except RepositoryError as exc:
-                        QMessageBox.critical(self, 'Fehler', str(exc))
-                        return
-                self.custom_manufacturers = self.repository.list_custom_values(CUSTOM_CATEGORY_MANUFACTURER)
-                self._update_manufacturer_filter()
-                self.filter_hersteller.setCurrentText(value)
+        def apply_filters(self) -> None:
+                q = self.search_field.text().strip().lower()
+                f_type = self.filter_objekttyp.currentText().strip().lower()
+                f_man = self.filter_hersteller.currentText().strip().lower()
+                f_model = self.filter_modell.currentText().strip().lower()
+                f_serial = self.filter_seriennummer.currentText().strip().lower()
+                f_owner = self.filter_besitzer.currentText().strip().lower()
+                f_notes = self.filter_anmerkungen.text().strip().lower()
 
-        def _remove_manufacturer_filter_value(self) -> None:
-                value = self.filter_hersteller.currentText().strip()
-                if not value:
-                        QMessageBox.information(self, 'Eintrag entfernen', 'Bitte zuerst einen Hersteller auswählen.')
-                        return
-                if QMessageBox.question(
-                        self,
-                        'Hersteller entfernen',
-                        f"Soll der Hersteller '{value}' aus allen Einträgen entfernt werden?",
-                ) != QMessageBox.Yes:
-                        return
-                try:
-                        removed = self.repository.clear_manufacturer(value)
-                except RepositoryError as exc:
-                        QMessageBox.critical(self, 'Fehler', str(exc))
-                        return
-                try:
-                        self.repository.remove_custom_value(CUSTOM_CATEGORY_MANUFACTURER, value)
-                except RepositoryError as exc:
-                        QMessageBox.critical(self, 'Fehler', str(exc))
-                        return
-                self.custom_manufacturers = self.repository.list_custom_values(CUSTOM_CATEGORY_MANUFACTURER)
-                self._load_items()
-                if self._has_active_filters():
-                        self.apply_filters()
-                message = (
-                        f"{removed} Einträge ohne Hersteller aktualisiert"
-                        if removed
-                        else 'Keine passenden Einträge gefunden'
-                )
-                self.statusBar().showMessage(message, 5000)
-                self.filter_hersteller.setCurrentIndex(0)
+                buy_text = self._date_text_or_empty(self.filter_einkaufsdatum)
+                assign_text = self._date_text_or_empty(self.filter_zuweisungsdatum)
+                buy_iso = self._normalize_date(buy_text) if buy_text else None
+                assign_iso = self._normalize_date(assign_text) if assign_text else None
 
-        def _add_model_filter_value(self) -> None:
-                text, ok = QInputDialog.getText(self, 'Modell hinzufügen', 'Neues Modell eingeben:')
-                if not ok:
-                        return
-                value = text.strip()
-                if not value:
-                        return
-                try:
-                        self.repository.add_custom_value(CUSTOM_CATEGORY_MODEL, value)
-                except RepositoryError as exc:
-                        QMessageBox.critical(self, 'Fehler', str(exc))
-                        return
-                self.custom_models = self.repository.list_custom_values(CUSTOM_CATEGORY_MODEL)
-                self._update_model_filter()
-                self.filter_modell.setCurrentText(value)
-
-        def _remove_model_filter_value(self) -> None:
-                value = self.filter_modell.currentText().strip()
-                if not value:
-                        QMessageBox.information(self, 'Eintrag entfernen', 'Bitte zuerst ein Modell auswählen.')
-                        return
-                if QMessageBox.question(
-                        self,
-                        'Modell entfernen',
-                        f"Soll das Modell '{value}' aus allen Einträgen entfernt werden?",
-                ) != QMessageBox.Yes:
-                        return
-                try:
-                        removed = self.repository.clear_model(value)
-                except RepositoryError as exc:
-                        QMessageBox.critical(self, 'Fehler', str(exc))
-                        return
-                try:
-                        self.repository.remove_custom_value(CUSTOM_CATEGORY_MODEL, value)
-                except RepositoryError as exc:
-                        QMessageBox.critical(self, 'Fehler', str(exc))
-                        return
-                self.custom_models = self.repository.list_custom_values(CUSTOM_CATEGORY_MODEL)
-                self._load_items()
-                if self._has_active_filters():
-                        self.apply_filters()
-                message = (
-                        f"{removed} Einträge ohne Modell aktualisiert"
-                        if removed
-                        else 'Keine passenden Einträge gefunden'
-                )
-                self.statusBar().showMessage(message, 5000)
-                self.filter_modell.setCurrentIndex(0)
-
-        def _add_serial_filter_value(self) -> None:
-                text, ok = QInputDialog.getText(self, 'Seriennummer hinzufügen', 'Seriennummer eingeben:')
-                if not ok:
-                        return
-                value = text.strip()
-                if not value:
-                        return
-                try:
-                        self.repository.add_custom_value(CUSTOM_CATEGORY_SERIAL, value)
-                except RepositoryError as exc:
-                        QMessageBox.critical(self, 'Fehler', str(exc))
-                        return
-                self.custom_serial_numbers = self.repository.list_custom_values(CUSTOM_CATEGORY_SERIAL)
-                self._update_serial_filter()
-                self.filter_seriennummer.setCurrentText(value)
-
-        def _add_owner_filter_value(self) -> None:
-                text, ok = QInputDialog.getText(self, 'Besitzer hinzufügen', 'Neuen Besitzer eingeben:')
-                if not ok:
-                        return
-                value = text.strip()
-                if not value:
-                        return
-                try:
-                        self.repository.add_custom_value(CUSTOM_CATEGORY_OWNER, value)
-                except RepositoryError as exc:
-                        QMessageBox.critical(self, 'Fehler', str(exc))
-                        return
-                self.custom_owners = self.repository.list_custom_values(CUSTOM_CATEGORY_OWNER)
-                self._update_owner_combo()
-                self.filter_besitzer.setCurrentText(value)
-
-        def _remove_owner_filter_value(self) -> None:
-                value = self.filter_besitzer.currentText().strip()
-                if not value:
-                        QMessageBox.information(self, 'Eintrag entfernen', 'Bitte zuerst einen Besitzer auswählen.')
-                        return
-                if QMessageBox.question(
-                        self,
-                        'Besitzer entfernen',
-                        f"Soll der Besitzer '{value}' aus allen Einträgen entfernt werden?",
-                ) != QMessageBox.Yes:
-                        return
-                try:
-                        removed = self.repository.clear_owner(value)
-                except RepositoryError as exc:
-                        QMessageBox.critical(self, 'Fehler', str(exc))
-                        return
-                try:
-                        self.repository.remove_custom_value(CUSTOM_CATEGORY_OWNER, value)
-                except RepositoryError as exc:
-                        QMessageBox.critical(self, 'Fehler', str(exc))
-                        return
-                self.custom_owners = self.repository.list_custom_values(CUSTOM_CATEGORY_OWNER)
-                self._load_items()
-                if self._has_active_filters():
-                        self.apply_filters()
-                message = (
-                        f'{removed} Einträge ohne Besitzer aktualisiert'
-                        if removed
-                        else 'Keine passenden Einträge gefunden'
-                )
-                self.statusBar().showMessage(message, 5000)
-                self.filter_besitzer.setCurrentIndex(0)
-
-        def _remove_serial_value(self) -> None:
-                value = self.filter_seriennummer.currentText().strip()
-                if not value:
-                        current = self._current_item()
-                        if current and current.seriennummer:
-                                value = current.seriennummer
-                        else:
-                                QMessageBox.information(
-                                        self,
-                                        'Seriennummer entfernen',
-                                        'Bitte geben Sie eine Seriennummer ein oder wählen Sie einen Eintrag aus.',
-                                )
-                                return
-                if QMessageBox.question(
-                        self,
-                        'Seriennummer entfernen',
-                        f"Soll die Seriennummer '{value}' aus allen Einträgen entfernt werden?",
-                ) != QMessageBox.Yes:
-                        return
-                try:
-                        removed = self.repository.clear_serial_number(value)
-                except RepositoryError as exc:
-                        QMessageBox.critical(self, 'Fehler', str(exc))
-                        return
-                try:
-                        self.repository.remove_custom_value(CUSTOM_CATEGORY_SERIAL, value)
-                except RepositoryError as exc:
-                        QMessageBox.critical(self, 'Fehler', str(exc))
-                        return
-                self.custom_serial_numbers = self.repository.list_custom_values(CUSTOM_CATEGORY_SERIAL)
-                self._update_serial_filter()
-                self.filter_seriennummer.setCurrentIndex(0)
-                if self.filter_seriennummer.lineEdit():
-                        self.filter_seriennummer.lineEdit().clear()
-                self._load_items()
-                if self._has_active_filters():
-                        self.apply_filters()
-                message = (
-                        f'{removed} Seriennummern entfernt'
-                        if removed
-                        else 'Keine Einträge mit dieser Seriennummer gefunden'
-                )
-                self.statusBar().showMessage(message, 5000)
-
-        def _has_active_filters(self) -> bool:
-                if self.search_field.text().strip():
-                        return True
-
-                widgets: list[QWidget] = [
-                        self.filter_objekttyp,
-                        self.filter_hersteller,
-                        self.filter_modell,
-                        self.filter_besitzer,
-                        self.filter_anmerkungen,
-                        self.filter_seriennummer,
-                ]
-                for widget in widgets:
-                        if isinstance(widget, QComboBox):
-                                if widget.currentText().strip():
-                                        return True
-                        elif widget.text().strip():  # type: ignore[union-attr]
+                def match_text(val: Optional[str], needle: str) -> bool:
+                        if not needle:
                                 return True
+                        return (val or '').strip().lower().find(needle) != -1
 
-                for date_widget in [self.filter_einkaufsdatum, self.filter_zuweisungsdatum]:
-                        if date_widget.text().strip():
-                                return True
+                filtered: List[Item] = []
+                for it in self.items:
+                        if f_type and (it.objekttyp or '').strip().lower() != f_type:
+                                continue
+                        if f_man and (it.hersteller or '').strip().lower() != f_man:
+                                continue
+                        if f_model and (it.modell or '').strip().lower() != f_model:
+                                continue
+                        if f_serial and (it.seriennummer or '').strip().lower() != f_serial:
+                                continue
+                        if f_owner and (it.aktueller_besitzer or '').strip().lower() != f_owner:
+                                continue
+                        if f_notes and not match_text(it.anmerkungen, f_notes):
+                                continue
+                        if buy_iso and (it.einkaufsdatum or '') != buy_iso:
+                                continue
+                        if assign_iso and (it.zuweisungsdatum or '') != assign_iso:
+                                continue
+                        if q:
+                                haystack = ' '.join([
+                                        it.objekttyp or '', it.hersteller or '', it.modell or '', it.seriennummer or '',
+                                        it.einkaufsdatum or '', it.zuweisungsdatum or '', it.aktueller_besitzer or '',
+                                        it.anmerkungen or ''
+                                ]).lower()
+                                if q not in haystack:
+                                        continue
+                        filtered.append(it)
 
-                return False
-
-        def _update_status(self) -> None:
-                total = len(self.table_model._items)
-                self.statusBar().showMessage(f'Gesamtobjekte: {total}')
+                self.filtered_items = filtered
+                self.table_model.set_items(self.filtered_items)
+                self._update_status()
 
         def reset_filters(self) -> None:
                 self.search_field.clear()
-                self._clear_filter_inputs()
-                self._load_items()
-
-        def _handle_search_submit(self) -> None:
-                """Reset the filter widgets before applying a global search."""
-                self._clear_filter_inputs()
-                self.apply_filters()
-
-        def _clear_filter_inputs(self) -> None:
-                """Clear all filter widgets without touching the search field."""
-                self.filter_objekttyp.setCurrentIndex(0)
-                self.filter_hersteller.setCurrentIndex(0)
-                self.filter_modell.setCurrentIndex(0)
-                self.filter_seriennummer.setCurrentIndex(0)
+                for combo in (self.filter_objekttyp, self.filter_hersteller, self.filter_modell, self.filter_seriennummer, self.filter_besitzer):
+                        combo.setCurrentIndex(0)
+                        combo.setEditText('')
+                for d in (self.filter_einkaufsdatum, self.filter_zuweisungsdatum):
+                        if d.lineEdit():
+                                d.lineEdit().setText('')
                 self.filter_anmerkungen.clear()
-                self.filter_besitzer.setCurrentIndex(0)
-                if self.filter_objekttyp.lineEdit():
-                        self.filter_objekttyp.lineEdit().clear()
-                if self.filter_hersteller.lineEdit():
-                        self.filter_hersteller.lineEdit().clear()
-                if self.filter_modell.lineEdit():
-                        self.filter_modell.lineEdit().clear()
-                if self.filter_seriennummer.lineEdit():
-                        self.filter_seriennummer.lineEdit().clear()
-                if self.filter_einkaufsdatum.lineEdit():
-                        self.filter_einkaufsdatum.lineEdit().setText('')
-                if self.filter_zuweisungsdatum.lineEdit():
-                        self.filter_zuweisungsdatum.lineEdit().setText('')
-
-        def apply_filters(self) -> None:
-                filters: dict[str, str] = {}
-                status_message: str | None = None
-
-                search_text = self.search_field.text().strip()
-                if search_text:
-                        filters['__global__'] = search_text
-
-                def _widget_value(widget: QWidget) -> str:
-                        if isinstance(widget, QComboBox):
-                                return widget.currentText().strip()
-                        return widget.text().strip()  # type: ignore[no-any-return]
-
-                for widget, key in [
-                        (self.filter_objekttyp, 'objekttyp'),
-                        (self.filter_hersteller, 'hersteller'),
-                        (self.filter_modell, 'modell'),
-                        (self.filter_seriennummer, 'seriennummer'),
-                        (self.filter_besitzer, 'aktueller_besitzer'),
-                        (self.filter_anmerkungen, 'anmerkungen'),
-                ]:
-                        value = _widget_value(widget)
-                        if value:
-                                filters[key] = value
-
-                for widget, key in [
-                        (self.filter_einkaufsdatum, 'einkaufsdatum'),
-                        (self.filter_zuweisungsdatum, 'zuweisungsdatum'),
-                ]:
-                        datums_text = widget.text().strip()
-                        if not datums_text:
-                                continue
-                        try:
-                                filters[key] = ItemValidator.convert_display_to_iso(datums_text)
-                        except ValueError:
-                                status_message = 'Ungültiges Datum im Filter – Format TT.MM.JJJJ verwenden.'
-
-                self.items = self.repository.list(filters if filters else None)
-                self.table_model.set_items(self.items)
+                self.filtered_items = list(self.items)
+                self.table_model.set_items(self.filtered_items)
                 self._update_status()
-                if status_message is None:
-                        status_message = f'{len(self.items)} Einträge gefiltert'
-                self.statusBar().showMessage(status_message, 5000)
 
-        def _collect_dialog_data(self, dialog: ItemDialog) -> Item:
-                data = dialog.get_item_data()
-                return Item(
-                        objekttyp=data['objekttyp'],
-                        hersteller=data['hersteller'],
-                        modell=data['modell'],
-                        seriennummer=data['seriennummer'],
-                        einkaufsdatum=data['einkaufsdatum'],
-                        zuweisungsdatum=data['zuweisungsdatum'],
-                        aktueller_besitzer=data['aktueller_besitzer'],
-                        anmerkungen=data['anmerkungen'],
-                        stillgelegt=dialog.item.stillgelegt if dialog.item else False,
-                )
+        # ---------- Zoom/Font ----------
+        def _adjust_font_size(self, delta: int) -> None:
+                self._font_size = max(7, min(24, self._font_size + delta))
+                f = QFont()
+                f.setPointSize(self._font_size)
+                self.table.setFont(f)
+                self.table.resizeRowsToContents()
+                self.table.resizeColumnsToContents()
+                try:
+                        if hasattr(self.settings, 'save_table'):
+                                self.settings.save_table(self.table, self._font_size)
+                except Exception:
+                        pass
+
+        # ---------- CRUD ----------
+        def _current_row_index(self) -> Optional[int]:
+                sel = self.table.selectionModel()
+                if not sel:
+                        return None
+                rows = sel.selectedRows()
+                if not rows:
+                        return None
+                return rows[0].row()
+
+        def _selected_item(self) -> Optional[Item]:
+                idx = self._current_row_index()
+                if idx is None:
+                        return None
+                return self.table_model.item_at(idx)
 
         def create_item(self) -> None:
-                dialog = ItemDialog(
-                        self,
-                        owners=self._available_owners(),
-                        object_types=self._available_object_types(),
-                        manufacturers=self._available_manufacturers(),
-                        models=self._available_models(),
-                )
-                if dialog.exec() == ItemDialog.Accepted:
-                        item = self._collect_dialog_data(dialog)
+                dialog = ItemDialog(self)
+                if dialog.exec():
+                        new_item = dialog.get_item()
                         try:
-                                created = self.repository.create(item)
-                        except RepositoryError as exc:
-                                QMessageBox.critical(self, 'Fehler', str(exc))
+                                self.repository.add(new_item)
+                        except RepositoryError as e:
+                                QMessageBox.critical(self, 'Fehler', f'Konnte Eintrag nicht speichern:\n{e}')
                                 return
-                        self._register_object_type(created.objekttyp)
                         self._load_items()
-                        self._select_item(created)
-                        self.statusBar().showMessage('Objekt angelegt', 4000)
+                        self.apply_filters()
 
         def edit_selected_item(self) -> None:
-                selected = self._current_item()
-                if not selected:
+                item = self._selected_item()
+                if not item:
                         return
-                dialog = ItemDialog(
-                        self,
-                        item=selected,
-                        owners=self._available_owners(),
-                        object_types=self._available_object_types(),
-                        manufacturers=self._available_manufacturers(),
-                        models=self._available_models(),
-                )
-                if dialog.exec() != ItemDialog.Accepted:
-                        return
-                item_data = self._collect_dialog_data(dialog)
-                try:
-                        updated = self.repository.update(selected.id, item_data)  # type: ignore[arg-type]
-                except RepositoryError as exc:
-                        QMessageBox.critical(self, 'Fehler', str(exc))
-                        return
-                self._register_object_type(updated.objekttyp)
-                self._load_items()
-                self._select_item(updated)
-                self.statusBar().showMessage('Objekt aktualisiert', 4000)
+                dialog = ItemDialog(self, item)
+                if dialog.exec():
+                        updated = dialog.get_item()
+                        try:
+                                self.repository.update(updated)
+                        except RepositoryError as e:
+                                QMessageBox.critical(self, 'Fehler', f'Aktualisierung fehlgeschlagen:\n{e}')
+                                return
+                        self._load_items()
+                        self.apply_filters()
 
         def delete_selected_item(self) -> None:
-                selected = self._current_item()
-                if not selected:
+                item = self._selected_item()
+                if not item:
                         return
-                if QMessageBox.question(self, 'Löschen bestätigen', 'Soll das ausgewählte Objekt gelöscht werden?') != QMessageBox.Yes:
+                if QMessageBox.question(self, 'Löschen', 'Diesen Eintrag wirklich löschen?') != QMessageBox.Yes:
                         return
                 try:
-                        self.repository.delete(selected.id)  # type: ignore[arg-type]
-                except RepositoryError as exc:
-                        QMessageBox.critical(self, 'Fehler', str(exc))
+                        self.repository.delete(item)
+                except RepositoryError as e:
+                        QMessageBox.critical(self, 'Fehler', f'Löschen fehlgeschlagen:\n{e}')
                         return
                 self._load_items()
-                self.statusBar().showMessage('Objekt gelöscht', 4000)
+                self.apply_filters()
 
         def deactivate_selected_item(self) -> None:
-                selected = self._current_item()
-                if not selected:
-                        return
-                if QMessageBox.question(
-                        self,
-                        'Stilllegen bestätigen',
-                        'Soll das ausgewählte Objekt stillgelegt werden?',
-                ) != QMessageBox.Yes:
-                        return
-                if selected.id is None:
-                        QMessageBox.warning(self, 'Stilllegen', 'Das Objekt besitzt keine gültige ID.')
+                item = self._selected_item()
+                if not item:
                         return
                 try:
-                        # Visuelles Feedback, bevor der Eintrag aus der Tabelle entfernt wird
-                        index_list = self.table.selectionModel().selectedRows()
-                        if index_list:
-                                row = index_list[0].row()
-                                self.table_model._items[row] = selected.copy(stillgelegt=True)
-                                top_left = self.table_model.index(row, 0)
-                                bottom_right = self.table_model.index(row, len(COLUMN_KEYS) - 1)
-                                self.table_model.dataChanged.emit(top_left, bottom_right, [Qt.ForegroundRole, Qt.BackgroundRole])
-                        self.repository.deactivate(selected.id)
-                except RepositoryError as exc:
-                        QMessageBox.critical(self, 'Fehler', str(exc))
+                        if hasattr(self.repository, 'deactivate'):
+                                self.repository.deactivate(item)
+                        else:
+                                # Fallback: markiere Flag und speichere
+                                setattr(item, 'stillgelegt', True)
+                                self.repository.update(item)
+                except RepositoryError as e:
+                        QMessageBox.critical(self, 'Fehler', f'Stilllegen fehlgeschlagen:\n{e}')
                         return
                 self._load_items()
-                self.statusBar().showMessage('Objekt stillgelegt', 4000)
+                self.apply_filters()
 
-        def _current_item(self) -> Optional[Item]:
-                selection = self.table.selectionModel()
-                if not selection:
-                        return None
-                indexes = selection.selectedRows()
-                if not indexes:
-                        return None
-                row = indexes[0].row()
-                return self.table_model.item_at(row)
+        # ---------- Export / Drucken ----------
+        def _pick_export_path(self, suffix: str, filter_str: str) -> Optional[Path]:
+                fn, _ = QFileDialog.getSaveFileName(self, 'Exportieren', f'inventar.{suffix}', filter_str)
+                return Path(fn) if fn else None
 
-        def _select_item(self, item: Item) -> None:
-                for row, existing in enumerate(self.table_model._items):
-                        if existing.id == item.id:
-                                index = self.table_model.index(row, 0)
-                                self.table.selectRow(index.row())
-                                self.table.scrollTo(index)
-                                break
-
-        def closeEvent(self, event) -> None:  # type: ignore[override]
-                self.settings.save_geometry(self)
-                self.settings.save_table(self.table, self._font_size)
-                super().closeEvent(event)
-
-        def export_data(self, export_type: str) -> None:
-                items = self.table_model._items
-                if not items:
-                        QMessageBox.information(self, 'Export', 'Keine Daten zum Exportieren vorhanden.')
+        def export_data(self, fmt: str) -> None:
+                data = self.filtered_items
+                try:
+                        if fmt == 'xlsx':
+                                path = self._pick_export_path('xlsx', 'Excel (*.xlsx)')
+                                if not path:
+                                        return
+                                export_to_xlsx(data, path)
+                        elif fmt == 'csv':
+                                path = self._pick_export_path('csv', 'CSV (*.csv)')
+                                if not path:
+                                        return
+                                export_to_csv(data, path)
+                        elif fmt == 'json':
+                                path = self._pick_export_path('json', 'JSON (*.json)')
+                                if not path:
+                                        return
+                                export_to_json(data, path)
+                        else:
+                                QMessageBox.warning(self, 'Export', f'Unbekanntes Format: {fmt}')
+                                return
+                except Exception as e:
+                        QMessageBox.critical(self, 'Export', f'Export fehlgeschlagen:\n{e}')
                         return
-                dialog_title = 'Datei speichern'
-                suffix = {
-                        'xlsx': 'Excel-Dateien (*.xlsx)',
-                        'csv': 'CSV-Dateien (*.csv)',
-                        'json': 'JSON-Dateien (*.json)',
-                }[export_type]
-                path, _ = QFileDialog.getSaveFileName(self, dialog_title, '', suffix)
-                if not path:
-                        return
-                exporters = {
-                        'xlsx': export_to_xlsx,
-                        'csv': export_to_csv,
-                        'json': export_to_json,
-                }
-                exporters[export_type](items, Path(path))
-                self.statusBar().showMessage(f'Export erfolgreich: {path}', 4000)
+                self.statusBar().showMessage('Export erfolgreich', 4000)
 
         def print_preview(self) -> None:
-                self.printer.preview(self.table_model._items, len(self.table_model._items))
+                try:
+                        self.printer.print_table(self.table_model)
+                except Exception as e:
+                        QMessageBox.critical(self, 'Drucken', f'Druck fehlgeschlagen:\n{e}')
 
-        def _adjust_font_size(self, delta: int) -> None:
-                self._font_size = max(8, min(24, self._font_size + delta))
-                self.settings.apply_table_font(self.table, self._font_size)
-                self.statusBar().showMessage(f'Schriftgröße: {self._font_size}', 2000)
+        # ---------- Objekt-/Eigenschaftswerte pflegen ----------
+        def _add_value_via_dialog(self, title: str, label: str) -> Optional[str]:
+                text, ok = QInputDialog.getText(self, title, label)
+                if ok:
+                        text = text.strip()
+                        return text or None
+                return None
+
+        def _add_object_type_filter_value(self) -> None:
+                val = self._add_value_via_dialog('Objekttyp hinzufügen', 'Neuer Objekttyp:')
+                if not val:
+                        return
+                # persist via settings
+                if val not in self.object_types:
+                        self.object_types.append(val)
+                        try:
+                                if hasattr(self.settings, 'save_object_types'):
+                                        self.settings.save_object_types(self.object_types)
+                        except Exception:
+                                pass
+                self._update_object_type_filter()
+
+        def _remove_object_type_filter_value(self) -> None:
+                val = self.filter_objekttyp.currentText().strip()
+                if not val:
+                        return
+                # Entferne aus allen Items
+                if QMessageBox.question(self, 'Entfernen', f'"{val}" aus allen Einträgen entfernen?') != QMessageBox.Yes:
+                        return
+                try:
+                        if hasattr(self.repository, 'remove_value_from_all'):
+                                self.repository.remove_value_from_all('objekttyp', val)
+                except Exception as e:
+                        QMessageBox.warning(self, 'Entfernen', f'Konnte nicht entfernen:\n{e}')
+                self._load_items()
+                self.apply_filters()
+
+        def _add_manufacturer_filter_value(self) -> None:
+                val = self._add_value_via_dialog('Hersteller hinzufügen', 'Neuer Hersteller:')
+                if not val:
+                        return
+                try:
+                        if hasattr(self.repository, 'add_custom_value'):
+                                self.repository.add_custom_value(CUSTOM_CATEGORY_MANUFACTURER, val)
+                        self.custom_manufacturers = self.repository.list_custom_values(CUSTOM_CATEGORY_MANUFACTURER)
+                except Exception:
+                        pass
+                self._update_manufacturer_filter()
+
+        def _remove_manufacturer_filter_value(self) -> None:
+                val = self.filter_hersteller.currentText().strip()
+                if not val:
+                        return
+                try:
+                        if hasattr(self.repository, 'remove_custom_value'):
+                                self.repository.remove_custom_value(CUSTOM_CATEGORY_MANUFACTURER, val)
+                        self.custom_manufacturers = self.repository.list_custom_values(CUSTOM_CATEGORY_MANUFACTURER)
+                except Exception:
+                        pass
+                self._update_manufacturer_filter()
+
+        def _add_model_filter_value(self) -> None:
+                val = self._add_value_via_dialog('Modell hinzufügen', 'Neues Modell:')
+                if not val:
+                        return
+                try:
+                        if hasattr(self.repository, 'add_custom_value'):
+                                self.repository.add_custom_value(CUSTOM_CATEGORY_MODEL, val)
+                        self.custom_models = self.repository.list_custom_values(CUSTOM_CATEGORY_MODEL)
+                except Exception:
+                        pass
+                self._update_model_filter()
+
+        def _remove_model_filter_value(self) -> None:
+                val = self.filter_modell.currentText().strip()
+                if not val:
+                        return
+                try:
+                        if hasattr(self.repository, 'remove_custom_value'):
+                                self.repository.remove_custom_value(CUSTOM_CATEGORY_MODEL, val)
+                        self.custom_models = self.repository.list_custom_values(CUSTOM_CATEGORY_MODEL)
+                except Exception:
+                        pass
+                self._update_model_filter()
+
+        def _add_serial_filter_value(self) -> None:
+                val = self._add_value_via_dialog('Seriennummer speichern', 'Seriennummer:')
+                if not val:
+                        return
+                try:
+                        if hasattr(self.repository, 'add_custom_value'):
+                                self.repository.add_custom_value(CUSTOM_CATEGORY_SERIAL, val)
+                        self.custom_serial_numbers = self.repository.list_custom_values(CUSTOM_CATEGORY_SERIAL)
+                except Exception:
+                        pass
+                self._update_serial_filter()
+
+        def _remove_serial_value(self) -> None:
+                val = self.filter_seriennummer.currentText().strip()
+                if not val:
+                        return
+                try:
+                        if hasattr(self.repository, 'remove_custom_value'):
+                                self.repository.remove_custom_value(CUSTOM_CATEGORY_SERIAL, val)
+                        self.custom_serial_numbers = self.repository.list_custom_values(CUSTOM_CATEGORY_SERIAL)
+                except Exception:
+                        pass
+                self._update_serial_filter()
+
+        def _add_owner_filter_value(self) -> None:
+                val = self._add_value_via_dialog('Besitzer hinzufügen', 'Name:')
+                if not val:
+                        return
+                try:
+                        if hasattr(self.repository, 'add_custom_value'):
+                                self.repository.add_custom_value(CUSTOM_CATEGORY_OWNER, val)
+                        self.custom_owners = self.repository.list_custom_values(CUSTOM_CATEGORY_OWNER)
+                except Exception:
+                        pass
+                self._update_owner_combo()
+
+        def _remove_owner_filter_value(self) -> None:
+                val = self.filter_besitzer.currentText().strip()
+                if not val:
+                        return
+                try:
+                        if hasattr(self.repository, 'remove_custom_value'):
+                                self.repository.remove_custom_value(CUSTOM_CATEGORY_OWNER, val)
+                        self.custom_owners = self.repository.list_custom_values(CUSTOM_CATEGORY_OWNER)
+                except Exception:
+                        pass
+                self._update_owner_combo()
 
 
+# ---------- Start/Run Helper ----------
 def run() -> None:
         app = QApplication.instance() or QApplication([])
-        window = MainWindow()
-        window.show()
+        w = MainWindow()
+        w.show()
         app.exec()
+
+
+if __name__ == '__main__':
+        run()
