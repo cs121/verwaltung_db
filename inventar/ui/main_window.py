@@ -42,12 +42,12 @@ from inventar.utils.validators import DATE_FORMAT_DISPLAY, DATE_FORMAT_QT_DISPLA
 
 PALETTE_STYLESHEET = """
 QMainWindow {
-        background-color: #FFFFFF;
+        background-color: #c4ebf2;
         color: #2C2C2C;
 }
 
 QWidget {
-        background-color: #FFFFFF;
+        background-color: #c4ebf2;
         color: #2C2C2C;
 }
 
@@ -57,8 +57,8 @@ QStatusBar QLabel {
 }
 
 QGroupBox {
-        background-color: #F2F2F2;
-        border: 1px solid #E0E0E0;
+        background-color: #add9e6;
+        border: 1px solid #88c7e6;
         border-radius: 8px;
         margin-top: 12px;
         padding: 12px;
@@ -68,12 +68,12 @@ QGroupBox::title {
         subcontrol-origin: margin;
         left: 14px;
         padding: 0 4px;
-        color: #006A8E;
+        color: #88c7e6;
 }
 
 QPushButton,
 QToolButton {
-        background-color: #00AEEF;
+        background-color: #ffd302;
         color: #2C2C2C;
         border: none;
         border-radius: 6px;
@@ -83,25 +83,25 @@ QToolButton {
 
 QPushButton:hover,
 QToolButton:hover {
-        background-color: #1EB8F2;
+        background-color: #fff683;
 }
 
 QPushButton:pressed,
 QToolButton:pressed {
-        background-color: #0095C4;
+        background-color: #ffffc1;
 }
 
 QPushButton:disabled,
 QToolButton:disabled {
-        background-color: #F2F2F2;
-        color: #9E9E9E;
+        background-color: #add9e6;
+        color: #6F6F6F;
 }
 
 QLineEdit,
 QComboBox,
 QDateEdit {
         background-color: #FFFFFF;
-        border: 1px solid #D9D9D9;
+        border: 1px solid #88c7e6;
         border-radius: 4px;
         padding: 4px 6px;
 }
@@ -109,57 +109,57 @@ QDateEdit {
 QLineEdit:focus,
 QComboBox:focus,
 QDateEdit:focus {
-        border: 1px solid #00AEEF;
+        border: 1px solid #ffd302;
 }
 
 QComboBox QAbstractItemView,
 QDateEdit QAbstractItemView {
         background-color: #FFFFFF;
-        border: 1px solid #D9D9D9;
-        selection-background-color: #00AEEF;
-        selection-color: #FFFFFF;
+        border: 1px solid #88c7e6;
+        selection-background-color: #ffd302;
+        selection-color: #2C2C2C;
 }
 
 QTableView {
         background-color: #FFFFFF;
-        alternate-background-color: #F2F2F2;
-        gridline-color: #F2F2F2;
-        border: 1px solid #E0E0E0;
-        selection-background-color: #00AEEF;
-        selection-color: #FFFFFF;
+        alternate-background-color: #add9e6;
+        gridline-color: #add9e6;
+        border: 1px solid #88c7e6;
+        selection-background-color: #ffd302;
+        selection-color: #2C2C2C;
 }
 
 QTableView::item:selected {
-        background-color: #00AEEF;
-        color: #FFFFFF;
+        background-color: #ffd302;
+        color: #2C2C2C;
 }
 
 QHeaderView::section {
-        background-color: #006A8E;
-        color: #FFFFFF;
+        background-color: #88c7e6;
+        color: #2C2C2C;
         padding: 8px;
         border: none;
-        border-right: 1px solid #FFFFFF;
+        border-right: 1px solid #c4ebf2;
 }
 
 QTableCornerButton::section {
-        background-color: #006A8E;
+        background-color: #88c7e6;
         border: none;
 }
 
 QStatusBar {
-        background-color: #006A8E;
-        color: #FFFFFF;
-        border-top: 1px solid #F2F2F2;
+        background-color: #ffd302;
+        color: #2C2C2C;
+        border-top: 1px solid #add9e6;
 }
 
 QStatusBar QLabel {
-        color: #FFFFFF;
+        color: #2C2C2C;
 }
 
 QScrollBar:vertical,
 QScrollBar:horizontal {
-        background: #F2F2F2;
+        background: #add9e6;
         border: none;
         border-radius: 4px;
         margin: 0px;
@@ -167,7 +167,7 @@ QScrollBar:horizontal {
 
 QScrollBar::handle:vertical,
 QScrollBar::handle:horizontal {
-        background: #00AEEF;
+        background: #ffd302;
         border-radius: 4px;
         min-height: 20px;
         min-width: 20px;
