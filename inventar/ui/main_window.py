@@ -719,6 +719,30 @@ class MainWindow(QMainWindow):
                         self.filter_objekttyp.setCurrentIndex(0)
                 self.filter_objekttyp.blockSignals(False)
 
+        def _collect_item_dialog_values(self) -> tuple[list[str], list[str], list[str], list[str]]:
+                repo_object_types = []
+                if hasattr(self.repository, 'distinct_object_types'):
+                        repo_object_types = self.repository.distinct_object_types()
+                self._refresh_object_types()
+                object_types = self._merge_custom_values(repo_object_types, self.object_types)
+
+                repo_manufacturers = []
+                if hasattr(self.repository, 'distinct_manufacturers'):
+                        repo_manufacturers = self.repository.distinct_manufacturers()
+                manufacturers = self._merge_custom_values(repo_manufacturers, self.custom_manufacturers)
+
+                repo_models = []
+                if hasattr(self.repository, 'distinct_models'):
+                        repo_models = self.repository.distinct_models()
+                models = self._merge_custom_values(repo_models, self.custom_models)
+
+                repo_owners = []
+                if hasattr(self.repository, 'distinct_owners'):
+                        repo_owners = self.repository.distinct_owners()
+                owners = self._merge_custom_values(repo_owners, self.custom_owners)
+
+                return object_types, manufacturers, models, owners
+
         # ---------- Filter/ Suche ----------
         def _handle_search_submit(self) -> None:
                 self.apply_filters()
@@ -839,7 +863,15 @@ class MainWindow(QMainWindow):
                 return self.table_model.item_at(idx)
 
         def create_item(self) -> None:
-                dialog = ItemDialog(self)
+                object_types, manufacturers, models, owners = self._collect_item_dialog_values()
+                dialog = ItemDialog(
+                        self,
+                        item=None,
+                        owners=owners,
+                        object_types=object_types,
+                        manufacturers=manufacturers,
+                        models=models,
+                )
                 result = dialog.exec()
                 if result and dialog.result_action == ItemDialog.ACTION_SAVE:
                         new_item = dialog.get_item()
@@ -858,7 +890,15 @@ class MainWindow(QMainWindow):
                 item = self._selected_item()
                 if not item:
                         return
-                dialog = ItemDialog(self, item)
+                object_types, manufacturers, models, owners = self._collect_item_dialog_values()
+                dialog = ItemDialog(
+                        self,
+                        item=item,
+                        owners=owners,
+                        object_types=object_types,
+                        manufacturers=manufacturers,
+                        models=models,
+                )
                 result = dialog.exec()
                 if dialog.result_action == ItemDialog.ACTION_DELETE:
                         self._delete_item(item)
