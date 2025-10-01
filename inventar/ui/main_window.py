@@ -844,7 +844,10 @@ class MainWindow(QMainWindow):
                 if result and dialog.result_action == ItemDialog.ACTION_SAVE:
                         new_item = dialog.get_item()
                         try:
-                                self.repository.add(new_item)
+                                if hasattr(self.repository, 'create'):
+                                        self.repository.create(new_item)
+                                else:
+                                        self.repository.add(new_item)
                         except RepositoryError as e:
                                 QMessageBox.critical(self, 'Fehler', f'Konnte Eintrag nicht speichern:\n{e}')
                                 return
@@ -865,8 +868,21 @@ class MainWindow(QMainWindow):
                         return
                 if result and dialog.result_action == ItemDialog.ACTION_SAVE:
                         updated = dialog.get_item()
+                        item_id = item.id or updated.id
+                        if item_id is None:
+                                QMessageBox.critical(self, 'Fehler', 'Aktualisierung fehlgeschlagen:\nObjekt-ID fehlt.')
+                                return
                         try:
+                                self.repository.update(item_id, updated)
+                        except TypeError:
+                                # Fallback für Repositories mit älterer Signatur
                                 self.repository.update(updated)
+                        except AttributeError:
+                                # Letzter Fallback falls nur eine add/create-Methode existiert
+                                if hasattr(self.repository, 'create'):
+                                        self.repository.create(updated)
+                                else:
+                                        self.repository.add(updated)
                         except RepositoryError as e:
                                 QMessageBox.critical(self, 'Fehler', f'Aktualisierung fehlgeschlagen:\n{e}')
                                 return
@@ -882,7 +898,13 @@ class MainWindow(QMainWindow):
         def _delete_item(self, item: Item) -> None:
                 if QMessageBox.question(self, 'Löschen', 'Diesen Eintrag wirklich löschen?') != QMessageBox.Yes:
                         return
+                item_id = item.id
+                if item_id is None:
+                        QMessageBox.critical(self, 'Fehler', 'Löschen fehlgeschlagen:\nObjekt-ID fehlt.')
+                        return
                 try:
+                        self.repository.delete(item_id)
+                except TypeError:
                         self.repository.delete(item)
                 except RepositoryError as e:
                         QMessageBox.critical(self, 'Fehler', f'Löschen fehlgeschlagen:\n{e}')
@@ -891,12 +913,27 @@ class MainWindow(QMainWindow):
                 self.apply_filters()
 
         def _deactivate_item(self, item: Item) -> None:
+                item_id = item.id
+                if item_id is None:
+                        QMessageBox.critical(self, 'Fehler', 'Stilllegen fehlgeschlagen:\nObjekt-ID fehlt.')
+                        return
                 try:
                         if hasattr(self.repository, 'deactivate'):
-                                self.repository.deactivate(item)
+                                try:
+                                        self.repository.deactivate(item_id)
+                                except TypeError:
+                                        self.repository.deactivate(item)
                         else:
                                 setattr(item, 'stillgelegt', True)
-                                self.repository.update(item)
+                                try:
+                                        self.repository.update(item_id, item)
+                                except TypeError:
+                                        self.repository.update(item)
+                                except AttributeError:
+                                        if hasattr(self.repository, 'create'):
+                                                self.repository.create(item)
+                                        else:
+                                                self.repository.add(item)
                 except RepositoryError as e:
                         QMessageBox.critical(self, 'Fehler', f'Stilllegen fehlgeschlagen:\n{e}')
                         return
