@@ -5,7 +5,7 @@ from functools import partial
 from pathlib import Path
 from typing import Iterable, List, Optional
 
-from PySide6.QtCore import QAbstractTableModel, QModelIndex, Qt, QDate
+from PySide6.QtCore import QAbstractTableModel, QModelIndex, Qt, QDate, QTimer
 from PySide6.QtGui import QAction, QIcon, QKeySequence, QColor, QFont
 from PySide6.QtWidgets import (
     QAbstractItemView,
@@ -296,6 +296,11 @@ class MainWindow(QMainWindow):
                 self.items: List[Item] = []
                 self.filtered_items: List[Item] = []
 
+                self._filter_timer = QTimer(self)
+                self._filter_timer.setSingleShot(True)
+                self._filter_timer.setInterval(250)
+                self._filter_timer.timeout.connect(self.apply_filters)
+
                 self._build_ui()
                 self._apply_color_palette()
                 self._create_actions()
@@ -581,15 +586,32 @@ class MainWindow(QMainWindow):
 
                 if self.filter_hersteller.lineEdit():
                         self.filter_hersteller.lineEdit().returnPressed.connect(self.apply_filters)
+                        self.filter_hersteller.lineEdit().textEdited.connect(self._schedule_filter_update)
+                self.filter_hersteller.currentIndexChanged.connect(self._schedule_filter_update)
                 if self.filter_modell.lineEdit():
                         self.filter_modell.lineEdit().returnPressed.connect(self.apply_filters)
+                        self.filter_modell.lineEdit().textEdited.connect(self._schedule_filter_update)
+                self.filter_modell.currentIndexChanged.connect(self._schedule_filter_update)
                 if self.filter_seriennummer.lineEdit():
                         self.filter_seriennummer.lineEdit().returnPressed.connect(self.apply_filters)
+                        self.filter_seriennummer.lineEdit().textEdited.connect(self._schedule_filter_update)
+                self.filter_seriennummer.currentIndexChanged.connect(self._schedule_filter_update)
                 self.filter_anmerkungen.returnPressed.connect(self.apply_filters)
+                self.filter_anmerkungen.textChanged.connect(self._schedule_filter_update)
                 if self.filter_objekttyp.lineEdit():
                         self.filter_objekttyp.lineEdit().returnPressed.connect(self.apply_filters)
+                        self.filter_objekttyp.lineEdit().textEdited.connect(self._schedule_filter_update)
+                self.filter_objekttyp.currentIndexChanged.connect(self._schedule_filter_update)
                 if self.filter_besitzer.lineEdit():
                         self.filter_besitzer.lineEdit().returnPressed.connect(self.apply_filters)
+                        self.filter_besitzer.lineEdit().textEdited.connect(self._schedule_filter_update)
+                self.filter_besitzer.currentIndexChanged.connect(self._schedule_filter_update)
+                self.filter_einkaufsdatum.dateChanged.connect(self._schedule_filter_update)
+                if self.filter_einkaufsdatum.lineEdit():
+                        self.filter_einkaufsdatum.lineEdit().textChanged.connect(self._schedule_filter_update)
+                self.filter_zuweisungsdatum.dateChanged.connect(self._schedule_filter_update)
+                if self.filter_zuweisungsdatum.lineEdit():
+                        self.filter_zuweisungsdatum.lineEdit().textChanged.connect(self._schedule_filter_update)
                 self.add_owner_button.clicked.connect(self._add_owner_filter_value)
 
                 selection_model = self.table.selectionModel()
@@ -749,9 +771,12 @@ class MainWindow(QMainWindow):
                 self.apply_filters()
 
         def _handle_search_text_change(self, text: str) -> None:
-                if text.strip():
-                        return
-                self.apply_filters()
+                self._schedule_filter_update()
+
+        def _schedule_filter_update(self, *_args) -> None:
+                if hasattr(self, '_filter_timer') and self._filter_timer:
+                        self._filter_timer.stop()
+                        self._filter_timer.start()
 
         def _date_text_or_empty(self, date_edit: QDateEdit) -> str:
                 # get the plain text from the line edit; if empty, treat as no filter
