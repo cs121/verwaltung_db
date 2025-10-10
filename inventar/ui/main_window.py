@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from datetime import datetime
-from functools import partial
 from pathlib import Path
 from typing import Iterable, List, Optional
 
@@ -21,6 +20,7 @@ from PySide6.QtWidgets import (
     QLabel,
     QLineEdit,
     QMainWindow,
+    QMenu,
     QMessageBox,
     QPushButton,
     QSizePolicy,
@@ -328,10 +328,14 @@ class MainWindow(QMainWindow):
 
                 actions_layout = QHBoxLayout()
                 self.new_button = QPushButton('Neues Objekt')
-                self.reset_button = QPushButton('Reset')
-                self.export_excel_button = QPushButton('Excel')
-                self.export_csv_button = QPushButton('CSV')
-                self.export_json_button = QPushButton('JSON')
+                self.export_button = QToolButton()
+                self.export_button.setText('Export')
+                self.export_button.setPopupMode(QToolButton.InstantPopup)
+                self.export_menu = QMenu(self.export_button)
+                self.export_button.setMenu(self.export_menu)
+                self.export_excel_action = self.export_menu.addAction('Excel')
+                self.export_csv_action = self.export_menu.addAction('CSV')
+                self.export_json_action = self.export_menu.addAction('JSON')
                 self.print_button = QPushButton()
                 self.print_button.setIcon(QIcon.fromTheme('document-print'))
                 self.print_button.setToolTip('Drucken (Ctrl+P)')
@@ -344,26 +348,10 @@ class MainWindow(QMainWindow):
                 # RESPONSIVE: Tabelle mit maximaler Ausdehnung
                 layout.addWidget(self.table, stretch=1)
 
-                zoom_layout = QHBoxLayout()
-                self.zoom_in_button = QToolButton()
-                self.zoom_in_button.setText('+')
-                self.zoom_out_button = QToolButton()
-                self.zoom_out_button.setText('−')
-                zoom_layout.addWidget(QLabel('Zoom'))
-                zoom_layout.addWidget(self.zoom_in_button)
-                zoom_layout.addWidget(self.zoom_out_button)
-                zoom_layout.addWidget(self.reset_button)
-
                 bottom_layout = QHBoxLayout()
-                export_layout = QHBoxLayout()
-                export_layout.addWidget(self.export_excel_button)
-                export_layout.addWidget(self.export_csv_button)
-                export_layout.addWidget(self.export_json_button)
-                export_layout.addWidget(self.print_button)
-
-                bottom_layout.addLayout(export_layout)
+                bottom_layout.addWidget(self.export_button)
+                bottom_layout.addWidget(self.print_button)
                 bottom_layout.addStretch()
-                bottom_layout.addLayout(zoom_layout)
                 layout.addLayout(bottom_layout)
 
                 self.status_bar = QStatusBar()
@@ -500,14 +488,10 @@ class MainWindow(QMainWindow):
 
         def _connect_signals(self) -> None:
                 self.new_button.clicked.connect(self.create_item)
-                self.reset_button.clicked.connect(self.reset_filters)
-                self.export_excel_button.clicked.connect(partial(self.export_data, 'xlsx'))
-                self.export_csv_button.clicked.connect(partial(self.export_data, 'csv'))
-                self.export_json_button.clicked.connect(partial(self.export_data, 'json'))
+                self.export_excel_action.triggered.connect(lambda: self.export_data('xlsx'))
+                self.export_csv_action.triggered.connect(lambda: self.export_data('csv'))
+                self.export_json_action.triggered.connect(lambda: self.export_data('json'))
                 self.print_button.clicked.connect(self.print_preview)
-
-                self.zoom_in_button.clicked.connect(lambda: self._adjust_font_size(1))
-                self.zoom_out_button.clicked.connect(lambda: self._adjust_font_size(-1))
 
                 self.search_field.returnPressed.connect(self._handle_search_submit)
                 self.search_field.textChanged.connect(self._handle_search_text_change)
