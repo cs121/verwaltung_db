@@ -47,6 +47,13 @@ class SQLiteRepository(AbstractRepository):
                 self.connection.executescript(SCHEMA)
                 self.connection.commit()
 
+        @staticmethod
+        def _db_value(value: Optional[str]) -> Optional[str]:
+                if value is None:
+                        return None
+                text = value.strip()
+                return text or None
+
         def _migrate_schema(self) -> None:
                 conn = self._ensure_conn()
                 cursor = conn.execute("PRAGMA table_info(items)")
@@ -181,14 +188,14 @@ class SQLiteRepository(AbstractRepository):
                         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
                         """,
                         (
-                                item.objekttyp,
-                                item.hersteller,
-                                item.modell,
-                                item.seriennummer,
-                                item.einkaufsdatum,
-                                item.zuweisungsdatum,
-                                item.aktueller_besitzer,
-                                item.anmerkungen,
+                                self._db_value(item.objekttyp),
+                                self._db_value(item.hersteller),
+                                self._db_value(item.modell),
+                                self._db_value(item.seriennummer),
+                                self._db_value(item.einkaufsdatum),
+                                self._db_value(item.zuweisungsdatum),
+                                self._db_value(item.aktueller_besitzer),
+                                self._db_value(item.anmerkungen),
                                 int(item.stillgelegt),
                         ),
                 )
@@ -206,14 +213,14 @@ class SQLiteRepository(AbstractRepository):
                         WHERE id = ?
                         """,
                         (
-                                item.objekttyp,
-                                item.hersteller,
-                                item.modell,
-                                item.seriennummer,
-                                item.einkaufsdatum,
-                                item.zuweisungsdatum,
-                                item.aktueller_besitzer,
-                                item.anmerkungen,
+                                self._db_value(item.objekttyp),
+                                self._db_value(item.hersteller),
+                                self._db_value(item.modell),
+                                self._db_value(item.seriennummer),
+                                self._db_value(item.einkaufsdatum),
+                                self._db_value(item.zuweisungsdatum),
+                                self._db_value(item.aktueller_besitzer),
+                                self._db_value(item.anmerkungen),
                                 int(item.stillgelegt),
                                 item_id,
                         ),

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Dict, Tuple
+from typing import Dict, Optional, Tuple
 
 DATE_FORMAT_DISPLAY = '%d.%m.%Y'
 DATE_FORMAT_QT_DISPLAY = 'dd.MM.yyyy'
@@ -40,14 +40,18 @@ class ItemValidator:
                         return False
 
         @staticmethod
-        def convert_display_to_iso(value: str) -> str:
+        def convert_display_to_iso(value: Optional[str]) -> str:
+                if value is None:
+                        return ''
                 value = value.strip()
                 if not value:
                         return ''
                 return datetime.strptime(value, DATE_FORMAT_DISPLAY).strftime(DATE_FORMAT_STORAGE)
 
         @staticmethod
-        def convert_iso_to_display(value: str) -> str:
+        def convert_iso_to_display(value: Optional[str]) -> str:
+                if value is None:
+                        return ''
                 value = value.strip()
                 if not value:
                         return ''
