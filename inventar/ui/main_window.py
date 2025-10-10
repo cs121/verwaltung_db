@@ -366,6 +366,7 @@ class MainWindow(QMainWindow):
         def _build_search_box(self) -> QWidget:
                 box = QGroupBox('Suchen')
                 box.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+                box.setStyleSheet('QGroupBox::title { color: black; font-weight: bold; }')
                 layout = QHBoxLayout(box)
                 self.search_field = QLineEdit()
                 self.search_field.setPlaceholderText('In allen Feldern suchen ...')
@@ -377,6 +378,7 @@ class MainWindow(QMainWindow):
         def _build_form_filters(self) -> QWidget:
                 box = QGroupBox('Filter')
                 box.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+                box.setStyleSheet('QGroupBox::title { color: black; font-weight: bold; }')
                 layout = QHBoxLayout(box)
 
                 left_layout = QFormLayout()
@@ -468,7 +470,23 @@ class MainWindow(QMainWindow):
 
                 layout.addLayout(left_layout)
                 layout.addLayout(right_layout)
+
+                self._style_form_labels(left_layout)
+                self._style_form_labels(right_layout)
+
                 return box
+
+        @staticmethod
+        def _style_form_labels(layout: QFormLayout) -> None:
+                """Apply the required style to the labels in a form layout."""
+                for row in range(layout.rowCount()):
+                        item = layout.itemAt(row, QFormLayout.LabelRole)
+                        if not item:
+                                continue
+                        label = item.widget()
+                        if label is None:
+                                continue
+                        label.setStyleSheet('color: black; font-weight: bold;')
 
         # ---------- Aktionen & Signale ----------
         def _create_actions(self) -> None:
@@ -834,7 +852,7 @@ class MainWindow(QMainWindow):
                                 QMessageBox.critical(self, 'Fehler', f'Konnte Eintrag nicht speichern:\n{e}')
                                 return
                         self._load_items()
-                        self.apply_filters()
+                        self.reset_filters()
 
         def edit_selected_item(self) -> None:
                 item = self._selected_item()
@@ -874,7 +892,7 @@ class MainWindow(QMainWindow):
                                 QMessageBox.critical(self, 'Fehler', f'Aktualisierung fehlgeschlagen:\n{e}')
                                 return
                         self._load_items()
-                        self.apply_filters()
+                        self.reset_filters()
 
         def delete_selected_item(self) -> None:
                 item = self._selected_item()
@@ -965,8 +983,13 @@ class MainWindow(QMainWindow):
                 self.statusBar().showMessage('Export erfolgreich', 4000)
 
         def print_preview(self) -> None:
+                items = list(self.filtered_items)
+                if not items:
+                        QMessageBox.information(self, 'Drucken', 'Keine Einträge zum Drucken vorhanden.')
+                        return
+
                 try:
-                        self.printer.print_table(self.table_model)
+                        self.printer.preview(items, len(items))
                 except Exception as e:
                         QMessageBox.critical(self, 'Drucken', f'Druck fehlgeschlagen:\n{e}')
 
