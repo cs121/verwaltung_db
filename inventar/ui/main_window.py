@@ -562,6 +562,7 @@ class MainWindow(QMainWindow):
                 self.zoom_out_button.clicked.connect(lambda: self._adjust_font_size(-1))
 
                 self.search_field.returnPressed.connect(self._handle_search_submit)
+                self.search_field.textChanged.connect(self._handle_search_text_change)
 
                 self.add_object_type_button.clicked.connect(self._add_object_type_filter_value)
                 self.remove_object_type_button.clicked.connect(self._remove_object_type_filter_value)
@@ -745,6 +746,11 @@ class MainWindow(QMainWindow):
 
         # ---------- Filter/ Suche ----------
         def _handle_search_submit(self) -> None:
+                self.apply_filters()
+
+        def _handle_search_text_change(self, text: str) -> None:
+                if text.strip():
+                        return
                 self.apply_filters()
 
         def _date_text_or_empty(self, date_edit: QDateEdit) -> str:
