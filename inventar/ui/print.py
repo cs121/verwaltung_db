@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Iterable
 
 from PySide6.QtGui import QPainter, QPageLayout
-from PySide6.QtPrintSupport import QPrintDialog, QPrinter, QPrintPreviewDialog
+from PySide6.QtPrintSupport import QPrintDialog, QPrinter
 from PySide6.QtWidgets import QMessageBox, QWidget
 
 from inventar.data.models import Item
@@ -32,13 +32,6 @@ class TablePrinter:
                 printer.setFullPage(False)
                 printer.setDocName('Inventarliste')
                 return printer
-
-        def preview(self, items: Iterable[Item], total: int) -> None:
-                printer = self._create_printer()
-                preview = QPrintPreviewDialog(printer, self.parent)
-                preview.setWindowTitle('Druckvorschau')
-                preview.paintRequested.connect(lambda p: self._render(p, items, total))
-                preview.exec()
 
         def print_dialog(self, items: Iterable[Item], total: int) -> None:
                 printer = self._create_printer()

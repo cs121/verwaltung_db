@@ -509,7 +509,7 @@ class MainWindow(QMainWindow):
                 self.export_excel_action.triggered.connect(lambda: self.export_data('xlsx'))
                 self.export_csv_action.triggered.connect(lambda: self.export_data('csv'))
                 self.export_json_action.triggered.connect(lambda: self.export_data('json'))
-                self.print_button.clicked.connect(self.print_preview)
+                self.print_button.clicked.connect(self.print_items)
 
                 self.search_field.returnPressed.connect(self._handle_search_submit)
                 self.search_field.textChanged.connect(self._handle_search_text_change)
@@ -519,7 +519,7 @@ class MainWindow(QMainWindow):
                 self.edit_action.triggered.connect(self.edit_selected_item)
                 self.delete_action.triggered.connect(self.delete_selected_item)
                 self.search_action.triggered.connect(lambda: self.search_field.setFocus())
-                self.print_action.triggered.connect(self.print_preview)
+                self.print_action.triggered.connect(self.print_items)
 
                 if self.filter_hersteller.lineEdit():
                         self.filter_hersteller.lineEdit().returnPressed.connect(self.apply_filters)
@@ -982,14 +982,14 @@ class MainWindow(QMainWindow):
                         return
                 self.statusBar().showMessage('Export erfolgreich', 4000)
 
-        def print_preview(self) -> None:
+        def print_items(self) -> None:
                 items = list(self.filtered_items)
                 if not items:
                         QMessageBox.information(self, 'Drucken', 'Keine Einträge zum Drucken vorhanden.')
                         return
 
                 try:
-                        self.printer.preview(items, len(items))
+                        self.printer.print_dialog(items, len(items))
                 except Exception as e:
                         QMessageBox.critical(self, 'Drucken', f'Druck fehlgeschlagen:\n{e}')
 
