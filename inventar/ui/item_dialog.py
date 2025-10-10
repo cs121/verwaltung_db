@@ -5,11 +5,13 @@ from typing import Optional
 from PySide6.QtCore import QDate, Qt
 from PySide6.QtGui import QKeySequence
 from PySide6.QtWidgets import (
+        QCheckBox,
         QComboBox,
         QDateEdit,
         QDialog,
         QDialogButtonBox,
         QGridLayout,
+        QHBoxLayout,
         QLabel,
         QLineEdit,
         QPlainTextEdit,
@@ -55,7 +57,6 @@ class ItemDialog(QDialog):
                 else:
                         today = QDate.currentDate()
                         self.einkaufsdatum_edit.setDate(today)
-                        self.zuweisungsdatum_edit.setDate(today)
 
         def _build_ui(self) -> None:
                 layout = QVBoxLayout(self)
@@ -86,10 +87,24 @@ class ItemDialog(QDialog):
                 self.zuweisungsdatum_edit = QDateEdit()
                 self.zuweisungsdatum_edit.setDisplayFormat(DATE_FORMAT_QT_DISPLAY)
                 self.zuweisungsdatum_edit.setCalendarPopup(True)
+                self.zuweisungsdatum_edit.setSpecialValueText('')
+                self.zuweisungsdatum_edit.setDate(self.zuweisungsdatum_edit.minimumDate())
                 self.aktueller_besitzer_combo = QComboBox()
                 self.aktueller_besitzer_combo.setEditable(True)
-                self.aktueller_besitzer_combo.addItems(sorted(self.owners))
+                self.aktueller_besitzer_combo.addItem('')
+                if self.owners:
+                        for owner in sorted(self.owners):
+                                if owner:
+                                        self.aktueller_besitzer_combo.addItem(owner)
                 self.aktueller_besitzer_combo.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+                self.assignment_toggle = QCheckBox()
+                self.assignment_toggle.setToolTip('Zuweisung anzeigen/ausblenden')
+                owner_container = QWidget()
+                owner_layout = QHBoxLayout(owner_container)
+                owner_layout.setContentsMargins(0, 0, 0, 0)
+                owner_layout.setSpacing(6)
+                owner_layout.addWidget(self.aktueller_besitzer_combo)
+                owner_layout.addWidget(self.assignment_toggle)
                 self.anmerkungen_edit = QPlainTextEdit()
                 self.anmerkungen_edit.setStyleSheet('background-color: white;')
 
@@ -104,10 +119,12 @@ class ItemDialog(QDialog):
                 form_layout.addWidget(self.seriennummer_edit, 0, 3)
                 form_layout.addWidget(QLabel('Einkaufsdatum'), 1, 2)
                 form_layout.addWidget(self.einkaufsdatum_edit, 1, 3)
-                form_layout.addWidget(QLabel('Zuweisungsdatum'), 2, 2)
+                self.zuweisungsdatum_label = QLabel('Zuweisungsdatum')
+                form_layout.addWidget(self.zuweisungsdatum_label, 2, 2)
                 form_layout.addWidget(self.zuweisungsdatum_edit, 2, 3)
-                form_layout.addWidget(QLabel('Aktueller Besitzer'), 3, 0)
-                form_layout.addWidget(self.aktueller_besitzer_combo, 3, 1, 1, 3)
+                self.aktueller_besitzer_label = QLabel('Aktueller Besitzer')
+                form_layout.addWidget(self.aktueller_besitzer_label, 3, 0)
+                form_layout.addWidget(owner_container, 3, 1, 1, 3)
 
                 layout.addLayout(form_layout)
                 layout.addWidget(QLabel('Anmerkungen'))
@@ -135,6 +152,8 @@ class ItemDialog(QDialog):
 
                 self.shortcut_save = QKeySequence(Qt.CTRL | Qt.Key_S)
                 self.grabShortcut(self.shortcut_save)
+                self.assignment_toggle.toggled.connect(self._handle_assignment_toggled)
+                self._handle_assignment_toggled(False)
 
         def _populate(self, item: Item) -> None:
                 if item.objekttyp:
@@ -168,12 +187,19 @@ class ItemDialog(QDialog):
                         assign_date = QDate.fromString(item.zuweisungsdatum, 'yyyy-MM-dd')
                         if assign_date.isValid():
                                 self.zuweisungsdatum_edit.setDate(assign_date)
+                else:
+                        self.zuweisungsdatum_edit.setDate(self.zuweisungsdatum_edit.minimumDate())
                 index = self.aktueller_besitzer_combo.findText(item.aktueller_besitzer)
                 if index >= 0:
                         self.aktueller_besitzer_combo.setCurrentIndex(index)
                 else:
                         self.aktueller_besitzer_combo.setEditText(item.aktueller_besitzer)
                 self.anmerkungen_edit.setPlainText(item.anmerkungen)
+                has_assignment = bool(item.aktueller_besitzer or item.zuweisungsdatum)
+                self.assignment_toggle.blockSignals(True)
+                self.assignment_toggle.setChecked(has_assignment)
+                self.assignment_toggle.blockSignals(False)
+                self._handle_assignment_toggled(has_assignment)
 
         def accept(self) -> None:  # type: ignore[override]
                 valid, errors = ItemValidator.validate(self._collect_data(display_format=True))
@@ -233,6 +259,26 @@ class ItemDialog(QDialog):
                 if not checked:
                         self._remove_stillgelegt_note()
                 self._update_deactivate_button()
+
+        def _handle_assignment_toggled(self, checked: bool) -> None:
+                self._set_assignment_fields_visible(checked)
+                self._set_assignment_fields_enabled(checked)
+                if not checked:
+                        self.aktueller_besitzer_combo.setCurrentText('')
+                        self.zuweisungsdatum_edit.setDate(self.zuweisungsdatum_edit.minimumDate())
+
+        def _set_assignment_fields_visible(self, visible: bool) -> None:
+                for widget in (
+                        self.zuweisungsdatum_label,
+                        self.zuweisungsdatum_edit,
+                        self.aktueller_besitzer_label,
+                        self.aktueller_besitzer_combo,
+                ):
+                        widget.setVisible(visible)
+
+        def _set_assignment_fields_enabled(self, enabled: bool) -> None:
+                self.zuweisungsdatum_edit.setEnabled(enabled)
+                self.aktueller_besitzer_combo.setEnabled(enabled)
 
         def _handle_cancel_clicked(self) -> None:
                 self._result_action = ItemDialog.ACTION_CANCEL

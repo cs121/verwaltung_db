@@ -233,8 +233,14 @@ class ItemTableModel(QAbstractTableModel):
                 key = COLUMN_KEYS[index.column()]
                 value = getattr(item, key)
                 if role == Qt.DisplayRole:
-                        if key in {'einkaufsdatum', 'zuweisungsdatum'} and value:
-                                return datetime.strptime(value, '%Y-%m-%d').strftime(DATE_FORMAT_DISPLAY)
+                        if key in {'einkaufsdatum', 'zuweisungsdatum'}:
+                                if value:
+                                        return datetime.strptime(value, '%Y-%m-%d').strftime(DATE_FORMAT_DISPLAY)
+                                return "leer"
+                        if value is None:
+                                return "leer"
+                        if isinstance(value, str):
+                                return value if value.strip() else "leer"
                         return value
                 if role == Qt.UserRole:
                         return item
