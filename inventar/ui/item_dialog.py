@@ -159,7 +159,7 @@ class ItemDialog(QDialog):
                                 self.modell_combo.setEditText(item.modell)
                 else:
                         self.modell_combo.setCurrentText('')
-                self.seriennummer_edit.setText(item.seriennummer)
+                self.seriennummer_edit.setText(item.seriennummer or '')
                 if item.einkaufsdatum:
                         qdate = QDate.fromString(item.einkaufsdatum, 'yyyy-MM-dd')
                         if qdate.isValid():
@@ -168,12 +168,13 @@ class ItemDialog(QDialog):
                         assign_date = QDate.fromString(item.zuweisungsdatum, 'yyyy-MM-dd')
                         if assign_date.isValid():
                                 self.zuweisungsdatum_edit.setDate(assign_date)
-                index = self.aktueller_besitzer_combo.findText(item.aktueller_besitzer)
+                owner_value = item.aktueller_besitzer or ''
+                index = self.aktueller_besitzer_combo.findText(owner_value)
                 if index >= 0:
                         self.aktueller_besitzer_combo.setCurrentIndex(index)
                 else:
-                        self.aktueller_besitzer_combo.setEditText(item.aktueller_besitzer)
-                self.anmerkungen_edit.setPlainText(item.anmerkungen)
+                        self.aktueller_besitzer_combo.setEditText(owner_value)
+                self.anmerkungen_edit.setPlainText(item.anmerkungen or '')
 
         def accept(self) -> None:  # type: ignore[override]
                 valid, errors = ItemValidator.validate(self._collect_data(display_format=True))
@@ -183,21 +184,27 @@ class ItemDialog(QDialog):
                 super().accept()
 
         def _collect_data(self, display_format: bool = False) -> dict:
-                def _date_value(widget: QDateEdit) -> str:
+                def _text_value(value: str) -> str | None:
+                        text = value.strip()
+                        if display_format:
+                                return text
+                        return text or None
+
+                def _date_value(widget: QDateEdit) -> str | None:
                         text = widget.text().strip()
                         if not text:
-                                return ''
+                                return '' if display_format else None
                         return text if display_format else widget.date().toString('yyyy-MM-dd')
 
                 return {
-                        'objekttyp': self.objekttyp_combo.currentText().strip(),
-                        'hersteller': self.hersteller_combo.currentText().strip(),
-                        'modell': self.modell_combo.currentText().strip(),
-                        'seriennummer': self.seriennummer_edit.text().strip(),
+                        'objekttyp': _text_value(self.objekttyp_combo.currentText()),
+                        'hersteller': _text_value(self.hersteller_combo.currentText()),
+                        'modell': _text_value(self.modell_combo.currentText()),
+                        'seriennummer': _text_value(self.seriennummer_edit.text()),
                         'einkaufsdatum': _date_value(self.einkaufsdatum_edit),
                         'zuweisungsdatum': _date_value(self.zuweisungsdatum_edit),
-                        'aktueller_besitzer': self.aktueller_besitzer_combo.currentText().strip(),
-                        'anmerkungen': self.anmerkungen_edit.toPlainText().strip(),
+                        'aktueller_besitzer': _text_value(self.aktueller_besitzer_combo.currentText()),
+                        'anmerkungen': _text_value(self.anmerkungen_edit.toPlainText()),
                         'stillgelegt': self._stillgelegt_value,
                 }
 

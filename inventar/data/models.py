@@ -10,14 +10,14 @@ class Item:
         """Dataclass repräsentiert einen Inventargegenstand."""
 
         id: Optional[int] = field(default=None)
-        objekttyp: str = field(default='')
-        hersteller: str = field(default='')
-        modell: str = field(default='')
-        seriennummer: str = field(default='')
-        einkaufsdatum: str = field(default='')
-        zuweisungsdatum: str = field(default='')
-        aktueller_besitzer: str = field(default='')
-        anmerkungen: str = field(default='')
+        objekttyp: Optional[str] = field(default=None)
+        hersteller: Optional[str] = field(default=None)
+        modell: Optional[str] = field(default=None)
+        seriennummer: Optional[str] = field(default=None)
+        einkaufsdatum: Optional[str] = field(default=None)
+        zuweisungsdatum: Optional[str] = field(default=None)
+        aktueller_besitzer: Optional[str] = field(default=None)
+        anmerkungen: Optional[str] = field(default=None)
         stillgelegt: bool = field(default=False)
 
         def to_dict(self) -> dict:
@@ -43,28 +43,35 @@ class Item:
                 if isinstance(row, dict):
                         return cls(
                                 id=row.get('id'),
-                                objekttyp=row.get('objekttyp', ''),
-                                hersteller=row.get('hersteller', ''),
-                                modell=row.get('modell', ''),
-                                seriennummer=row.get('seriennummer', ''),
-                                einkaufsdatum=row.get('einkaufsdatum', ''),
-                                zuweisungsdatum=row.get('zuweisungsdatum', ''),
-                                aktueller_besitzer=row.get('aktueller_besitzer', ''),
-                                anmerkungen=row.get('anmerkungen', ''),
+                                objekttyp=cls._normalize(row.get('objekttyp')),
+                                hersteller=cls._normalize(row.get('hersteller')),
+                                modell=cls._normalize(row.get('modell')),
+                                seriennummer=cls._normalize(row.get('seriennummer')),
+                                einkaufsdatum=cls._normalize(row.get('einkaufsdatum')),
+                                zuweisungsdatum=cls._normalize(row.get('zuweisungsdatum')),
+                                aktueller_besitzer=cls._normalize(row.get('aktueller_besitzer')),
+                                anmerkungen=cls._normalize(row.get('anmerkungen')),
                                 stillgelegt=bool(row.get('stillgelegt', 0)),
                         )
                 return cls(
                         id=row[0],
-                        objekttyp=row[1],
-                        hersteller=row[2],
-                        modell=row[3],
-                        seriennummer=row[4],
-                        einkaufsdatum=row[5],
-                        zuweisungsdatum=row[6],
-                        aktueller_besitzer=row[7],
-                        anmerkungen=row[8],
+                        objekttyp=cls._normalize(row[1] if len(row) > 1 else None),
+                        hersteller=cls._normalize(row[2] if len(row) > 2 else None),
+                        modell=cls._normalize(row[3] if len(row) > 3 else None),
+                        seriennummer=cls._normalize(row[4] if len(row) > 4 else None),
+                        einkaufsdatum=cls._normalize(row[5] if len(row) > 5 else None),
+                        zuweisungsdatum=cls._normalize(row[6] if len(row) > 6 else None),
+                        aktueller_besitzer=cls._normalize(row[7] if len(row) > 7 else None),
+                        anmerkungen=cls._normalize(row[8] if len(row) > 8 else None),
                         stillgelegt=bool(row[9]) if len(row) > 9 else False,
                 )
+
+        @staticmethod
+        def _normalize(value: Optional[object]) -> Optional[str]:
+                if value is None:
+                        return None
+                text = str(value).strip()
+                return text or None
 
         def copy(self, **updates: object) -> Item:
                 """Gibt eine Kopie mit optionalen Updates zurück."""
