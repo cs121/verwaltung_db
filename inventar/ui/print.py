@@ -1,8 +1,7 @@
 from datetime import datetime
 from typing import Iterable
 
-from PySide6.QtCore import Qt
-from PySide6.QtGui import QPainter
+from PySide6.QtGui import QPainter, QPageLayout
 from PySide6.QtPrintSupport import QPrintDialog, QPrinter, QPrintPreviewDialog
 from PySide6.QtWidgets import QMessageBox, QWidget
 
@@ -29,7 +28,7 @@ class TablePrinter:
 
         def _create_printer(self) -> QPrinter:
                 printer = QPrinter(QPrinter.HighResolution)
-                printer.setPageOrientation(Qt.PortraitOrientation)
+                printer.setPageOrientation(QPageLayout.Portrait)
                 printer.setFullPage(False)
                 printer.setDocName('Inventarliste')
                 return printer
