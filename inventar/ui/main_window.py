@@ -22,6 +22,7 @@ from PySide6.QtWidgets import (
     QMainWindow,
     QMenu,
     QMessageBox,
+    QRadioButton,
     QPushButton,
     QSizePolicy,
     QStatusBar,
@@ -328,6 +329,9 @@ class MainWindow(QMainWindow):
 
                 actions_layout = QHBoxLayout()
                 self.new_button = QPushButton('Neues Objekt')
+                self.toggle_stillgelegt_button = QRadioButton()
+                self.toggle_stillgelegt_button.setChecked(False)
+                self._update_stillgelegt_toggle_label(False)
                 self.export_button = QToolButton()
                 self.export_button.setText('Export')
                 self.export_button.setPopupMode(QToolButton.InstantPopup)
@@ -341,6 +345,7 @@ class MainWindow(QMainWindow):
                 self.print_button.setToolTip('Drucken (Ctrl+P)')
 
                 actions_layout.addWidget(self.new_button)
+                actions_layout.addWidget(self.toggle_stillgelegt_button)
                 actions_layout.addStretch()
 
                 layout.addLayout(actions_layout)
@@ -373,13 +378,7 @@ class MainWindow(QMainWindow):
                 self.search_field.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
                 self.search_field.installEventFilter(self)
 
-                self.toggle_stillgelegt_button = QToolButton()
-                self.toggle_stillgelegt_button.setCheckable(True)
-                self.toggle_stillgelegt_button.setChecked(False)
-                self._update_stillgelegt_toggle_label(False)
-
                 layout.addWidget(self.search_field)
-                layout.addWidget(self.toggle_stillgelegt_button)
                 return box
 
         def _build_form_filters(self) -> QWidget:
@@ -580,7 +579,7 @@ class MainWindow(QMainWindow):
                 self._update_model_filter()
                 self._update_serial_filter()
                 self._update_owner_combo()
-                self._update_status()
+                self.apply_filters()
                 self._update_item_action_visibility()
 
         def _update_status(self) -> None:
@@ -719,8 +718,8 @@ class MainWindow(QMainWindow):
                 self._clear_date_filters()
                 self._schedule_filter_update()
 
-        def _handle_toggle_stillgelegt(self, hide_inactive: bool) -> None:
-                self._update_stillgelegt_toggle_label(hide_inactive)
+        def _handle_toggle_stillgelegt(self, show_inactive_only: bool) -> None:
+                self._update_stillgelegt_toggle_label(show_inactive_only)
                 self.apply_filters()
 
         def _schedule_filter_update(self, *_args) -> None:
@@ -728,13 +727,13 @@ class MainWindow(QMainWindow):
                         self._filter_timer.stop()
                         self._filter_timer.start()
 
-        def _update_stillgelegt_toggle_label(self, hide_inactive: bool) -> None:
-                if hide_inactive:
-                        self.toggle_stillgelegt_button.setText('Stillgelegt anzeigen')
-                        self.toggle_stillgelegt_button.setToolTip('Stillgelegte Einträge wieder einblenden')
+        def _update_stillgelegt_toggle_label(self, show_inactive_only: bool) -> None:
+                if show_inactive_only:
+                        self.toggle_stillgelegt_button.setText('Nur stillgelegte anzeigen')
+                        self.toggle_stillgelegt_button.setToolTip('Es werden ausschließlich stillgelegte Einträge angezeigt')
                 else:
-                        self.toggle_stillgelegt_button.setText('Stillgelegt ausblenden')
-                        self.toggle_stillgelegt_button.setToolTip('Stillgelegte Einträge aus der Liste ausblenden')
+                        self.toggle_stillgelegt_button.setText('Nur aktive anzeigen')
+                        self.toggle_stillgelegt_button.setToolTip('Es werden ausschließlich aktive (nicht stillgelegte) Einträge angezeigt')
 
         def eventFilter(self, obj, event):  # type: ignore[override]
                 if obj is self.search_field and event.type() in {QEvent.MouseButtonPress, QEvent.FocusIn}:
@@ -811,8 +810,12 @@ class MainWindow(QMainWindow):
                                 continue
                         if f_notes and not match_text(it.anmerkungen, f_notes):
                                 continue
-                        if self.toggle_stillgelegt_button.isChecked() and getattr(it, 'stillgelegt', False):
-                                continue
+                        if self.toggle_stillgelegt_button.isChecked():
+                                if not getattr(it, 'stillgelegt', False):
+                                        continue
+                        else:
+                                if getattr(it, 'stillgelegt', False):
+                                        continue
                         if q:
                                 haystack = ' '.join([
                                         it.objekttyp or '', it.hersteller or '', it.modell or '', it.seriennummer or '',
@@ -840,9 +843,7 @@ class MainWindow(QMainWindow):
                 self.toggle_stillgelegt_button.setChecked(False)
                 self.toggle_stillgelegt_button.blockSignals(False)
                 self._update_stillgelegt_toggle_label(False)
-                self.filtered_items = list(self.items)
-                self.table_model.set_items(self.filtered_items)
-                self._update_status()
+                self.apply_filters()
 
         # ---------- Zoom/Font ----------
         def _adjust_font_size(self, delta: int) -> None:
