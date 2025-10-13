@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from datetime import datetime
 from pathlib import Path
 from typing import Iterable, List, Optional
 
@@ -36,7 +37,7 @@ from inventar.export.exporters import export_to_csv, export_to_json, export_to_x
 from inventar.ui.item_dialog import ItemDialog
 from inventar.ui.print import TablePrinter
 from inventar.utils.settings import SettingsManager
-from inventar.utils.validators import ItemValidator
+from inventar.utils.validators import DATE_FORMAT_DISPLAY, ItemValidator
 
 
 PALETTE_STYLESHEET = """
