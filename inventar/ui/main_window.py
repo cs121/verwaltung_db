@@ -1,16 +1,14 @@
 from __future__ import annotations
 
-from datetime import datetime
 from pathlib import Path
 from typing import Iterable, List, Optional
 
-from PySide6.QtCore import QAbstractTableModel, QModelIndex, Qt, QDate, QEvent, QTimer
+from PySide6.QtCore import QAbstractTableModel, QModelIndex, Qt, QTimer
 from PySide6.QtGui import QAction, QIcon, QKeySequence, QColor, QFont
 from PySide6.QtWidgets import (
     QAbstractItemView,
     QApplication,
     QComboBox,
-    QDateEdit,
     QFileDialog,
     QFormLayout,
     QGroupBox,
@@ -38,7 +36,7 @@ from inventar.export.exporters import export_to_csv, export_to_json, export_to_x
 from inventar.ui.item_dialog import ItemDialog
 from inventar.ui.print import TablePrinter
 from inventar.utils.settings import SettingsManager
-from inventar.utils.validators import DATE_FORMAT_DISPLAY, DATE_FORMAT_QT_DISPLAY, ItemValidator
+from inventar.utils.validators import ItemValidator
 
 
 PALETTE_STYLESHEET = """
@@ -418,24 +416,6 @@ class MainWindow(QMainWindow):
                 left_layout.addRow('Seriennummer', self.filter_seriennummer)
 
                 right_layout = QFormLayout()
-                self.filter_einkaufsdatum = QDateEdit()
-                self.filter_einkaufsdatum.setDisplayFormat(DATE_FORMAT_QT_DISPLAY)
-                self.filter_einkaufsdatum.setCalendarPopup(True)
-                self.filter_einkaufsdatum.setSpecialValueText('')
-                self.filter_einkaufsdatum.setDateRange(QDate(1900, 1, 1), QDate(2100, 12, 31))
-                self.filter_einkaufsdatum.setDate(QDate.currentDate())
-                self.filter_einkaufsdatum.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
-                if self.filter_einkaufsdatum.lineEdit():
-                        self.filter_einkaufsdatum.lineEdit().setText('')
-                self.filter_zuweisungsdatum = QDateEdit()
-                self.filter_zuweisungsdatum.setDisplayFormat(DATE_FORMAT_QT_DISPLAY)
-                self.filter_zuweisungsdatum.setCalendarPopup(True)
-                self.filter_zuweisungsdatum.setSpecialValueText('')
-                self.filter_zuweisungsdatum.setDateRange(QDate(1900, 1, 1), QDate(2100, 12, 31))
-                self.filter_zuweisungsdatum.setDate(QDate.currentDate())
-                self.filter_zuweisungsdatum.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
-                if self.filter_zuweisungsdatum.lineEdit():
-                        self.filter_zuweisungsdatum.lineEdit().setText('')
                 self.filter_besitzer = QComboBox()
                 self.filter_besitzer.setEditable(True)
                 self.filter_besitzer.setInsertPolicy(QComboBox.NoInsert)
@@ -455,8 +435,6 @@ class MainWindow(QMainWindow):
                 owner_layout.addWidget(self.remove_owner_button)
                 owner_layout.setContentsMargins(0, 0, 0, 0)
                 owner_layout.setSpacing(4)
-                right_layout.addRow('Einkaufsdatum', self.filter_einkaufsdatum)
-                right_layout.addRow('Zuweisungsdatum', self.filter_zuweisungsdatum)
                 owner_layout.setStretch(0, 1)
                 right_layout.addRow('Aktueller Besitzer', owner_layout)
                 right_layout.addRow('Anmerkungen', self.filter_anmerkungen)
@@ -550,12 +528,6 @@ class MainWindow(QMainWindow):
                         self.filter_besitzer.lineEdit().returnPressed.connect(self.apply_filters)
                         self.filter_besitzer.lineEdit().textEdited.connect(self._schedule_filter_update)
                 self.filter_besitzer.currentIndexChanged.connect(self._schedule_filter_update)
-                self.filter_einkaufsdatum.dateChanged.connect(self._schedule_filter_update)
-                if self.filter_einkaufsdatum.lineEdit():
-                        self.filter_einkaufsdatum.lineEdit().textChanged.connect(self._schedule_filter_update)
-                self.filter_zuweisungsdatum.dateChanged.connect(self._schedule_filter_update)
-                if self.filter_zuweisungsdatum.lineEdit():
-                        self.filter_zuweisungsdatum.lineEdit().textChanged.connect(self._schedule_filter_update)
                 self.add_owner_button.clicked.connect(self._add_owner_filter_value)
 
                 selection_model = self.table.selectionModel()
@@ -606,21 +578,37 @@ class MainWindow(QMainWindow):
         def _refresh_object_types(self) -> None:
                 self.object_types = self.settings.load_object_types()
 
-        def _update_owner_combo(self) -> None:
+        def _update_owner_combo(self, preferred: Optional[str] = None) -> None:
                 if not hasattr(self, 'filter_besitzer'):
                         return
                 owners = self.repository.distinct_owners() if hasattr(self.repository, 'distinct_owners') else []
                 owners = self._merge_custom_values(owners, self.custom_owners)
-                current_text = self.filter_besitzer.currentText().strip() if self.filter_besitzer.count() else ''
+                target = (preferred or '').strip()
+                if not target and self.filter_besitzer.count():
+                        target = self.filter_besitzer.currentText().strip()
+
                 self.filter_besitzer.blockSignals(True)
                 self.filter_besitzer.clear()
                 self.filter_besitzer.addItem('')
                 self.filter_besitzer.addItems(owners)
-                if current_text:
-                        self.filter_besitzer.setCurrentText(current_text)
+                self.filter_besitzer.blockSignals(False)
+
+                if target:
+                        index = self.filter_besitzer.findText(target, Qt.MatchFixedString)
+                        if index < 0:
+                                lowered = target.lower()
+                                for idx in range(1, self.filter_besitzer.count()):
+                                        if self.filter_besitzer.itemText(idx).strip().lower() == lowered:
+                                                index = idx
+                                                break
+                        if index >= 0:
+                                self.filter_besitzer.setCurrentIndex(index)
+                        else:
+                                self.filter_besitzer.setCurrentIndex(0)
+                                self.filter_besitzer.setEditText('')
                 else:
                         self.filter_besitzer.setCurrentIndex(0)
-                self.filter_besitzer.blockSignals(False)
+                        self.filter_besitzer.setEditText('')
 
         def _update_manufacturer_filter(self) -> None:
                 if not hasattr(self, 'filter_hersteller'):
@@ -715,7 +703,6 @@ class MainWindow(QMainWindow):
                 self.apply_filters()
 
         def _handle_search_text_change(self, text: str) -> None:
-                self._clear_date_filters()
                 self._schedule_filter_update()
 
         def _handle_toggle_stillgelegt(self, show_inactive_only: bool) -> None:
@@ -736,47 +723,7 @@ class MainWindow(QMainWindow):
                         self.toggle_stillgelegt_button.setToolTip('Es werden ausschließlich aktive (nicht stillgelegte) Einträge angezeigt')
 
         def eventFilter(self, obj, event):  # type: ignore[override]
-                if obj is self.search_field and event.type() in {QEvent.MouseButtonPress, QEvent.FocusIn}:
-                        if self._clear_date_filters():
-                                self._schedule_filter_update()
                 return super().eventFilter(obj, event)
-
-        def _date_text_or_empty(self, date_edit: QDateEdit) -> str:
-                # get the plain text from the line edit; if empty, treat as no filter
-                if date_edit and date_edit.lineEdit():
-                        t = date_edit.lineEdit().text().strip()
-                        return t
-                return ''
-
-        def _clear_date_filters(self) -> bool:
-                changed = False
-                date_edits: Iterable[Optional[QDateEdit]] = (
-                        getattr(self, 'filter_einkaufsdatum', None),
-                        getattr(self, 'filter_zuweisungsdatum', None),
-                )
-                for date_edit in date_edits:
-                        if not date_edit or not date_edit.lineEdit():
-                                continue
-                        if date_edit.lineEdit().text().strip():
-                                date_edit.blockSignals(True)
-                                date_edit.lineEdit().clear()
-                                date_edit.blockSignals(False)
-                                changed = True
-                return changed
-
-        def _normalize_date(self, text: str) -> Optional[str]:
-                if not text:
-                        return None
-                # Accept display format and convert to ISO yyyy-mm-dd
-                try:
-                        dt = datetime.strptime(text, DATE_FORMAT_DISPLAY)
-                        return dt.strftime('%Y-%m-%d')
-                except Exception:
-                        try:
-                                dt = datetime.strptime(text, DATE_FORMAT_QT_DISPLAY)
-                                return dt.strftime('%Y-%m-%d')
-                        except Exception:
-                                return None
 
         def apply_filters(self) -> None:
                 q = self.search_field.text().strip().lower()
@@ -786,10 +733,6 @@ class MainWindow(QMainWindow):
                 f_serial = self.filter_seriennummer.currentText().strip().lower()
                 f_owner = self.filter_besitzer.currentText().strip().lower()
                 f_notes = self.filter_anmerkungen.text().strip().lower()
-
-                # Die Datumsfelder werden zwar weiterhin angezeigt, sollen aber aktuell
-                # keinen Einfluss auf die Filterung haben. Daher werden sie hier bewusst
-                # ignoriert und nicht für die Filterlogik verwendet.
 
                 def match_text(val: Optional[str], needle: str) -> bool:
                         if not needle:
@@ -835,9 +778,6 @@ class MainWindow(QMainWindow):
                 for combo in (self.filter_objekttyp, self.filter_hersteller, self.filter_modell, self.filter_seriennummer, self.filter_besitzer):
                         combo.setCurrentIndex(0)
                         combo.setEditText('')
-                for d in (self.filter_einkaufsdatum, self.filter_zuweisungsdatum):
-                        if d.lineEdit():
-                                d.lineEdit().setText('')
                 self.filter_anmerkungen.clear()
                 self.toggle_stillgelegt_button.blockSignals(True)
                 self.toggle_stillgelegt_button.setChecked(False)
@@ -1056,7 +996,7 @@ class MainWindow(QMainWindow):
                         self.custom_owners = self.repository.list_custom_values(CUSTOM_CATEGORY_OWNER)
                 except Exception:
                         pass
-                self._update_owner_combo()
+                self._update_owner_combo(val)
 
         def _remove_owner_filter_value(self) -> None:
                 val = self.filter_besitzer.currentText().strip()
@@ -1068,7 +1008,7 @@ class MainWindow(QMainWindow):
                         self.custom_owners = self.repository.list_custom_values(CUSTOM_CATEGORY_OWNER)
                 except Exception:
                         pass
-                self._update_owner_combo()
+                self._update_owner_combo('')
 
 
 # ---------- Start/Run Helper ----------
