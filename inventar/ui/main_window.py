@@ -1003,13 +1003,47 @@ class MainWindow(QMainWindow):
                 val = self.filter_besitzer.currentText().strip()
                 if not val:
                         return
+                confirm = QMessageBox.question(
+                        self,
+                        'Besitzer entfernen',
+                        (
+                                f"Soll der Besitzer '{val}' wirklich aus allen Einträgen entfernt werden?\n"
+                                'Diese Aktion kann nicht rückgängig gemacht werden.'
+                        ),
+                )
+                if confirm != QMessageBox.Yes:
+                        return
+
+                affected = 0
+                try:
+                        if hasattr(self.repository, 'clear_owner'):
+                                affected = self.repository.clear_owner(val)
+                except RepositoryError as exc:
+                        QMessageBox.critical(self, 'Besitzer entfernen', f'Besitzer konnte nicht entfernt werden:\n{exc}')
+                        return
+                except Exception as exc:  # noqa: BLE001
+                        QMessageBox.critical(
+                                self,
+                                'Besitzer entfernen',
+                                f'Unerwarteter Fehler beim Entfernen des Besitzers:\n{exc}',
+                        )
+                        return
+
                 try:
                         if hasattr(self.repository, 'remove_custom_value'):
                                 self.repository.remove_custom_value(CUSTOM_CATEGORY_OWNER, val)
                         self.custom_owners = self.repository.list_custom_values(CUSTOM_CATEGORY_OWNER)
                 except Exception:
                         pass
-                self._update_owner_combo('')
+
+                self._load_items()
+
+                message = (
+                        f"Besitzer '{val}' wurde aus {affected} Einträgen entfernt."
+                        if affected
+                        else f"Besitzer '{val}' war in keinen Einträgen hinterlegt."
+                )
+                QMessageBox.information(self, 'Besitzer entfernt', message)
 
 
 # ---------- Start/Run Helper ----------
