@@ -4,7 +4,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Iterable, List, Optional
 
-from PySide6.QtCore import QAbstractTableModel, QModelIndex, Qt, QDate, QTimer
+from PySide6.QtCore import QAbstractTableModel, QModelIndex, Qt, QDate, QEvent, QTimer
 from PySide6.QtGui import QAction, QIcon, QKeySequence, QColor, QFont
 from PySide6.QtWidgets import (
     QAbstractItemView,
@@ -371,8 +371,15 @@ class MainWindow(QMainWindow):
                 self.search_field = QLineEdit()
                 self.search_field.setPlaceholderText('In allen Feldern suchen ...')
                 self.search_field.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+                self.search_field.installEventFilter(self)
+
+                self.toggle_stillgelegt_button = QToolButton()
+                self.toggle_stillgelegt_button.setCheckable(True)
+                self.toggle_stillgelegt_button.setChecked(False)
+                self._update_stillgelegt_toggle_label(False)
 
                 layout.addWidget(self.search_field)
+                layout.addWidget(self.toggle_stillgelegt_button)
                 return box
 
         def _build_form_filters(self) -> QWidget:
@@ -513,6 +520,7 @@ class MainWindow(QMainWindow):
 
                 self.search_field.returnPressed.connect(self._handle_search_submit)
                 self.search_field.textChanged.connect(self._handle_search_text_change)
+                self.toggle_stillgelegt_button.toggled.connect(self._handle_toggle_stillgelegt)
 
                 self.remove_owner_button.clicked.connect(self._remove_owner_filter_value)
                 self.new_action.triggered.connect(self.create_item)
@@ -708,12 +716,31 @@ class MainWindow(QMainWindow):
                 self.apply_filters()
 
         def _handle_search_text_change(self, text: str) -> None:
+                self._clear_date_filters()
                 self._schedule_filter_update()
+
+        def _handle_toggle_stillgelegt(self, hide_inactive: bool) -> None:
+                self._update_stillgelegt_toggle_label(hide_inactive)
+                self.apply_filters()
 
         def _schedule_filter_update(self, *_args) -> None:
                 if hasattr(self, '_filter_timer') and self._filter_timer:
                         self._filter_timer.stop()
                         self._filter_timer.start()
+
+        def _update_stillgelegt_toggle_label(self, hide_inactive: bool) -> None:
+                if hide_inactive:
+                        self.toggle_stillgelegt_button.setText('Stillgelegt anzeigen')
+                        self.toggle_stillgelegt_button.setToolTip('Stillgelegte Einträge wieder einblenden')
+                else:
+                        self.toggle_stillgelegt_button.setText('Stillgelegt ausblenden')
+                        self.toggle_stillgelegt_button.setToolTip('Stillgelegte Einträge aus der Liste ausblenden')
+
+        def eventFilter(self, obj, event):  # type: ignore[override]
+                if obj is self.search_field and event.type() in {QEvent.MouseButtonPress, QEvent.FocusIn}:
+                        if self._clear_date_filters():
+                                self._schedule_filter_update()
+                return super().eventFilter(obj, event)
 
         def _date_text_or_empty(self, date_edit: QDateEdit) -> str:
                 # get the plain text from the line edit; if empty, treat as no filter
@@ -721,6 +748,22 @@ class MainWindow(QMainWindow):
                         t = date_edit.lineEdit().text().strip()
                         return t
                 return ''
+
+        def _clear_date_filters(self) -> bool:
+                changed = False
+                date_edits: Iterable[Optional[QDateEdit]] = (
+                        getattr(self, 'filter_einkaufsdatum', None),
+                        getattr(self, 'filter_zuweisungsdatum', None),
+                )
+                for date_edit in date_edits:
+                        if not date_edit or not date_edit.lineEdit():
+                                continue
+                        if date_edit.lineEdit().text().strip():
+                                date_edit.blockSignals(True)
+                                date_edit.lineEdit().clear()
+                                date_edit.blockSignals(False)
+                                changed = True
+                return changed
 
         def _normalize_date(self, text: str) -> Optional[str]:
                 if not text:
@@ -773,6 +816,8 @@ class MainWindow(QMainWindow):
                                 continue
                         if assign_iso and (it.zuweisungsdatum or '') != assign_iso:
                                 continue
+                        if self.toggle_stillgelegt_button.isChecked() and getattr(it, 'stillgelegt', False):
+                                continue
                         if q:
                                 haystack = ' '.join([
                                         it.objekttyp or '', it.hersteller or '', it.modell or '', it.seriennummer or '',
@@ -796,6 +841,10 @@ class MainWindow(QMainWindow):
                         if d.lineEdit():
                                 d.lineEdit().setText('')
                 self.filter_anmerkungen.clear()
+                self.toggle_stillgelegt_button.blockSignals(True)
+                self.toggle_stillgelegt_button.setChecked(False)
+                self.toggle_stillgelegt_button.blockSignals(False)
+                self._update_stillgelegt_toggle_label(False)
                 self.filtered_items = list(self.items)
                 self.table_model.set_items(self.filtered_items)
                 self._update_status()
