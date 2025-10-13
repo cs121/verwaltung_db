@@ -20,6 +20,7 @@ from PySide6.QtWidgets import (
 )
 
 from inventar.data.models import Item
+from inventar.utils.constants import DEFAULT_OWNER, ensure_default_owner, is_default_owner
 from inventar.utils.validators import DATE_FORMAT_QT_DISPLAY, ItemValidator
 
 
@@ -42,20 +43,19 @@ class ItemDialog(QDialog):
                 super().__init__(parent)
                 self.setWindowTitle('Neues Objekt einfügen' if item is None else 'Objekt bearbeiten')
                 self.item = item
-                self.owners = owners or []
+                self.owners = ensure_default_owner(owners or [])
                 self.object_types = object_types or []
                 self.manufacturers = manufacturers or []
                 self.models = models or []
                 self._result_action = ItemDialog.ACTION_CANCEL
                 self._stillgelegt_value = bool(item.stillgelegt) if item else False
                 self._deactivate_button: QPushButton | None = None
+                self._assignment_hidden: bool | None = None
                 self._build_ui()
                 if item:
                         self._populate(item)
                 else:
-                        today = QDate.currentDate()
-                        self.einkaufsdatum_edit.setDate(today)
-                        self.zuweisungsdatum_edit.setDate(today)
+                        self._initialize_new_item_state()
 
         def _build_ui(self) -> None:
                 layout = QVBoxLayout(self)
@@ -88,7 +88,7 @@ class ItemDialog(QDialog):
                 self.zuweisungsdatum_edit.setCalendarPopup(True)
                 self.aktueller_besitzer_combo = QComboBox()
                 self.aktueller_besitzer_combo.setEditable(True)
-                self.aktueller_besitzer_combo.addItems(sorted(self.owners))
+                self.aktueller_besitzer_combo.addItems(self.owners)
                 self.aktueller_besitzer_combo.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
                 self.anmerkungen_edit = QPlainTextEdit()
                 self.anmerkungen_edit.setStyleSheet('background-color: white;')
@@ -104,7 +104,8 @@ class ItemDialog(QDialog):
                 form_layout.addWidget(self.seriennummer_edit, 0, 3)
                 form_layout.addWidget(QLabel('Einkaufsdatum'), 1, 2)
                 form_layout.addWidget(self.einkaufsdatum_edit, 1, 3)
-                form_layout.addWidget(QLabel('Zuweisungsdatum'), 2, 2)
+                self.zuweisungsdatum_label = QLabel('Zuweisungsdatum')
+                form_layout.addWidget(self.zuweisungsdatum_label, 2, 2)
                 form_layout.addWidget(self.zuweisungsdatum_edit, 2, 3)
                 form_layout.addWidget(QLabel('Aktueller Besitzer'), 3, 0)
                 form_layout.addWidget(self.aktueller_besitzer_combo, 3, 1, 1, 3)
@@ -112,6 +113,9 @@ class ItemDialog(QDialog):
                 layout.addLayout(form_layout)
                 layout.addWidget(QLabel('Anmerkungen'))
                 layout.addWidget(self.anmerkungen_edit)
+
+                self.aktueller_besitzer_combo.currentTextChanged.connect(self._handle_owner_changed)
+                self._update_assignment_visibility(self.aktueller_besitzer_combo.currentText())
 
                 self.button_box = QDialogButtonBox(QDialogButtonBox.Save | QDialogButtonBox.Cancel)
                 save_button = self.button_box.button(QDialogButtonBox.Save)
@@ -135,6 +139,40 @@ class ItemDialog(QDialog):
 
                 self.shortcut_save = QKeySequence(Qt.CTRL | Qt.Key_S)
                 self.grabShortcut(self.shortcut_save)
+
+        def _initialize_new_item_state(self) -> None:
+                self._select_default_owner()
+                self._update_assignment_visibility(self.aktueller_besitzer_combo.currentText())
+                today = QDate.currentDate()
+                self.einkaufsdatum_edit.setDate(today)
+
+        def _select_default_owner(self) -> None:
+                index = self.aktueller_besitzer_combo.findText(DEFAULT_OWNER, Qt.MatchFixedString)
+                if index >= 0:
+                        self.aktueller_besitzer_combo.setCurrentIndex(index)
+                else:
+                        self.aktueller_besitzer_combo.setEditText(DEFAULT_OWNER)
+
+        def _handle_owner_changed(self, text: str) -> None:
+                self._update_assignment_visibility(text)
+
+        def _update_assignment_visibility(self, owner_text: str) -> None:
+                hide = is_default_owner(owner_text) or not owner_text.strip()
+                if self._assignment_hidden is not None and self._assignment_hidden == hide:
+                        return
+                self._assignment_hidden = hide
+
+                self.zuweisungsdatum_label.setVisible(not hide)
+                self.zuweisungsdatum_edit.setVisible(not hide)
+
+                if hide:
+                        self.zuweisungsdatum_edit.blockSignals(True)
+                        self.zuweisungsdatum_edit.clear()
+                        self.zuweisungsdatum_edit.blockSignals(False)
+                elif not self.zuweisungsdatum_edit.text().strip():
+                        self.zuweisungsdatum_edit.blockSignals(True)
+                        self.zuweisungsdatum_edit.setDate(QDate.currentDate())
+                        self.zuweisungsdatum_edit.blockSignals(False)
 
         def _populate(self, item: Item) -> None:
                 if item.objekttyp:
@@ -175,6 +213,7 @@ class ItemDialog(QDialog):
                 else:
                         self.aktueller_besitzer_combo.setEditText(owner_value)
                 self.anmerkungen_edit.setPlainText(item.anmerkungen or '')
+                self._update_assignment_visibility(owner_value)
 
         def accept(self) -> None:  # type: ignore[override]
                 valid, errors = ItemValidator.validate(self._collect_data(display_format=True))
@@ -196,7 +235,7 @@ class ItemDialog(QDialog):
                                 return '' if display_format else None
                         return text if display_format else widget.date().toString('yyyy-MM-dd')
 
-                return {
+                data = {
                         'objekttyp': _text_value(self.objekttyp_combo.currentText()),
                         'hersteller': _text_value(self.hersteller_combo.currentText()),
                         'modell': _text_value(self.modell_combo.currentText()),
@@ -207,6 +246,12 @@ class ItemDialog(QDialog):
                         'anmerkungen': _text_value(self.anmerkungen_edit.toPlainText()),
                         'stillgelegt': self._stillgelegt_value,
                 }
+
+                owner_value = data.get('aktueller_besitzer') or ''
+                if is_default_owner(owner_value) or not owner_value:
+                        data['zuweisungsdatum'] = '' if display_format else None
+
+                return data
 
         def _show_errors(self, errors: dict) -> None:
                 messages = '\n'.join(f"{field}: {message}" for field, message in errors.items())

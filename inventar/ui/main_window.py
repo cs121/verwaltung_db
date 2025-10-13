@@ -36,6 +36,7 @@ from inventar.data.repository import RepositoryError, create_repository
 from inventar.export.exporters import export_to_csv, export_to_json, export_to_xlsx
 from inventar.ui.item_dialog import ItemDialog
 from inventar.ui.print import TablePrinter
+from inventar.utils.constants import ensure_default_owner, is_default_owner
 from inventar.utils.settings import SettingsManager
 from inventar.utils.theme_manager import ThemeManager
 from inventar.utils.validators import DATE_FORMAT_DISPLAY, ItemValidator
@@ -469,7 +470,7 @@ class MainWindow(QMainWindow):
                 if not hasattr(self, 'filter_besitzer'):
                         return
                 owners = self.repository.distinct_owners() if hasattr(self.repository, 'distinct_owners') else []
-                owners = self._merge_custom_values(owners, self.custom_owners)
+                owners = ensure_default_owner(self._merge_custom_values(owners, self.custom_owners))
                 target = (preferred or '').strip()
                 if not target and self.filter_besitzer.count():
                         target = self.filter_besitzer.currentText().strip()
@@ -581,7 +582,7 @@ class MainWindow(QMainWindow):
                 repo_owners = []
                 if hasattr(self.repository, 'distinct_owners'):
                         repo_owners = self.repository.distinct_owners()
-                owners = self._merge_custom_values(repo_owners, self.custom_owners)
+                owners = ensure_default_owner(self._merge_custom_values(repo_owners, self.custom_owners))
 
                 return object_types, manufacturers, models, owners
 
@@ -877,6 +878,9 @@ class MainWindow(QMainWindow):
                 val = self._add_value_via_dialog('Besitzer hinzufügen', 'Name:')
                 if not val:
                         return
+                if is_default_owner(val):
+                        QMessageBox.information(self, 'Besitzer hinzufügen', "Der Eintrag 'LAGER' ist bereits vorhanden.")
+                        return
                 try:
                         if hasattr(self.repository, 'add_custom_value'):
                                 self.repository.add_custom_value(CUSTOM_CATEGORY_OWNER, val)
@@ -888,6 +892,9 @@ class MainWindow(QMainWindow):
         def _remove_owner_filter_value(self) -> None:
                 val = self.filter_besitzer.currentText().strip()
                 if not val:
+                        return
+                if is_default_owner(val):
+                        QMessageBox.information(self, 'Besitzer entfernen', "Der Eintrag 'LAGER' kann nicht entfernt werden.")
                         return
                 confirm = QMessageBox.question(
                         self,
