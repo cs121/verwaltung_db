@@ -788,10 +788,9 @@ class MainWindow(QMainWindow):
                 f_owner = self.filter_besitzer.currentText().strip().lower()
                 f_notes = self.filter_anmerkungen.text().strip().lower()
 
-                buy_text = self._date_text_or_empty(self.filter_einkaufsdatum)
-                assign_text = self._date_text_or_empty(self.filter_zuweisungsdatum)
-                buy_iso = self._normalize_date(buy_text) if buy_text else None
-                assign_iso = self._normalize_date(assign_text) if assign_text else None
+                # Die Datumsfelder werden zwar weiterhin angezeigt, sollen aber aktuell
+                # keinen Einfluss auf die Filterung haben. Daher werden sie hier bewusst
+                # ignoriert und nicht für die Filterlogik verwendet.
 
                 def match_text(val: Optional[str], needle: str) -> bool:
                         if not needle:
@@ -811,10 +810,6 @@ class MainWindow(QMainWindow):
                         if f_owner and (it.aktueller_besitzer or '').strip().lower() != f_owner:
                                 continue
                         if f_notes and not match_text(it.anmerkungen, f_notes):
-                                continue
-                        if buy_iso and (it.einkaufsdatum or '') != buy_iso:
-                                continue
-                        if assign_iso and (it.zuweisungsdatum or '') != assign_iso:
                                 continue
                         if self.toggle_stillgelegt_button.isChecked() and getattr(it, 'stillgelegt', False):
                                 continue
