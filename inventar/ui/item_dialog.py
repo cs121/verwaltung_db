@@ -158,7 +158,10 @@ class ItemDialog(QDialog):
 
         def _update_assignment_visibility(self, owner_text: str) -> None:
                 hide = is_default_owner(owner_text) or not owner_text.strip()
-                if self._assignment_hidden is not None and self._assignment_hidden == hide:
+                previous_state = self._assignment_hidden
+                if previous_state is not None and previous_state == hide:
+                        if not hide and not self.zuweisungsdatum_edit.text().strip():
+                                self._set_assignment_date_today()
                         return
                 self._assignment_hidden = hide
 
@@ -169,10 +172,16 @@ class ItemDialog(QDialog):
                         self.zuweisungsdatum_edit.blockSignals(True)
                         self.zuweisungsdatum_edit.clear()
                         self.zuweisungsdatum_edit.blockSignals(False)
-                elif not self.zuweisungsdatum_edit.text().strip():
-                        self.zuweisungsdatum_edit.blockSignals(True)
-                        self.zuweisungsdatum_edit.setDate(QDate.currentDate())
-                        self.zuweisungsdatum_edit.blockSignals(False)
+                        return
+
+                should_auto_assign = (previous_state in (None, True)) and not self.zuweisungsdatum_edit.text().strip()
+                if should_auto_assign:
+                        self._set_assignment_date_today()
+
+        def _set_assignment_date_today(self) -> None:
+                self.zuweisungsdatum_edit.blockSignals(True)
+                self.zuweisungsdatum_edit.setDate(QDate.currentDate())
+                self.zuweisungsdatum_edit.blockSignals(False)
 
         def _populate(self, item: Item) -> None:
                 if item.objekttyp:
