@@ -51,11 +51,15 @@ class ItemDialog(QDialog):
                 self._stillgelegt_value = bool(item.stillgelegt) if item else False
                 self._deactivate_button: QPushButton | None = None
                 self._assignment_hidden: bool | None = None
+                self._initializing = True
+                self._last_owner_text: str = ''
                 self._build_ui()
                 if item:
                         self._populate(item)
                 else:
                         self._initialize_new_item_state()
+                self._last_owner_text = self.aktueller_besitzer_combo.currentText()
+                self._initializing = False
 
         def _build_ui(self) -> None:
                 layout = QVBoxLayout(self)
@@ -154,7 +158,14 @@ class ItemDialog(QDialog):
                         self.aktueller_besitzer_combo.setEditText(DEFAULT_OWNER)
 
         def _handle_owner_changed(self, text: str) -> None:
+                previous_owner = self._last_owner_text
                 self._update_assignment_visibility(text)
+                if (not self._initializing
+                                and is_default_owner(previous_owner)
+                                and not is_default_owner(text)
+                                and text.strip()):
+                        self._set_assignment_date_today()
+                self._last_owner_text = text
 
         def _update_assignment_visibility(self, owner_text: str) -> None:
                 hide = is_default_owner(owner_text) or not owner_text.strip()
@@ -223,6 +234,7 @@ class ItemDialog(QDialog):
                         self.aktueller_besitzer_combo.setEditText(owner_value)
                 self.anmerkungen_edit.setPlainText(item.anmerkungen or '')
                 self._update_assignment_visibility(owner_value)
+                self._last_owner_text = owner_value
 
         def accept(self) -> None:  # type: ignore[override]
                 valid, errors = ItemValidator.validate(self._collect_data(display_format=True))
