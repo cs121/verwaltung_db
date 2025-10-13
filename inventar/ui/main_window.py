@@ -37,147 +37,8 @@ from inventar.export.exporters import export_to_csv, export_to_json, export_to_x
 from inventar.ui.item_dialog import ItemDialog
 from inventar.ui.print import TablePrinter
 from inventar.utils.settings import SettingsManager
+from inventar.utils.theme_manager import ThemeManager
 from inventar.utils.validators import DATE_FORMAT_DISPLAY, ItemValidator
-
-
-PALETTE_STYLESHEET = """
-QMainWindow {
-        background-color: #c4ebf2;
-        color: #2C2C2C;
-}
-
-QWidget {
-        background-color: #c4ebf2;
-        color: #2C2C2C;
-}
-
-QLabel,
-QStatusBar QLabel {
-        color: #2C2C2C;
-}
-
-QGroupBox {
-        background-color: #add9e6;
-        border: 1px solid #88c7e6;
-        border-radius: 8px;
-        margin-top: 12px;
-        padding: 12px;
-}
-
-QGroupBox::title {
-        subcontrol-origin: margin;
-        left: 14px;
-        padding: 0 4px;
-        color: #88c7e6;
-}
-
-QPushButton,
-QToolButton {
-        background-color: #ffd302;
-        color: #2C2C2C;
-        border: none;
-        border-radius: 6px;
-        padding: 6px 14px;
-        font-weight: 600;
-}
-
-QPushButton:hover,
-QToolButton:hover {
-        background-color: #fff683;
-}
-
-QPushButton:pressed,
-QToolButton:pressed {
-        background-color: #ffffc1;
-}
-
-QPushButton:disabled,
-QToolButton:disabled {
-        background-color: #add9e6;
-        color: #6F6F6F;
-}
-
-QLineEdit,
-QComboBox,
-QDateEdit {
-        background-color: #FFFFFF;
-        border: 1px solid #88c7e6;
-        border-radius: 4px;
-        padding: 4px 6px;
-}
-
-QLineEdit:focus,
-QComboBox:focus,
-QDateEdit:focus {
-        border: 1px solid #ffd302;
-}
-
-QComboBox QAbstractItemView,
-QDateEdit QAbstractItemView {
-        background-color: #FFFFFF;
-        border: 1px solid #88c7e6;
-        selection-background-color: #ffd302;
-        selection-color: #2C2C2C;
-}
-
-QTableView {
-        background-color: #FFFFFF;
-        alternate-background-color: #add9e6;
-        gridline-color: #add9e6;
-        border: 1px solid #88c7e6;
-        selection-background-color: #ffd302;
-        selection-color: #2C2C2C;
-}
-
-QTableView::item:selected {
-        background-color: #ffd302;
-        color: #2C2C2C;
-}
-
-QHeaderView::section {
-        background-color: #88c7e6;
-        color: #2C2C2C;
-        padding: 8px;
-        border: none;
-        border-right: 1px solid #c4ebf2;
-}
-
-QTableCornerButton::section {
-        background-color: #88c7e6;
-        border: none;
-}
-
-QStatusBar {
-        background-color: #ffd302;
-        color: #2C2C2C;
-        border-top: 1px solid #add9e6;
-}
-
-QStatusBar QLabel {
-        color: #2C2C2C;
-}
-
-QScrollBar:vertical,
-QScrollBar:horizontal {
-        background: #add9e6;
-        border: none;
-        border-radius: 4px;
-        margin: 0px;
-}
-
-QScrollBar::handle:vertical,
-QScrollBar::handle:horizontal {
-        background: #ffd302;
-        border-radius: 4px;
-        min-height: 20px;
-        min-width: 20px;
-}
-
-QScrollBar::add-line,
-QScrollBar::sub-line {
-        background: none;
-}
-"""
 
 
 HEADERS = [
@@ -266,6 +127,7 @@ class MainWindow(QMainWindow):
                 self.resize(1280, 720)
 
                 self.settings = SettingsManager()
+                self.theme_manager = ThemeManager()
                 self.repository, self.using_json_fallback = create_repository(Path.cwd())
                 self.object_types: List[str] = self.settings.load_object_types()
                 self.custom_manufacturers: list[str] = self.repository.list_custom_values(
@@ -302,6 +164,7 @@ class MainWindow(QMainWindow):
                 self._filter_timer.timeout.connect(self.apply_filters)
 
                 self._build_ui()
+                self._populate_theme_selector()
                 self._apply_color_palette()
                 self._create_actions()
                 self._connect_signals()
@@ -356,6 +219,13 @@ class MainWindow(QMainWindow):
                 bottom_layout.addWidget(self.export_button)
                 bottom_layout.addWidget(self.print_button)
                 bottom_layout.addStretch()
+                self.theme_label = QLabel('Theme:')
+                self.theme_selector = QComboBox()
+                self.theme_selector.setEditable(False)
+                self.theme_selector.setSizeAdjustPolicy(QComboBox.AdjustToContents)
+                self.theme_label.setBuddy(self.theme_selector)
+                bottom_layout.addWidget(self.theme_label)
+                bottom_layout.addWidget(self.theme_selector)
                 layout.addLayout(bottom_layout)
 
                 self.status_bar = QStatusBar()
@@ -363,14 +233,30 @@ class MainWindow(QMainWindow):
 
                 self.setCentralWidget(central)
 
+        def _populate_theme_selector(self) -> None:
+                self.theme_selector.blockSignals(True)
+                self.theme_selector.clear()
+                for name in self.theme_manager.theme_names():
+                        self.theme_selector.addItem(name)
+                current = self.theme_manager.active_theme_name
+                index = self.theme_selector.findText(current)
+                if index >= 0:
+                        self.theme_selector.setCurrentIndex(index)
+                self.theme_selector.blockSignals(False)
+
         def _apply_color_palette(self) -> None:
-                """Apply the corporate color palette to the main window widgets."""
-                self.setStyleSheet(PALETTE_STYLESHEET)
+                """Apply the selected color palette to the main window widgets."""
+                self.setStyleSheet(self.theme_manager.stylesheet())
+
+        def _handle_theme_changed(self, theme_name: str) -> None:
+                if not theme_name:
+                        return
+                if self.theme_manager.set_active_theme(theme_name):
+                        self._apply_color_palette()
 
         def _build_search_box(self) -> QWidget:
                 box = QGroupBox('Suchen')
                 box.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
-                box.setStyleSheet('QGroupBox::title { color: black; font-weight: bold; }')
                 layout = QHBoxLayout(box)
                 self.search_field = QLineEdit()
                 self.search_field.setPlaceholderText('In allen Feldern suchen ...')
@@ -383,7 +269,6 @@ class MainWindow(QMainWindow):
         def _build_form_filters(self) -> QWidget:
                 box = QGroupBox('Filter')
                 box.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
-                box.setStyleSheet('QGroupBox::title { color: black; font-weight: bold; }')
                 layout = QHBoxLayout(box)
 
                 left_layout = QFormLayout()
@@ -471,7 +356,7 @@ class MainWindow(QMainWindow):
                         label = item.widget()
                         if label is None:
                                 continue
-                        label.setStyleSheet('color: black; font-weight: bold;')
+                        label.setStyleSheet('font-weight: 600;')
 
         # ---------- Aktionen & Signale ----------
         def _create_actions(self) -> None:
@@ -495,6 +380,7 @@ class MainWindow(QMainWindow):
                 self.export_csv_action.triggered.connect(lambda: self.export_data('csv'))
                 self.export_json_action.triggered.connect(lambda: self.export_data('json'))
                 self.print_button.clicked.connect(self.print_items)
+                self.theme_selector.currentTextChanged.connect(self._handle_theme_changed)
 
                 self.search_field.returnPressed.connect(self._handle_search_submit)
                 self.search_field.textChanged.connect(self._handle_search_text_change)
