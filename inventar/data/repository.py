@@ -47,7 +47,7 @@ class AbstractRepository(abc.ABC):
 
         @abc.abstractmethod
         def clear_owner(self, owner: str) -> int:
-                """Entfernt einen Besitzer aus allen Einträgen und liefert die Anzahl der Aktualisierungen."""
+                """Setzt gelöschte Besitzer auf den Standardwert und liefert die Anzahl der Aktualisierungen."""
 
         @abc.abstractmethod
         def clear_serial_number(self, serial_number: str) -> int:

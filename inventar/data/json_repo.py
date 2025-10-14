@@ -6,6 +6,7 @@ from typing import Iterable, List, Optional
 
 from .models import Item
 from .repository import AbstractRepository, RepositoryError
+from ..utils.constants import DEFAULT_OWNER
 
 
 class JSONRepository(AbstractRepository):
@@ -153,12 +154,12 @@ class JSONRepository(AbstractRepository):
 
         def clear_owner(self, owner: str) -> int:
                 owner = owner.strip()
-                if not owner:
+                if not owner or owner.lower() == DEFAULT_OWNER.lower():
                         return 0
                 updated = 0
                 for index, item in enumerate(self.items):
                         if item.aktueller_besitzer == owner:
-                                self.items[index] = item.copy(aktueller_besitzer='')
+                                self.items[index] = item.copy(aktueller_besitzer=DEFAULT_OWNER)
                                 updated += 1
                 if updated:
                         self._save()
