@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import shutil
 from datetime import datetime
 from pathlib import Path
 from typing import Iterable, List, Optional
@@ -230,14 +231,21 @@ class MainWindow(QMainWindow):
 
         def _create_menus(self) -> None:
                 menu_bar = self.menuBar()
-                self.settings_menu = menu_bar.addMenu('Einstellungen')
+                self.file_menu = menu_bar.addMenu('Datei')
 
                 self.open_database_action = QAction('Datenbank auswählen …', self)
-                self.settings_menu.addAction(self.open_database_action)
+                self.file_menu.addAction(self.open_database_action)
 
-                self.settings_menu.addSeparator()
-                self.theme_menu = self.settings_menu.addMenu('Theme auswählen')
+                self.backup_database_action = QAction('Datenbank sichern …', self)
+                self.file_menu.addAction(self.backup_database_action)
+
+                self.file_menu.addSeparator()
+                self.theme_menu = self.file_menu.addMenu('Theme auswählen')
                 self._populate_theme_menu()
+
+                self.file_menu.addSeparator()
+                self.exit_action = QAction('Beenden', self)
+                self.file_menu.addAction(self.exit_action)
 
         def _populate_theme_menu(self) -> None:
                 if not hasattr(self, 'theme_menu'):
@@ -278,6 +286,8 @@ class MainWindow(QMainWindow):
                         new_path = new_path.with_suffix('.db')
                 if new_path == current_path:
                         return
+                if not self._prepare_for_repository_switch():
+                        return
                 try:
                         new_path.parent.mkdir(parents=True, exist_ok=True)
                 except OSError as exc:
@@ -294,11 +304,68 @@ class MainWindow(QMainWindow):
                 self.using_json_fallback = using_json_fallback
                 self.settings.save_database_path(self.database_path)
                 self._load_items()
-                self._update_status()
+                self.reset_filters()
                 message = f'Datenbankpfad geändert: {self.database_path}'
                 if self.using_json_fallback:
                         message += ' – JSON-Fallback aktiv'
                 self.statusBar().showMessage(message, 10000)
+
+        def _prepare_for_repository_switch(self) -> bool:
+                """Reset the UI state before switching to another repository."""
+
+                if not getattr(self, 'items', []):
+                        return True
+                confirm = QMessageBox.question(
+                        self,
+                        'Datenbank wechseln',
+                        'Nicht gespeicherte Änderungen werden verworfen. Möchten Sie fortfahren?',
+                        QMessageBox.Yes | QMessageBox.No,
+                        QMessageBox.No,
+                )
+                if confirm != QMessageBox.Yes:
+                        return False
+
+                self.items = []
+                self.filtered_items = []
+                self.table_model.set_items([])
+                self._update_status()
+                return True
+
+        def _backup_database(self) -> None:
+                source_path: Optional[Path]
+                if self.using_json_fallback and hasattr(self.repository, 'json_path'):
+                        source_path = Path(getattr(self.repository, 'json_path'))
+                else:
+                        source_path = getattr(self, 'database_path', None)
+                if not source_path or not source_path.exists():
+                        QMessageBox.warning(self, 'Datenbank sichern', 'Keine Datenbankdatei gefunden, die gesichert werden kann.')
+                        return
+
+                timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+                default_name = f"{source_path.stem}_backup_{timestamp}{source_path.suffix}"
+                target, _ = QFileDialog.getSaveFileName(
+                        self,
+                        'Datenbank sichern',
+                        str(source_path.with_name(default_name)),
+                        'Alle Dateien (*)',
+                )
+                if not target:
+                        return
+
+                target_path = Path(target)
+                try:
+                        target_path.parent.mkdir(parents=True, exist_ok=True)
+                except OSError as exc:
+                        QMessageBox.critical(self, 'Datenbank sichern', f'Zielordner konnte nicht erstellt werden:\n{exc}')
+                        return
+
+                try:
+                        shutil.copy2(source_path, target_path)
+                except OSError as exc:
+                        QMessageBox.critical(self, 'Datenbank sichern', f'Datenbank konnte nicht gesichert werden:\n{exc}')
+                        return
+
+                self.statusBar().showMessage(f'Datenbank erfolgreich gesichert: {target_path}', 8000)
 
         def _apply_color_palette(self) -> None:
                 """Apply the selected color palette to the main window widgets."""
@@ -438,6 +505,8 @@ class MainWindow(QMainWindow):
                 self.export_json_action.triggered.connect(lambda: self.export_data('json'))
                 self.print_button.clicked.connect(self.print_items)
                 self.open_database_action.triggered.connect(self._choose_database_path)
+                self.backup_database_action.triggered.connect(self._backup_database)
+                self.exit_action.triggered.connect(QApplication.quit)
 
                 self.search_field.returnPressed.connect(self._handle_search_submit)
                 self.search_field.textChanged.connect(self._handle_search_text_change)
