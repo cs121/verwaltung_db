@@ -6,6 +6,7 @@ from typing import List, Optional
 
 from .models import Item
 from .repository import AbstractRepository, RepositoryError
+from ..utils.constants import DEFAULT_OWNER
 
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS items (
@@ -254,10 +255,13 @@ class SQLiteRepository(AbstractRepository):
                 return [row[0] for row in rows if row[0]]
 
         def clear_owner(self, owner: str) -> int:
+                if owner.strip().lower() == DEFAULT_OWNER.lower():
+                        return 0
+
                 conn = self._ensure_conn()
                 cursor = conn.execute(
-                        "UPDATE items SET aktueller_besitzer = '' WHERE aktueller_besitzer = ?",
-                        (owner,),
+                        "UPDATE items SET aktueller_besitzer = ? WHERE aktueller_besitzer = ?",
+                        (DEFAULT_OWNER, owner),
                 )
                 conn.commit()
                 return cursor.rowcount

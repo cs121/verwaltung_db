@@ -36,7 +36,7 @@ from inventar.data.repository import RepositoryError, create_repository
 from inventar.export.exporters import export_to_csv, export_to_json, export_to_xlsx
 from inventar.ui.item_dialog import ItemDialog
 from inventar.ui.print import TablePrinter
-from inventar.utils.constants import ensure_default_owner, is_default_owner
+from inventar.utils.constants import DEFAULT_OWNER, ensure_default_owner, is_default_owner
 from inventar.utils.settings import SettingsManager
 from inventar.utils.theme_manager import ThemeManager
 from inventar.utils.validators import DATE_FORMAT_DISPLAY, ItemValidator
@@ -1057,7 +1057,7 @@ class MainWindow(QMainWindow):
                 self._load_items()
 
                 message = (
-                        f"Besitzer '{val}' wurde aus {affected} Einträgen entfernt."
+                        f"Besitzer '{val}' wurde in {affected} Einträgen auf '{DEFAULT_OWNER}' gesetzt."
                         if affected
                         else f"Besitzer '{val}' war in keinen Einträgen hinterlegt."
                 )
