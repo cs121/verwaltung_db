@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import Iterable, List, Optional
 
 from PySide6.QtCore import QAbstractTableModel, QModelIndex, Qt, QTimer
-from PySide6.QtGui import QAction, QIcon, QKeySequence, QColor, QFont
+from PySide6.QtGui import QAction, QActionGroup, QIcon, QKeySequence, QColor, QFont
 from PySide6.QtWidgets import (
     QAbstractItemView,
     QApplication,
@@ -16,7 +16,6 @@ from PySide6.QtWidgets import (
     QHBoxLayout,
     QHeaderView,
     QInputDialog,
-    QLabel,
     QLineEdit,
     QMainWindow,
     QMenu,
@@ -129,7 +128,9 @@ class MainWindow(QMainWindow):
 
                 self.settings = SettingsManager()
                 self.theme_manager = ThemeManager()
-                self.repository, self.using_json_fallback = create_repository(Path.cwd())
+                default_db_path = Path.cwd() / 'inventar.db'
+                self.database_path = self.settings.load_database_path(default_db_path)
+                self.repository, self.using_json_fallback = create_repository(db_path=self.database_path)
                 self.object_types: List[str] = self.settings.load_object_types()
                 self.custom_manufacturers: list[str] = self.repository.list_custom_values(
                         CUSTOM_CATEGORY_MANUFACTURER
@@ -165,7 +166,7 @@ class MainWindow(QMainWindow):
                 self._filter_timer.timeout.connect(self.apply_filters)
 
                 self._build_ui()
-                self._populate_theme_selector()
+                self._create_menus()
                 self._apply_color_palette()
                 self._create_actions()
                 self._connect_signals()
@@ -220,13 +221,6 @@ class MainWindow(QMainWindow):
                 bottom_layout.addWidget(self.export_button)
                 bottom_layout.addWidget(self.print_button)
                 bottom_layout.addStretch()
-                self.theme_label = QLabel('Theme:')
-                self.theme_selector = QComboBox()
-                self.theme_selector.setEditable(False)
-                self.theme_selector.setSizeAdjustPolicy(QComboBox.AdjustToContents)
-                self.theme_label.setBuddy(self.theme_selector)
-                bottom_layout.addWidget(self.theme_label)
-                bottom_layout.addWidget(self.theme_selector)
                 layout.addLayout(bottom_layout)
 
                 self.status_bar = QStatusBar()
@@ -234,16 +228,77 @@ class MainWindow(QMainWindow):
 
                 self.setCentralWidget(central)
 
-        def _populate_theme_selector(self) -> None:
-                self.theme_selector.blockSignals(True)
-                self.theme_selector.clear()
-                for name in self.theme_manager.theme_names():
-                        self.theme_selector.addItem(name)
+        def _create_menus(self) -> None:
+                menu_bar = self.menuBar()
+                self.settings_menu = menu_bar.addMenu('Einstellungen')
+
+                self.open_database_action = QAction('Datenbank auswählen …', self)
+                self.settings_menu.addAction(self.open_database_action)
+
+                self.settings_menu.addSeparator()
+                self.theme_menu = self.settings_menu.addMenu('Theme auswählen')
+                self._populate_theme_menu()
+
+        def _populate_theme_menu(self) -> None:
+                if not hasattr(self, 'theme_menu'):
+                        return
+                self.theme_menu.clear()
+                self.theme_action_group = QActionGroup(self)
+                self.theme_action_group.setExclusive(True)
                 current = self.theme_manager.active_theme_name
-                index = self.theme_selector.findText(current)
-                if index >= 0:
-                        self.theme_selector.setCurrentIndex(index)
-                self.theme_selector.blockSignals(False)
+                for name in self.theme_manager.theme_names():
+                        action = QAction(name, self)
+                        action.setCheckable(True)
+                        if name == current:
+                                action.setChecked(True)
+                        self.theme_action_group.addAction(action)
+                        self.theme_menu.addAction(action)
+                        action.triggered.connect(lambda checked, theme=name: self._handle_theme_changed(theme) if checked else None)
+
+        def _update_theme_action_checks(self, theme_name: str) -> None:
+                if not hasattr(self, 'theme_action_group'):
+                        return
+                for action in self.theme_action_group.actions():
+                        action.setChecked(action.text() == theme_name)
+
+        def _choose_database_path(self) -> None:
+                current_path = getattr(self, 'database_path', Path.cwd() / 'inventar.db')
+                dialog_caption = 'Speicherort der Datenbank wählen'
+                file_filter = 'SQLite-Datenbank (*.db);;Alle Dateien (*)'
+                selected, _ = QFileDialog.getSaveFileName(
+                        self,
+                        dialog_caption,
+                        str(current_path),
+                        file_filter,
+                )
+                if not selected:
+                        return
+                new_path = Path(selected)
+                if new_path.suffix == '':
+                        new_path = new_path.with_suffix('.db')
+                if new_path == current_path:
+                        return
+                try:
+                        new_path.parent.mkdir(parents=True, exist_ok=True)
+                except OSError as exc:
+                        QMessageBox.critical(self, 'Fehler', f'Datenbankpfad konnte nicht erstellt werden:\n{exc}')
+                        return
+                try:
+                        repository, using_json_fallback = create_repository(db_path=new_path)
+                except Exception as exc:  # noqa: BLE001
+                        QMessageBox.critical(self, 'Fehler', f'Datenbank konnte nicht geöffnet werden:\n{exc}')
+                        return
+
+                self.database_path = new_path
+                self.repository = repository
+                self.using_json_fallback = using_json_fallback
+                self.settings.save_database_path(self.database_path)
+                self._load_items()
+                self._update_status()
+                message = f'Datenbankpfad geändert: {self.database_path}'
+                if self.using_json_fallback:
+                        message += ' – JSON-Fallback aktiv'
+                self.statusBar().showMessage(message, 10000)
 
         def _apply_color_palette(self) -> None:
                 """Apply the selected color palette to the main window widgets."""
@@ -254,6 +309,7 @@ class MainWindow(QMainWindow):
                         return
                 if self.theme_manager.set_active_theme(theme_name):
                         self._apply_color_palette()
+                        self._update_theme_action_checks(theme_name)
 
         def _build_search_box(self) -> QWidget:
                 box = QGroupBox('Suchen')
@@ -381,7 +437,7 @@ class MainWindow(QMainWindow):
                 self.export_csv_action.triggered.connect(lambda: self.export_data('csv'))
                 self.export_json_action.triggered.connect(lambda: self.export_data('json'))
                 self.print_button.clicked.connect(self.print_items)
-                self.theme_selector.currentTextChanged.connect(self._handle_theme_changed)
+                self.open_database_action.triggered.connect(self._choose_database_path)
 
                 self.search_field.returnPressed.connect(self._handle_search_submit)
                 self.search_field.textChanged.connect(self._handle_search_text_change)

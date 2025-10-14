@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from pathlib import Path
 from typing import Iterable
 
 from PySide6.QtCore import QSettings
@@ -9,6 +10,7 @@ ORGANIZATION = 'Inventarverwaltung'
 APPLICATION = 'Inventarliste'
 OBJECT_TYPES_KEY = 'object_types/custom'
 DEFAULT_OBJECT_TYPES = ['Notebook', 'PC', 'Tablet', 'Mobiltelefon', 'Drucker']
+DATABASE_PATH_KEY = 'storage/database_path'
 
 
 class SettingsManager:
@@ -36,6 +38,21 @@ class SettingsManager:
         def save_table(self, table: QTableView, font_size: int) -> None:
                 self.settings.setValue('table/state', table.horizontalHeader().saveState())
                 self.settings.setValue('table/font_size', font_size)
+
+        def load_database_path(self, default: Path) -> Path:
+                value = self.settings.value(DATABASE_PATH_KEY, str(default))
+                if isinstance(value, Path):
+                        return value
+                if isinstance(value, str):
+                        text = value.strip()
+                        return Path(text) if text else default
+                if value is None:
+                        return default
+                text = str(value).strip()
+                return Path(text) if text else default
+
+        def save_database_path(self, path: Path) -> None:
+                self.settings.setValue(DATABASE_PATH_KEY, str(Path(path)))
 
         @staticmethod
         def apply_table_font(table: QTableView, font_size: int) -> None:
