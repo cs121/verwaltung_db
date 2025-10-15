@@ -34,6 +34,7 @@ from PySide6.QtWidgets import (
 from inventar.data.models import Item
 from inventar.data.repository import RepositoryError, create_repository
 from inventar.export.exporters import export_to_csv, export_to_json, export_to_xlsx
+from inventar.importers import InventoryImportError, import_items
 from inventar.ui.item_dialog import ItemDialog
 from inventar.ui.print import TablePrinter
 from inventar.utils.constants import DEFAULT_OWNER, ensure_default_owner, is_default_owner
@@ -225,6 +226,8 @@ class MainWindow(QMainWindow):
                 self.toggle_stillgelegt_button = QRadioButton()
                 self.toggle_stillgelegt_button.setChecked(False)
                 self._update_stillgelegt_toggle_label(False)
+                self.import_button = QPushButton('Importieren …')
+                self.import_button.setToolTip('Daten importieren (Ctrl+I)')
                 self.export_button = QToolButton()
                 self.export_button.setText('Export')
                 self.export_button.setPopupMode(QToolButton.InstantPopup)
@@ -247,6 +250,7 @@ class MainWindow(QMainWindow):
                 layout.addWidget(self.table, stretch=1)
 
                 bottom_layout = QHBoxLayout()
+                bottom_layout.addWidget(self.import_button)
                 bottom_layout.addWidget(self.export_button)
                 bottom_layout.addWidget(self.print_button)
                 bottom_layout.addStretch()
@@ -266,6 +270,11 @@ class MainWindow(QMainWindow):
 
                 self.backup_database_action = QAction('Datenbank sichern …', self)
                 self.file_menu.addAction(self.backup_database_action)
+
+                self.file_menu.addSeparator()
+                self.import_action = QAction('Daten importieren …', self)
+                self.import_action.setShortcut(QKeySequence('Ctrl+I'))
+                self.file_menu.addAction(self.import_action)
 
                 self.file_menu.addSeparator()
                 self.theme_menu = self.file_menu.addMenu('Theme auswählen')
@@ -523,11 +532,21 @@ class MainWindow(QMainWindow):
                 self.print_action = QAction('Drucken', self)
                 self.print_action.setShortcut(QKeySequence.Print)
 
-                for action in [self.new_action, self.edit_action, self.delete_action, self.search_action, self.print_action]:
+                actions = [
+                        self.new_action,
+                        self.edit_action,
+                        self.delete_action,
+                        self.search_action,
+                        self.print_action,
+                ]
+                if hasattr(self, 'import_action'):
+                        actions.append(self.import_action)
+                for action in actions:
                         self.addAction(action)
 
         def _connect_signals(self) -> None:
                 self.new_button.clicked.connect(self.create_item)
+                self.import_button.clicked.connect(self.import_data_from_file)
                 self.export_excel_action.triggered.connect(lambda: self.export_data('xlsx'))
                 self.export_csv_action.triggered.connect(lambda: self.export_data('csv'))
                 self.export_json_action.triggered.connect(lambda: self.export_data('json'))
@@ -542,6 +561,8 @@ class MainWindow(QMainWindow):
 
                 self.remove_owner_button.clicked.connect(self._remove_owner_filter_value)
                 self.new_action.triggered.connect(self.create_item)
+                if hasattr(self, 'import_action'):
+                        self.import_action.triggered.connect(self.import_data_from_file)
                 self.edit_action.triggered.connect(self.edit_selected_item)
                 self.delete_action.triggered.connect(self.delete_selected_item)
                 self.search_action.triggered.connect(lambda: self.search_field.setFocus())
@@ -1007,6 +1028,81 @@ class MainWindow(QMainWindow):
                         QMessageBox.critical(self, 'Export', f'Export fehlgeschlagen:\n{e}')
                         return
                 self.statusBar().showMessage('Export erfolgreich', 4000)
+
+        def import_data_from_file(self) -> None:
+                caption = 'Daten importieren'
+                filters = 'Excel-Dateien (*.xlsx *.xlsm *.xls);;CSV-Dateien (*.csv);;Alle Dateien (*)'
+                selected, _ = QFileDialog.getOpenFileName(self, caption, '', filters)
+                if not selected:
+                        return
+                path = Path(selected)
+
+                try:
+                        result = import_items(path)
+                except InventoryImportError as exc:
+                        QMessageBox.warning(self, 'Import', f'Datei konnte nicht eingelesen werden:\n{exc}')
+                        return
+                except Exception as exc:  # noqa: BLE001
+                        QMessageBox.critical(self, 'Import', f'Unerwarteter Fehler beim Einlesen:\n{exc}')
+                        return
+
+                if not result.items:
+                        message = 'Es wurden keine gültigen Einträge gefunden.'
+                        if result.errors:
+                                preview = '\n'.join(result.errors[:10])
+                                if len(result.errors) > 10:
+                                        preview += f"\n… weitere {len(result.errors) - 10} Meldungen"
+                                box = QMessageBox(self)
+                                box.setWindowTitle('Import abgeschlossen')
+                                box.setIcon(QMessageBox.Warning)
+                                box.setText(message)
+                                box.setInformativeText('Fehlerdetails:')
+                                box.setDetailedText(preview)
+                                box.exec()
+                        else:
+                                QMessageBox.information(self, 'Import', message)
+                        return
+
+                created = 0
+                storage_errors: list[str] = []
+                for idx, item in enumerate(result.items, start=1):
+                        try:
+                                self.repository.create(item.copy(id=None))
+                                created += 1
+                        except RepositoryError as exc:
+                                storage_errors.append(f'Datensatz {idx}: {exc}')
+                        except Exception as exc:  # noqa: BLE001
+                                storage_errors.append(f'Datensatz {idx}: {exc}')
+
+                if created:
+                        self._load_items()
+                summary = f'{created} Einträge importiert.'
+
+                combined_errors = result.errors + storage_errors
+                if combined_errors:
+                        detail_lines: list[str] = []
+                        if result.errors:
+                                detail_lines.append('Fehler beim Einlesen:')
+                                detail_lines.extend(result.errors)
+                        if storage_errors:
+                                if detail_lines:
+                                        detail_lines.append('')
+                                detail_lines.append('Fehler beim Speichern:')
+                                detail_lines.extend(storage_errors)
+                        preview = '\n'.join(detail_lines[:20])
+                        if len(detail_lines) > 20:
+                                preview += f"\n… weitere {len(detail_lines) - 20} Meldungen"
+                        box = QMessageBox(self)
+                        box.setWindowTitle('Import abgeschlossen')
+                        box.setIcon(QMessageBox.Warning if created else QMessageBox.Critical)
+                        box.setText(summary)
+                        box.setInformativeText('Einige Zeilen konnten nicht importiert werden.')
+                        box.setDetailedText(preview)
+                        box.exec()
+                else:
+                        QMessageBox.information(self, 'Import', summary)
+
+                self.statusBar().showMessage(summary, 6000)
 
         def print_items(self) -> None:
                 items = list(self.filtered_items)
