@@ -82,6 +82,34 @@ class ItemTableModel(QAbstractTableModel):
                 self._items = list(items)
                 self.endResetModel()
 
+        def sort(self, column: int, order: Qt.SortOrder = Qt.AscendingOrder) -> None:  # type: ignore[override]
+                if not 0 <= column < len(COLUMN_KEYS):
+                        return
+
+                key = COLUMN_KEYS[column]
+                reverse = order == Qt.DescendingOrder
+
+                def build_sort_key(item: Item):
+                        value = getattr(item, key)
+                        if key in {"einkaufsdatum", "zuweisungsdatum"}:
+                                if value:
+                                        try:
+                                                return (0, datetime.strptime(value, "%Y-%m-%d"))
+                                        except ValueError:
+                                                return (0, str(value))
+                                return (1, datetime.min)
+                        if isinstance(value, str):
+                                return (0, value.lower())
+                        if value is None:
+                                return (1, "")
+                        return (0, value)
+
+                self.layoutAboutToBeChanged.emit()
+                try:
+                        self._items.sort(key=build_sort_key, reverse=reverse)
+                finally:
+                        self.layoutChanged.emit()
+
         def rowCount(self, parent: QModelIndex = QModelIndex()) -> int:  # type: ignore[override]
                 return 0 if parent.isValid() else len(self._items)
 
