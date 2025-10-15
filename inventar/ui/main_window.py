@@ -96,8 +96,8 @@ class ItemTableModel(QAbstractTableModel):
                                         try:
                                                 return (0, datetime.strptime(value, "%Y-%m-%d"))
                                         except ValueError:
-                                                return (0, str(value))
-                                return (1, datetime.min)
+                                                return (1, str(value))
+                                return (2, datetime.min)
                         if isinstance(value, str):
                                 return (0, value.lower())
                         if value is None:
