@@ -573,19 +573,6 @@ class MainWindow(QMainWindow):
                 self.search_action.triggered.connect(lambda: self.search_field.setFocus())
                 self.print_action.triggered.connect(self.print_items)
 
-        def _show_export_menu(self) -> None:
-                if not hasattr(self, 'export_menu'):
-                        return
-                menu_bar = self.menuBar()
-                export_action = self.export_menu.menuAction()
-                action_rect = menu_bar.actionGeometry(export_action)
-                if action_rect.isValid():
-                        popup_position = menu_bar.mapToGlobal(action_rect.bottomLeft())
-                else:
-                        popup_position = menu_bar.mapToGlobal(menu_bar.rect().bottomLeft())
-                menu_bar.setActiveAction(export_action)
-                self.export_menu.popup(popup_position)
-
                 if self.filter_hersteller.lineEdit():
                         self.filter_hersteller.lineEdit().returnPressed.connect(self.apply_filters)
                         self.filter_hersteller.lineEdit().textEdited.connect(self._schedule_filter_update)
@@ -614,6 +601,19 @@ class MainWindow(QMainWindow):
                         selection_model.selectionChanged.connect(self._update_item_action_visibility)
 
                 self._update_item_action_visibility()
+
+        def _show_export_menu(self) -> None:
+                if not hasattr(self, 'export_menu'):
+                        return
+                menu_bar = self.menuBar()
+                export_action = self.export_menu.menuAction()
+                action_rect = menu_bar.actionGeometry(export_action)
+                if action_rect.isValid():
+                        popup_position = menu_bar.mapToGlobal(action_rect.bottomLeft())
+                else:
+                        popup_position = menu_bar.mapToGlobal(menu_bar.rect().bottomLeft())
+                menu_bar.setActiveAction(export_action)
+                self.export_menu.popup(popup_position)
 
         # ---------- Daten laden & Status ----------
         def _load_items(self) -> None:
