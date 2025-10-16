@@ -16,6 +16,7 @@ from PySide6.QtWidgets import (
     QGroupBox,
     QHBoxLayout,
     QHeaderView,
+    QLabel,
     QInputDialog,
     QLineEdit,
     QMainWindow,
@@ -242,6 +243,11 @@ class MainWindow(QMainWindow):
                 bottom_layout = QHBoxLayout()
                 bottom_layout.addWidget(self.print_button)
                 bottom_layout.addStretch()
+                self.user_count_label = QLabel('User gesamt: 0')
+                self.lager_count_label = QLabel('Geräte im Lager: 0')
+                bottom_layout.addWidget(self.user_count_label)
+                bottom_layout.addSpacing(12)
+                bottom_layout.addWidget(self.lager_count_label)
                 layout.addLayout(bottom_layout)
 
                 self.status_bar = QStatusBar()
@@ -631,6 +637,26 @@ class MainWindow(QMainWindow):
                 total = len(self.items)
                 shown = len(self.filtered_items)
                 self.statusBar().showMessage(f"Einträge: {shown} / {total}")
+                self._update_summary_labels()
+
+        def _update_summary_labels(self) -> None:
+                if not hasattr(self, 'user_count_label') or not hasattr(self, 'lager_count_label'):
+                        return
+                owners = {
+                        (item.aktueller_besitzer or '').strip()
+                        for item in self.items
+                        if item.aktueller_besitzer
+                        and item.aktueller_besitzer.strip()
+                        and not is_default_owner(item.aktueller_besitzer)
+                }
+                lager_items = {
+                        item.id
+                        for item in self.items
+                        if is_default_owner(item.aktueller_besitzer)
+                        and item.id is not None
+                }
+                self.user_count_label.setText(f"User gesamt: {len(owners)}")
+                self.lager_count_label.setText(f"Geräte im Lager: {len(lager_items)}")
 
         def _update_item_action_visibility(self) -> None:
                 selection_model = self.table.selectionModel()
