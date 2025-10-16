@@ -264,8 +264,7 @@ class MainWindow(QMainWindow):
                 self.import_action.setShortcut(QKeySequence('Ctrl+I'))
                 self.file_menu.addAction(self.import_action)
 
-                self.file_menu.addSeparator()
-                self.export_menu = self.file_menu.addMenu('Exportieren')
+                self.export_menu = self.file_menu.addMenu('Daten exportieren')
                 self.export_excel_action = self.export_menu.addAction('Excel')
                 self.export_csv_action = self.export_menu.addAction('CSV')
                 self.export_json_action = self.export_menu.addAction('JSON')
@@ -993,7 +992,7 @@ class MainWindow(QMainWindow):
 
         # ---------- Export / Drucken ----------
         def _pick_export_path(self, suffix: str, filter_str: str) -> Optional[Path]:
-                fn, _ = QFileDialog.getSaveFileName(self, 'Exportieren', f'inventar.{suffix}', filter_str)
+                fn, _ = QFileDialog.getSaveFileName(self, 'Daten exportieren', f'inventar.{suffix}', filter_str)
                 return Path(fn) if fn else None
 
         def export_data(self, fmt: str) -> None:
