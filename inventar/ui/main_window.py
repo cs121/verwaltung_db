@@ -226,16 +226,6 @@ class MainWindow(QMainWindow):
                 self.toggle_stillgelegt_button = QRadioButton()
                 self.toggle_stillgelegt_button.setChecked(False)
                 self._update_stillgelegt_toggle_label(False)
-                self.import_button = QPushButton('Importieren …')
-                self.import_button.setToolTip('Daten importieren (Ctrl+I)')
-                self.export_button = QToolButton()
-                self.export_button.setText('Export')
-                self.export_button.setPopupMode(QToolButton.InstantPopup)
-                self.export_menu = QMenu(self.export_button)
-                self.export_button.setMenu(self.export_menu)
-                self.export_excel_action = self.export_menu.addAction('Excel')
-                self.export_csv_action = self.export_menu.addAction('CSV')
-                self.export_json_action = self.export_menu.addAction('JSON')
                 self.print_button = QPushButton()
                 self.print_button.setIcon(QIcon.fromTheme('document-print'))
                 self.print_button.setToolTip('Drucken (Ctrl+P)')
@@ -250,8 +240,6 @@ class MainWindow(QMainWindow):
                 layout.addWidget(self.table, stretch=1)
 
                 bottom_layout = QHBoxLayout()
-                bottom_layout.addWidget(self.import_button)
-                bottom_layout.addWidget(self.export_button)
                 bottom_layout.addWidget(self.print_button)
                 bottom_layout.addStretch()
                 layout.addLayout(bottom_layout)
@@ -275,6 +263,12 @@ class MainWindow(QMainWindow):
                 self.import_action = QAction('Daten importieren …', self)
                 self.import_action.setShortcut(QKeySequence('Ctrl+I'))
                 self.file_menu.addAction(self.import_action)
+
+                self.file_menu.addSeparator()
+                self.export_menu = self.file_menu.addMenu('Exportieren')
+                self.export_excel_action = self.export_menu.addAction('Excel')
+                self.export_csv_action = self.export_menu.addAction('CSV')
+                self.export_json_action = self.export_menu.addAction('JSON')
 
                 self.file_menu.addSeparator()
                 self.theme_menu = self.file_menu.addMenu('Theme auswählen')
@@ -546,7 +540,6 @@ class MainWindow(QMainWindow):
 
         def _connect_signals(self) -> None:
                 self.new_button.clicked.connect(self.create_item)
-                self.import_button.clicked.connect(self.import_data_from_file)
                 self.export_excel_action.triggered.connect(lambda: self.export_data('xlsx'))
                 self.export_csv_action.triggered.connect(lambda: self.export_data('csv'))
                 self.export_json_action.triggered.connect(lambda: self.export_data('json'))
