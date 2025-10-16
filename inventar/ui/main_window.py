@@ -652,6 +652,16 @@ class MainWindow(QMainWindow):
                         and item.aktueller_besitzer.strip()
                         and not is_default_owner(item.aktueller_besitzer)
                 }
+                custom_owners = getattr(self, 'custom_owners', [])
+                owners.update(
+                        {
+                                owner.strip()
+                                for owner in custom_owners
+                                if owner
+                                and owner.strip()
+                                and not is_default_owner(owner)
+                        }
+                )
                 lager_items = {
                         item.id
                         for item in self.items
@@ -1191,6 +1201,7 @@ class MainWindow(QMainWindow):
                 except Exception:
                         pass
                 self._update_owner_combo(val)
+                self._update_summary_labels()
 
         def _remove_owner_filter_value(self) -> None:
                 val = self.filter_besitzer.currentText().strip()
