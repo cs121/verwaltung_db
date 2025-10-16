@@ -566,6 +566,7 @@ class MainWindow(QMainWindow):
                 self.search_field.textChanged.connect(self._handle_search_text_change)
                 self.toggle_stillgelegt_button.toggled.connect(self._handle_toggle_stillgelegt)
 
+                self.add_owner_button.clicked.connect(self._add_owner_filter_value)
                 self.remove_owner_button.clicked.connect(self._remove_owner_filter_value)
                 self.new_action.triggered.connect(self.create_item)
                 if hasattr(self, 'import_action'):
@@ -610,7 +611,6 @@ class MainWindow(QMainWindow):
                         self.filter_besitzer.lineEdit().returnPressed.connect(self.apply_filters)
                         self.filter_besitzer.lineEdit().textEdited.connect(self._schedule_filter_update)
                 self.filter_besitzer.currentIndexChanged.connect(self._schedule_filter_update)
-                self.add_owner_button.clicked.connect(self._add_owner_filter_value)
 
                 selection_model = self.table.selectionModel()
                 if selection_model:
