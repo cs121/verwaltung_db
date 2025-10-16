@@ -265,6 +265,9 @@ class MainWindow(QMainWindow):
                 self.file_menu.addAction(self.import_action)
 
                 self.export_menu = self.file_menu.addMenu('Daten exportieren')
+                export_menu_action = self.export_menu.menuAction()
+                export_menu_action.setShortcut(QKeySequence('Ctrl+E'))
+                export_menu_action.triggered.connect(self._show_export_menu)
                 self.export_excel_action = self.export_menu.addAction('Excel')
                 self.export_csv_action = self.export_menu.addAction('CSV')
                 self.export_json_action = self.export_menu.addAction('JSON')
@@ -517,7 +520,10 @@ class MainWindow(QMainWindow):
                 self.new_action = QAction('Neu', self)
                 self.new_action.setShortcut(QKeySequence.New)
                 self.edit_action = QAction('Bearbeiten', self)
-                self.edit_action.setShortcut(QKeySequence('Ctrl+E'))
+                self.edit_action.setShortcuts([
+                        QKeySequence(Qt.Key_F2),
+                        QKeySequence('Ctrl+Shift+E'),
+                ])
                 self.delete_action = QAction('Löschen', self)
                 self.delete_action.setShortcut(QKeySequence.Delete)
                 self.search_action = QAction('Suche', self)
@@ -559,6 +565,19 @@ class MainWindow(QMainWindow):
                 self.delete_action.triggered.connect(self.delete_selected_item)
                 self.search_action.triggered.connect(lambda: self.search_field.setFocus())
                 self.print_action.triggered.connect(self.print_items)
+
+        def _show_export_menu(self) -> None:
+                if not hasattr(self, 'export_menu'):
+                        return
+                menu_bar = self.menuBar()
+                export_action = self.export_menu.menuAction()
+                action_rect = menu_bar.actionGeometry(export_action)
+                if action_rect.isValid():
+                        popup_position = menu_bar.mapToGlobal(action_rect.bottomLeft())
+                else:
+                        popup_position = menu_bar.mapToGlobal(menu_bar.rect().bottomLeft())
+                menu_bar.setActiveAction(export_action)
+                self.export_menu.popup(popup_position)
 
                 if self.filter_hersteller.lineEdit():
                         self.filter_hersteller.lineEdit().returnPressed.connect(self.apply_filters)
