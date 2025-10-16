@@ -248,6 +248,9 @@ class MainWindow(QMainWindow):
                 bottom_layout.addWidget(self.user_count_label)
                 bottom_layout.addSpacing(12)
                 bottom_layout.addWidget(self.lager_count_label)
+                bottom_layout.addSpacing(12)
+                self.current_owner_label = QLabel('Aktueller Besitzer: –')
+                bottom_layout.addWidget(self.current_owner_label)
                 layout.addLayout(bottom_layout)
 
                 self.status_bar = QStatusBar()
@@ -658,14 +661,28 @@ class MainWindow(QMainWindow):
                 self.user_count_label.setText(f"User gesamt: {len(owners)}")
                 self.lager_count_label.setText(f"Geräte im Lager: {len(lager_items)}")
 
+        def _update_current_owner_label(self, owner: Optional[str]) -> None:
+                if not hasattr(self, 'current_owner_label'):
+                        return
+                owner_text = (owner or '').strip()
+                if not owner_text:
+                        owner_text = '–'
+                self.current_owner_label.setText(f"Aktueller Besitzer: {owner_text}")
+
         def _update_item_action_visibility(self) -> None:
                 selection_model = self.table.selectionModel()
                 has_selection = False
+                owner: Optional[str] = None
                 if selection_model:
-                        has_selection = bool(selection_model.selectedRows())
+                        selected_rows = selection_model.selectedRows()
+                        has_selection = bool(selected_rows)
+                        if selected_rows:
+                                item = self.table_model.item_at(selected_rows[0].row())
+                                owner = item.aktueller_besitzer if item else None
 
                 self.edit_action.setEnabled(has_selection)
                 self.delete_action.setEnabled(has_selection)
+                self._update_current_owner_label(owner)
 
         # ---------- Hilfen für Combos ----------
         def _merge_custom_values(self, base: Iterable[str], custom: Iterable[str]) -> List[str]:
