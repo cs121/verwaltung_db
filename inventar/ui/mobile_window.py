@@ -58,6 +58,7 @@ class MobileWindow(QDialog):
 
         self._owners: list[str] = sorted(owners or [])
         self._entries: list[MobileEntry] = []
+        self._visible_indices: list[int] = []
         self._current_index: Optional[int] = None
 
         self._build_ui()
@@ -105,11 +106,9 @@ class MobileWindow(QDialog):
         form_layout.addWidget(self.secondary_group)
 
         button_row = QHBoxLayout()
-        self.reset_button = QPushButton("Zurücksetzen")
         self.save_button = QPushButton("Speichern")
         self.delete_button = QPushButton("Löschen")
         self.delete_button.setEnabled(False)
-        button_row.addWidget(self.reset_button)
         button_row.addWidget(self.save_button)
         button_row.addWidget(self.delete_button)
         button_row.addStretch()
@@ -141,10 +140,10 @@ class MobileWindow(QDialog):
         return combo
 
     def _connect_signals(self) -> None:
-        self.reset_button.clicked.connect(self._reset_form)
         self.save_button.clicked.connect(self._handle_save)
         self.delete_button.clicked.connect(self._handle_delete)
-        self.search_button.clicked.connect(self._handle_search)
+        self.search_button.clicked.connect(self._apply_search_filter)
+        self.search_edit.textChanged.connect(self._apply_search_filter)
         self.table.itemSelectionChanged.connect(self._handle_table_selection)
 
     def _populate_owner_fields(self) -> None:
@@ -192,18 +191,30 @@ class MobileWindow(QDialog):
         self._update_table()
         self._reset_form()
 
-    def _handle_search(self) -> None:
+    def _apply_search_filter(self) -> None:
         query = self.search_edit.text().strip().lower()
         if not query:
+            self._update_table()
             return
+
+        matching_indices: list[int] = []
         for index, entry in enumerate(self._entries):
-            if query in entry.telefonnummer.lower() or (
-                entry.zweite_telefonnummer and query in entry.zweite_telefonnummer.lower()
-            ):
-                self.table.selectRow(index)
-                self.table.scrollToItem(self.table.item(index, 0))
-                return
-        QMessageBox.information(self, "Keine Treffer", "Es wurde kein Eintrag gefunden.")
+            fields = [
+                entry.telefonnummer,
+                entry.pin,
+                entry.super_pin,
+                entry.zugewiesen_an,
+                entry.zweite_telefonnummer,
+                entry.zweite_pin,
+                entry.zweite_super_pin,
+                entry.zweite_zugewiesen_an,
+            ]
+            for field in fields:
+                if field and query in field.lower():
+                    matching_indices.append(index)
+                    break
+
+        self._update_table(matching_indices)
 
     def _handle_table_selection(self) -> None:
         selected_items = self.table.selectedItems()
@@ -212,9 +223,13 @@ class MobileWindow(QDialog):
             self.delete_button.setEnabled(False)
             return
         row = selected_items[0].row()
-        self._current_index = row
+        if row >= len(self._visible_indices):
+            self._current_index = None
+            self.delete_button.setEnabled(False)
+            return
+        self._current_index = self._visible_indices[row]
         self.delete_button.setEnabled(True)
-        entry = self._entries[row]
+        entry = self._entries[self._current_index]
         self._fill_form(entry)
 
     # ---------- Hilfsfunktionen ----------
@@ -259,9 +274,14 @@ class MobileWindow(QDialog):
         self.search_edit.clear()
         self.delete_button.setEnabled(False)
 
-    def _update_table(self) -> None:
-        self.table.setRowCount(len(self._entries))
-        for row, entry in enumerate(self._entries):
+    def _update_table(self, indices: Optional[List[int]] = None) -> None:
+        if indices is None:
+            indices = list(range(len(self._entries)))
+
+        self._visible_indices = indices
+        self.table.setRowCount(len(indices))
+        for row, entry_index in enumerate(indices):
+            entry = self._entries[entry_index]
             values = [
                 entry.telefonnummer,
                 entry.pin,
