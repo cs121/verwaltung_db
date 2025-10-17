@@ -37,6 +37,7 @@ from inventar.data.repository import RepositoryError, create_repository
 from inventar.export.exporters import export_to_csv, export_to_json, export_to_xlsx
 from inventar.importers import InventoryImportError, import_items
 from inventar.ui.item_dialog import ItemDialog
+from inventar.ui.mobile_window import MobileWindow
 from inventar.ui.print import TablePrinter
 from inventar.utils.constants import DEFAULT_OWNER, ensure_default_owner, is_default_owner
 from inventar.utils.settings import SettingsManager
@@ -190,6 +191,7 @@ class MainWindow(QMainWindow):
                 self._font_size = 10
                 self.items: List[Item] = []
                 self.filtered_items: List[Item] = []
+                self._mobile_window: MobileWindow | None = None
 
                 self._filter_timer = QTimer(self)
                 self._filter_timer.setSingleShot(True)
@@ -224,6 +226,7 @@ class MainWindow(QMainWindow):
 
                 actions_layout = QHBoxLayout()
                 self.new_button = QPushButton('Neues Objekt')
+                self.mobile_button = QPushButton('Mobil')
                 self.toggle_stillgelegt_button = QRadioButton()
                 self.toggle_stillgelegt_button.setChecked(False)
                 self._update_stillgelegt_toggle_label(False)
@@ -232,6 +235,7 @@ class MainWindow(QMainWindow):
                 self.print_button.setToolTip('Drucken (Ctrl+P)')
 
                 actions_layout.addWidget(self.new_button)
+                actions_layout.addWidget(self.mobile_button)
                 actions_layout.addWidget(self.toggle_stillgelegt_button)
                 actions_layout.addStretch()
 
@@ -551,6 +555,7 @@ class MainWindow(QMainWindow):
 
         def _connect_signals(self) -> None:
                 self.new_button.clicked.connect(self.create_item)
+                self.mobile_button.clicked.connect(self._open_mobile_window)
                 self.export_excel_action.triggered.connect(lambda: self.export_data('xlsx'))
                 self.export_csv_action.triggered.connect(lambda: self.export_data('csv'))
                 self.export_json_action.triggered.connect(lambda: self.export_data('json'))
@@ -601,6 +606,32 @@ class MainWindow(QMainWindow):
                         selection_model.selectionChanged.connect(self._update_item_action_visibility)
 
                 self._update_item_action_visibility()
+
+        def _open_mobile_window(self) -> None:
+                owners = self._collect_owner_values()
+                if self._mobile_window is None:
+                        self._mobile_window = MobileWindow(owners=owners, parent=self)
+                        self._mobile_window.destroyed.connect(lambda: setattr(self, '_mobile_window', None))
+                else:
+                        self._mobile_window.set_owners(owners)
+
+                self._mobile_window.show()
+                self._mobile_window.raise_()
+                self._mobile_window.activateWindow()
+
+        def _collect_owner_values(self) -> list[str]:
+                owners = {DEFAULT_OWNER}
+                try:
+                        owners.update(filter(None, self.repository.distinct_owners()))
+                except RepositoryError:
+                        pass
+                owners.update(filter(None, self.custom_owners))
+                if hasattr(self, 'filter_besitzer'):
+                        for index in range(self.filter_besitzer.count()):
+                                text = self.filter_besitzer.itemText(index).strip()
+                                if text:
+                                        owners.add(text)
+                return sorted(owners)
 
         def _show_export_menu(self) -> None:
                 if not hasattr(self, 'export_menu'):
